@@ -154,7 +154,7 @@
     <div class="flex items-center justify-between h-14">
 
       <!-- Logo -->
-      <a href="/" class="flex items-center gap-2 flex-shrink-0">
+      <a href="/nutriglance" class="flex items-center gap-2 flex-shrink-0">
         <span class="font-display text-xl font-extrabold tracking-tight">
           <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand">.ai</span>
         </span>
@@ -170,14 +170,15 @@
         <a href="/settings" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 rounded-lg hover:bg-white/20 hover:text-charcoal transition-colors">Settings</a>
       </div>
 
-      <!-- Avatar -->
-      <div class="hidden md:flex items-center gap-2">
-        <button id="profile-btn"
-                class="flex items-center justify-center w-8 h-8 rounded-full bg-charcoal/20 text-charcoal font-bold text-sm select-none cursor-pointer hover:bg-charcoal/30 transition-colors"
-                title="Profile" aria-label="Open profile">
-          <span id="avatar-initial">?</span>
-        </button>
-      </div>
+      <!-- Desktop right: avatar -->
+        <div class="hidden md:flex items-center gap-2">
+          <a href="/settings"
+             id="profile-btn"
+             class="flex items-center gap-2 w-8 h-8 rounded-full bg-charcoal/20 justify-center text-charcoal font-bold text-sm select-none cursor-pointer hover:bg-charcoal/30 transition-colors"
+             title="Settings" aria-label="Open settings">
+            <span id="avatar-initial">A</span>
+          </a>
+        </div>
 
       <!-- Hamburger -->
       <button id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu"
