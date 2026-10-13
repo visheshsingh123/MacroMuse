@@ -395,6 +395,38 @@
         </div>
       </div>
 
+      <!-- Daily tip card -->
+      <div class="bg-card rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between flex-1 min-h-[145px]">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-base flex-shrink-0 text-brand select-none">
+                💡
+              </div>
+              <div>
+                <span class="font-display text-base font-extrabold text-charcoal">Daily Tip</span>
+                <span id="tip-category" class="ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-brand">Mindful Eating</span>
+              </div>
+            </div>
+            <button id="next-tip-btn" type="button" title="Next Tip"
+                    class="flex items-center gap-1 text-xs font-semibold text-muted hover:text-brand px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              <span>Next</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+          <p id="progress-daily-tip" class="text-sm font-medium text-charcoal leading-relaxed transition-opacity duration-150">
+            Eating slowly helps your brain register fullness — aim for 20 minutes per meal.
+          </p>
+        </div>
+        <div class="flex items-center justify-between text-[11px] text-muted pt-3 border-t border-slate-100 dark:border-slate-800 mt-3">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-brand"></span>
+            Rotating daily nutrition advice
+          </span>
+          <span id="tip-counter" class="font-semibold text-slate-400">1 / 10</span>
+        </div>
+      </div>
+
     </div>
 
     <!-- RIGHT: Today's ring + Calendar (1/3) -->
@@ -955,6 +987,76 @@ function renderHistory() {
   });
 }
 
+// ─── Daily Tips ─────────────────────────────────────────────────
+const PROGRESS_TIPS = [
+  {
+    category: 'Mindful Eating',
+    tip: 'Eating slowly helps your brain register fullness — aim for 20 minutes per meal.'
+  },
+  {
+    category: 'Protein Target',
+    tip: 'Protein at breakfast reduces cravings by up to 60% throughout the rest of the day.'
+  },
+  {
+    category: 'Gut Health',
+    tip: 'Fibre feeds your gut microbiome. Aim for 25–35g daily from diverse whole foods.'
+  },
+  {
+    category: 'Phytonutrients',
+    tip: 'Colour your plate — each distinct hue delivers a unique blend of protective plant nutrients.'
+  },
+  {
+    category: 'Hydration',
+    tip: 'Drink a glass of water before reaching for snacks — mild thirst is often confused with hunger.'
+  },
+  {
+    category: 'Meal Prep',
+    tip: 'Prepping protein and vegetables ahead of time makes hitting your targets simple and automatic.'
+  },
+  {
+    category: 'Healthy Fats',
+    tip: 'A small handful of nuts or seeds provides heart-healthy fats and keeps energy levels steady.'
+  },
+  {
+    category: 'Consistency',
+    tip: 'Consistency beats perfection: staying within ±10% of your targets builds lasting lifestyle habits.'
+  },
+  {
+    category: 'Workout Recovery',
+    tip: 'Pairing protein with carbohydrates post-workout helps restore glycogen and repairs muscle tissue.'
+  },
+  {
+    category: 'Rest & Recovery',
+    tip: 'Prioritise 7–8 hours of quality sleep to keep appetite and hunger hormones naturally balanced.'
+  }
+];
+
+let currentTipIndex = Math.floor(Date.now() / 86400000) % PROGRESS_TIPS.length;
+
+function renderTip(index = currentTipIndex) {
+  const tipObj = PROGRESS_TIPS[index % PROGRESS_TIPS.length];
+  const tipTextEl = document.getElementById('progress-daily-tip');
+  const catEl = document.getElementById('tip-category');
+  const counterEl = document.getElementById('tip-counter');
+  if (!tipTextEl) return;
+
+  tipTextEl.style.opacity = '0';
+  setTimeout(() => {
+    tipTextEl.textContent = tipObj.tip;
+    if (catEl) catEl.textContent = tipObj.category;
+    if (counterEl) counterEl.textContent = `${(index % PROGRESS_TIPS.length) + 1} / ${PROGRESS_TIPS.length}`;
+    tipTextEl.style.opacity = '1';
+  }, 120);
+}
+
+const nextTipBtn = document.getElementById('next-tip-btn');
+if (nextTipBtn) {
+  nextTipBtn.addEventListener('click', () => {
+    currentTipIndex = (currentTipIndex + 1) % PROGRESS_TIPS.length;
+    renderTip(currentTipIndex);
+  });
+}
+
 // ─── Full render ────────────────────────────────────────────────
 let currentRange = 7;
 function renderAll() {
@@ -964,6 +1066,7 @@ function renderAll() {
   renderMacroChart();
   renderCalendar();
   renderHistory();
+  renderTip();
 }
 renderAll();
 
