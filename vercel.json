@@ -1,6 +1,17 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/groq", "destination": "/api/groq" },
+    { "source": "/nutriglance", "destination": "/public/nutriglance.html" },
+    { "source": "/meals", "destination": "/public/meals.html" },
+    { "source": "/progress", "destination": "/public/progress.html" },
+    { "source": "/aichef", "destination": "/public/aichef.html" },
+    { "source": "/settings", "destination": "/public/settings.html" },
+    { "source": "/login", "destination": "/public/login.html" },
+    { "source": "/download", "destination": "/public/download.html" },
+    { "source": "/qr", "destination": "/public/qr.html" },
+    { "source": "/index", "destination": "/public/index.html" },
+    { "source": "/", "destination": "/public/index.html" },
     { "source": "/(.*)", "destination": "/public/$1" }
   ]
 }
