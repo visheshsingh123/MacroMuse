@@ -163,7 +163,66 @@
       pointer-events: none;
       z-index: 0;
     }
+  
+    /* ── Scrollbar — matches body background in day / night mode ── */
+    html {
+      scrollbar-color: #CBD5E1 #EFF7F4;
+      scrollbar-width: thin;
+    }
+    html.dark,
+    body.dark {
+      scrollbar-color: #334155 #0F172A;
+    }
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #EFF7F4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #CBD5E1;
+      border-radius: 9999px;
+      border: 2px solid #EFF7F4;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #94A3B8;
+    }
+    html.dark::-webkit-scrollbar,
+    body.dark::-webkit-scrollbar,
+    html.dark ::-webkit-scrollbar,
+    body.dark ::-webkit-scrollbar {
+      background-color: #0F172A;
+    }
+    html.dark::-webkit-scrollbar-track,
+    body.dark::-webkit-scrollbar-track,
+    html.dark ::-webkit-scrollbar-track,
+    body.dark ::-webkit-scrollbar-track {
+      background: #0F172A !important;
+    }
+    html.dark::-webkit-scrollbar-thumb,
+    body.dark::-webkit-scrollbar-thumb,
+    html.dark ::-webkit-scrollbar-thumb,
+    body.dark ::-webkit-scrollbar-thumb {
+      background-color: #334155 !important;
+      border-radius: 9999px;
+      border: 2px solid #0F172A !important;
+    }
+    html.dark::-webkit-scrollbar-thumb:hover,
+    body.dark::-webkit-scrollbar-thumb:hover,
+    html.dark ::-webkit-scrollbar-thumb:hover,
+    body.dark ::-webkit-scrollbar-thumb:hover {
+      background-color: #475569 !important;
+    }
+
   </style>
+  <script>
+    (function () {
+      if (localStorage.getItem('nutriglance_darkmode') === '1') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -500,6 +559,7 @@
 
     function applyDark(on) {
       document.body.classList.toggle('dark', on);
+      document.documentElement.classList.toggle('dark', on);
       iconMoon.classList.toggle('hidden',  on);
       iconSun.classList.toggle ('hidden', !on);
       localStorage.setItem(DARK_KEY, on ? '1' : '0');
