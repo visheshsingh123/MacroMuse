@@ -79,7 +79,7 @@ It will ask you a few questions — answer like this:
 |---|---|
 | Application name | NutriGlance |
 | Package ID | com.yourname.nutriglance |
-| Start URL | https://your-site.com/nutriglance.html |
+| Start URL | https://your-site.com/nutriglance |
 | Theme colour | #10B981 |
 | Background colour | #EFF7F4 |
 | Icon URL | https://your-site.com/icons/icon-512.png |

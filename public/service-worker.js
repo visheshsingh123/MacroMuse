@@ -2,12 +2,12 @@
 const CACHE_NAME = 'nutriglance-v1';
 const PRECACHE = [
   '/',
-  '/nutriglance.html',
-  '/meals.html',
-  '/progress.html',
-  '/aichef.html',
-  '/settings.html',
-  '/login.html',
+  '/nutriglance',
+  '/meals',
+  '/progress',
+  '/aichef',
+  '/settings',
+  '/login',
 ];
 
 // Install: pre-cache core pages

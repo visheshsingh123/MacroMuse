@@ -176,7 +176,7 @@
   <nav class="bg-brand shadow-sm sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between h-14">
-        <a href="index.html" class="flex items-center gap-2">
+        <a href="/" class="flex items-center gap-2">
           <span class="font-display text-xl font-extrabold tracking-tight">
             <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand">.ai</span>
           </span>
@@ -426,7 +426,7 @@
 
       <!-- Footer note -->
       <p class="text-center text-xs text-muted mt-6">
-        © 2026 NutriGlance · <a href="index.html" class="hover:text-brand transition-colors">Back to home</a>
+        © 2026 NutriGlance · <a href="/" class="hover:text-brand transition-colors">Back to home</a>
       </p>
 
     </div>
@@ -481,7 +481,7 @@
     // After any successful sign-in, redirect to dashboard
     auth.onAuthStateChanged(user => {
       if (user) {
-        window.location.href = 'nutriglance.html';
+        window.location.href = '/nutriglance';
       }
     });
   </script>
