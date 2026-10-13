@@ -1290,6 +1290,9 @@
     const textMealBtn    = document.getElementById('text-meal-btn');
     const textMealStatus = document.getElementById('text-meal-status');
 
+    const TEXT_MODELS = ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b'];
+    const VISION_MODELS = ['qwen/qwen3.8-27b', 'meta-llama/llama-4-scout-17b-16e-instruct', 'meta-llama/llama-4-maverick-17b-128e-instruct'];
+
     async function analyseTextMeal(description) {
       const prompt = `You are a professional nutritionist. The user has described a meal in text. Estimate the nutritional content.
 
@@ -1307,30 +1310,41 @@ Rules:
 }
 All numeric values must be integers. Be realistic and accurate.`;
 
-      const response = await fetch(GROQ_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'qwen/qwen3.6-27b',
-          max_tokens: 300,
-          reasoning_effort: 'none',
-          reasoning_format: 'hidden',
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
+      let lastError = null;
+      for (const model of TEXT_MODELS) {
+        try {
+          const bodyPayload = {
+            model,
+            max_tokens: 400,
+            messages: [{ role: 'user', content: prompt }],
+          };
+          if (model.includes('qwen')) {
+            bodyPayload.reasoning_effort = 'none';
+          }
+          const response = await fetch(GROQ_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodyPayload),
+          });
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `API error ${response.status}`);
+          if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err?.error?.message || `API error ${response.status}`);
+          }
+
+          const data  = await response.json();
+          let raw     = data.choices?.[0]?.message?.content ?? '';
+          raw = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+          raw = raw.replace(/```json|```/gi, '').trim();
+          const match = raw.match(/\{[\s\S]*\}/);
+          if (match) raw = match[0];
+          return JSON.parse(raw);
+        } catch (err) {
+          lastError = err;
+          console.warn(`Text analysis attempt with ${model} failed:`, err.message);
+        }
       }
-
-      const data  = await response.json();
-      let raw     = data.choices?.[0]?.message?.content ?? '';
-      raw = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-      raw = raw.replace(/```json|```/gi, '').trim();
-      const match = raw.match(/\{[\s\S]*\}/);
-      if (match) raw = match[0];
-      return JSON.parse(raw);
+      throw lastError || new Error('Failed to analyse meal description');
     }
 
     async function handleTextMeal() {
@@ -1342,7 +1356,7 @@ All numeric values must be integers. Be realistic and accurate.`;
       textMealStatus.className = 'mt-2 text-xs text-muted flex items-center gap-1.5';
       textMealStatus.innerHTML = `
         <svg class="animate-spin flex-shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" stroke="#E2E8F0" stroke-width="3"/>
+          <circle cx="12" cy="10" stroke="#E2E8F0" stroke-width="3"/>
           <path d="M12 2a10 10 0 0 1 10 10" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
         </svg>
         Analysing…`;
@@ -1434,42 +1448,50 @@ Return ONLY a JSON object — no markdown, no explanation — using this exact s
 }
 Scale kcal, protein, carbs and fat to match the piece count or volume you identified — more pieces or a fuller container must produce noticeably higher numbers, fewer pieces or a smaller portion must produce noticeably lower numbers. All numeric nutrition values must be integers.`;
 
-      const response = await fetch(GROQ_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'qwen/qwen3.6-27b',
-          max_tokens: 600,
-          reasoning_effort: 'none',
-          reasoning_format: 'hidden',
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } },
-              { type: 'text', text: prompt },
-            ],
-          }],
-        }),
-      });
+      let lastError = null;
+      for (const model of VISION_MODELS) {
+        try {
+          const bodyPayload = {
+            model,
+            max_tokens: 600,
+            messages: [{
+              role: 'user',
+              content: [
+                { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } },
+                { type: 'text', text: prompt },
+              ],
+            }],
+          };
+          if (model.includes('qwen')) {
+            bodyPayload.reasoning_effort = 'none';
+          }
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `API error ${response.status}`);
+          const response = await fetch(GROQ_ENDPOINT, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bodyPayload),
+          });
+
+          if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err?.error?.message || `API error ${response.status}`);
+          }
+
+          const data = await response.json();
+          const raw  = data.choices?.[0]?.message?.content ?? '';
+          let clean = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+          clean = clean.replace(/```json|```/gi, '').trim();
+          const match = clean.match(/\{[\s\S]*\}/);
+          if (match) clean = match[0];
+          return JSON.parse(clean);
+        } catch (err) {
+          lastError = err;
+          console.warn(`Vision analysis attempt with ${model} failed:`, err.message);
+        }
       }
-
-      const data = await response.json();
-      const raw  = data.choices?.[0]?.message?.content ?? '';
-      // Strip any <think>...</think> reasoning block the model may emit,
-      // then strip any accidental markdown fences, then grab the JSON object.
-      let clean = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-      clean = clean.replace(/```json|```/gi, '').trim();
-      // Some models still leave stray text around the JSON — extract just
-      // the {...} object to be safe.
-      const match = clean.match(/\{[\s\S]*\}/);
-      if (match) clean = match[0];
-      return JSON.parse(clean);
+      throw lastError || new Error('Failed to analyse image');
     }
 
     // ── Pending result — held until user clicks "Log this meal" ─────────────
