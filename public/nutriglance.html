@@ -472,16 +472,16 @@
       <!-- ────────────────────────────────────────────────────────────
            COLUMN 1 — CALORIES & MACROS CARD
       ──────────────────────────────────────────────────────────────── -->
-      <section class="bg-card rounded-2xl p-6 shadow-sm flex flex-col gap-6">
+      <section class="bg-card rounded-2xl p-5 shadow-sm flex flex-col gap-4">
 
         <!-- Section heading -->
-        <h2 class="font-display text-2xl font-extrabold leading-tight text-charcoal">
+        <h2 class="font-display text-xl font-extrabold leading-tight text-charcoal">
           Calories<br/>consumed
         </h2>
 
         <!-- SVG circular progress ring -->
         <div class="flex items-center justify-center">
-          <svg id="calorie-ring" width="160" height="160" viewBox="0 0 160 160">
+          <svg id="calorie-ring" width="135" height="135" viewBox="0 0 160 160">
             <!-- Track (background circle) -->
             <circle
               class="ring-track"
@@ -512,7 +512,7 @@
         </div>
 
         <!-- Macro breakdown -->
-        <div class="flex flex-col gap-3 text-sm font-semibold">
+        <div class="flex flex-col gap-2.5 text-xs font-semibold">
 
           <!-- Protein -->
           <div>
@@ -562,7 +562,7 @@
 
         <!-- ── Tell AI what you ate ── -->
         <div class="mt-auto pt-2 border-t border-slate-100">
-          <p class="text-xs font-semibold text-muted uppercase tracking-wide mb-2">Tell AI what you ate</p>
+          <p class="text-[11px] font-semibold text-muted uppercase tracking-wide mb-1.5">Tell AI what you ate</p>
 
           <!-- Input row -->
           <div class="flex gap-2">
@@ -580,7 +580,7 @@
               id="text-meal-btn"
               aria-label="Analyse meal text"
               class="flex-shrink-0 w-9 h-9 rounded-xl bg-brand text-white
-                     flex items-center justify-center
+              flex items-center justify-center
                      hover:bg-emerald-600 active:scale-95 transition-all duration-150
                      disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -606,7 +606,7 @@
       <!-- ────────────────────────────────────────────────────────────
            COLUMN 2 — UPLOAD ZONE + RECENT MEALS
       ──────────────────────────────────────────────────────────────── -->
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-4">
 
         <!-- Upload box -->
         <!-- Hidden file input — lives outside the zone so clicks don't bubble weirdly -->
@@ -621,10 +621,10 @@
           <!-- Default drop zone (shown when idle) -->
           <div id="upload-zone"
                role="button" tabindex="0" aria-label="Upload a meal photo"
-               class="flex flex-col items-center justify-center gap-3 py-10 cursor-pointer select-none">
+               class="flex flex-col items-center justify-center gap-2 py-5 cursor-pointer select-none">
 
             <!-- Cloud icon -->
-            <svg width="56" height="46" viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="42" height="34" viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M30 32V18M30 18L24 24M30 18L36 24" stroke="#94A3B8" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M44 38H16C11.582 38 8 34.418 8 30C8 26.19 10.598 22.988 14.148 22.152
@@ -634,20 +634,20 @@
                        C49.402 22.988 52 26.19 52 30C52 34.418 48.418 38 44 38Z"
                     stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <p id="upload-label" class="text-muted font-semibold text-sm text-center px-4">
+            <p id="upload-label" class="text-muted font-semibold text-xs sm:text-sm text-center px-4">
               Upload your meals here
             </p>
-            <p class="text-slate-400 text-xs">Click to browse · AI will analyse nutrition instantly</p>
+            <p class="text-slate-400 text-[11px]">Click to browse · AI will analyse nutrition instantly</p>
           </div>
 
           <!-- Analysing state (hidden by default) -->
-          <div id="upload-analysing" class="hidden flex-col items-center justify-center gap-4 py-10 px-6">
+          <div id="upload-analysing" class="hidden flex-col items-center justify-center gap-3 py-6 px-6">
             <!-- Preview thumbnail -->
             <img id="upload-preview" src="" alt="Meal preview"
-                 class="w-28 h-28 object-cover rounded-2xl shadow-md" />
+                 class="w-20 h-20 object-cover rounded-xl shadow-md" />
             <!-- Spinner + label -->
-            <div class="flex flex-col items-center gap-2">
-              <svg class="animate-spin text-brand" width="28" height="28" viewBox="0 0 24 24" fill="none">
+            <div class="flex flex-col items-center gap-1.5">
+              <svg class="animate-spin text-brand" width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="10" stroke="#E2E8F0" stroke-width="3"/>
                 <path d="M12 2a10 10 0 0 1 10 10" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
               </svg>
@@ -657,30 +657,30 @@
           </div>
 
           <!-- Result state (hidden by default) -->
-          <div id="upload-result" class="hidden flex-col gap-4 p-5">
-            <div class="flex gap-4 items-start">
+          <div id="upload-result" class="hidden flex-col gap-3 p-4">
+            <div class="flex gap-3 items-start">
               <img id="result-thumb" src="" alt="Meal"
-                   class="w-20 h-20 object-cover rounded-xl shadow flex-shrink-0" />
+                   class="w-16 h-16 object-cover rounded-xl shadow flex-shrink-0" />
               <div class="flex-1 min-w-0">
-                <p class="font-display font-extrabold text-base text-charcoal" id="result-name">—</p>
+                <p class="font-display font-extrabold text-sm text-charcoal" id="result-name">—</p>
                 <p class="text-xs text-muted mt-0.5" id="result-desc"></p>
                 <p class="hidden inline-flex text-xs font-semibold text-brand mt-1 items-center gap-1" id="result-portion">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   <span id="result-portion-text"></span>
                 </p>
                 <!-- Macro pills -->
-                <div class="flex flex-wrap gap-1.5 mt-2" id="result-pills"></div>
+                <div class="flex flex-wrap gap-1 mt-1.5" id="result-pills"></div>
               </div>
             </div>
             <!-- Action row -->
             <div class="flex gap-2">
               <button id="result-log-btn"
-                class="flex-1 bg-brand text-white text-sm font-semibold rounded-xl py-2
+                class="flex-1 bg-brand text-white text-xs font-semibold rounded-xl py-2
                        hover:bg-emerald-600 active:scale-95 transition-all duration-150">
                 ✅ Log this meal
               </button>
               <button id="result-retry-btn"
-                class="px-4 text-sm font-semibold text-muted border border-slate-200 rounded-xl
+                class="px-3 text-xs font-semibold text-muted border border-slate-200 rounded-xl
                        hover:bg-slate-50 active:scale-95 transition-all duration-150">
                 Try another
               </button>
@@ -690,16 +690,16 @@
         </div><!-- /upload-outer -->
 
         <!-- Recent Meals card -->
-        <div class="bg-card rounded-2xl p-6 shadow-sm flex-1">
-          <div class="flex items-center justify-between mb-5">
-            <h2 class="font-display text-xl font-extrabold">
-              Recent Meals <span class="text-muted font-body font-normal text-sm">(Today)</span>
+        <div class="bg-card rounded-2xl p-5 shadow-sm flex-1">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-display text-lg font-extrabold">
+              Recent Meals <span class="text-muted font-body font-normal text-xs">(Today)</span>
             </h2>
             <!-- Clear button — only visible when there are meals -->
             <button
               id="clear-btn"
               class="hidden text-xs font-semibold text-red-400 hover:text-red-600
-                     border border-red-200 hover:border-red-400 rounded-lg px-3 py-1
+                     border border-red-200 hover:border-red-400 rounded-lg px-2.5 py-0.5
                      transition-colors duration-150"
               aria-label="Clear all logged meals"
             >
@@ -708,12 +708,12 @@
           </div>
 
           <!-- Meal list / skeleton placeholder -->
-          <div id="meals-container" class="flex flex-col gap-3">
+          <div id="meals-container" class="flex flex-col gap-2.5">
             <!-- Skeleton lines shown when no meals are logged — replaced by JS -->
-            <div id="skeleton-placeholder" class="flex flex-col gap-3">
-              <div class="skeleton h-4 w-3/4"></div>
-              <div class="skeleton h-4 w-1/2"></div>
-              <div class="skeleton h-4 w-5/6"></div>
+            <div id="skeleton-placeholder" class="flex flex-col gap-2.5">
+              <div class="skeleton h-3.5 w-3/4"></div>
+              <div class="skeleton h-3.5 w-1/2"></div>
+              <div class="skeleton h-3.5 w-5/6"></div>
             </div>
           </div>
         </div>
@@ -724,12 +724,12 @@
       <!-- ────────────────────────────────────────────────────────────
            COLUMN 3 — QUICK ACTIONS
       ──────────────────────────────────────────────────────────────── -->
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-4">
 
         <!-- Scan a Meal -->
         <button
           id="scan-btn"
-          class="bg-card rounded-2xl shadow-sm px-5 py-6 text-left font-display text-xl
+          class="bg-card rounded-2xl shadow-sm px-5 py-5 text-left font-display text-lg
                  font-extrabold text-charcoal hover:shadow-md hover:bg-emerald-50
                  active:scale-95 transition-all duration-150 border-2 border-transparent
                  hover:border-brand focus:outline-none focus:ring-2 focus:ring-brand
@@ -739,7 +739,7 @@
           <div class="flex items-center gap-3">
             <!-- Scan icon -->
             <span class="text-brand text-2xl" aria-hidden="true">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10B981"
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981"
                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
                 <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
@@ -750,7 +750,7 @@
             </span>
             Scan a Meal
           </div>
-          <p class="text-xs font-body font-normal text-muted mt-1">
+          <p class="text-xs font-body font-normal text-muted mt-0.5">
             Auto-detect food & log macros
           </p>
         </button>
@@ -759,7 +759,7 @@
         <a
           id="ai-chef-btn"
           href="/aichef"
-          class="bg-card rounded-2xl shadow-sm px-5 py-6 text-left font-display text-xl
+          class="bg-card rounded-2xl shadow-sm px-5 py-5 text-left font-display text-lg
                  font-extrabold text-charcoal hover:shadow-md hover:bg-emerald-50
                  active:scale-95 transition-all duration-150 border-2 border-transparent
                  hover:border-brand focus:outline-none focus:ring-2 focus:ring-brand
@@ -769,7 +769,7 @@
           <div class="flex items-center gap-3">
             <!-- Chef hat icon -->
             <span aria-hidden="true">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10B981"
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981"
                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
                 <line x1="6" y1="17" x2="18" y2="17"/>
@@ -777,7 +777,7 @@
             </span>
             AI Chef
           </div>
-          <p class="text-xs font-body font-normal text-muted mt-1">
+          <p class="text-xs font-body font-normal text-muted mt-0.5">
             Get personalised recipe ideas
           </p>
         </a>
@@ -810,15 +810,6 @@
                   class="mt-3 text-xs text-muted hover:text-red-400 transition-colors duration-150">
             Reset
           </button>
-        </div>
-
-        <!-- Tip of the day -->
-        <div class="bg-card rounded-2xl px-5 py-4 shadow-sm flex gap-3 items-start">
-          <span class="text-xl mt-0.5 flex-shrink-0" aria-hidden="true">💡</span>
-          <div>
-            <p class="text-xs font-semibold text-brand uppercase tracking-wide mb-1">Tip</p>
-            <p id="daily-tip" class="text-xs text-charcoal leading-relaxed"></p>
-          </div>
         </div>
 
       </div><!-- /col 3 -->
@@ -1758,8 +1749,11 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     ];
 
     function renderTip() {
-      const dayIndex = Math.floor(Date.now() / 86400000) % TIPS.length;
-      document.getElementById('daily-tip').textContent = TIPS[dayIndex];
+      const tipEl = document.getElementById('daily-tip');
+      if (tipEl) {
+        const dayIndex = Math.floor(Date.now() / 86400000) % TIPS.length;
+        tipEl.textContent = TIPS[dayIndex];
+      }
     }
 
     // ──────────────────────────────────────────────────────────────────
