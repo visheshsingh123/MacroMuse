@@ -330,6 +330,16 @@
       background-color: #475569 !important;
     }
 
+    /* ── Decorative blob glows ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+
   </style>
   <script>
     (function () {
@@ -341,6 +351,10 @@
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal">
+
+  <!-- Decorative background blobs -->
+  <div class="blob w-96 h-96 bg-brand top-[-80px] right-[-80px]" style="position:fixed;"></div>
+  <div class="blob w-72 h-72 bg-emerald-300 bottom-[-60px] left-[-60px]" style="position:fixed;"></div>
 
   <!-- ════════════════════════════════════════════════════════════════
        NAVBAR — same visual language as the dashboard
