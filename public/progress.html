@@ -207,6 +207,21 @@
       background-color: #475569 !important;
     }
 
+    /* Print styles for PDF Report export */
+    @media print {
+      nav, footer, #bottom-nav, #open-log-btn, #export-pdf-btn, #log-modal, #premium-crown-btn, #hamburger, .no-print {
+        display: none !important;
+      }
+      body, html {
+        background: white !important;
+        color: black !important;
+      }
+      main {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+    }
   </style>
   <script>
     (function () {
@@ -238,8 +253,8 @@
       <div class="hidden md:flex items-center gap-1">
         <a href="/nutriglance" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Dashboard</a>
         <a href="/meals" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Meals</a>
-        <a href="/progress"   class="nav-link active px-4 py-1.5 text-sm text-charcoal/90 transition-colors">Progress</a>
-        <a href="/aichef"     class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">AI Chef</a>
+        <a href="/progress" class="nav-link active px-4 py-1.5 text-sm text-charcoal/90 transition-colors inline-flex items-center gap-1.5"><span>Progress</span><span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400">PRO</span></a>
+        <a href="/aichef" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors inline-flex items-center gap-1.5"><span>AI Chef</span><span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400">PRO</span></a>
         <a href="/settings" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Settings</a>
       </div>
 
@@ -355,12 +370,75 @@
       <h1 class="font-display text-3xl font-extrabold text-charcoal">Your Journey</h1>
       <p class="text-sm text-muted mt-1">Log your daily nutrition and watch your habits build over time.</p>
     </div>
-    <button id="open-log-btn"
-            class="flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl
-                   hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-sm self-start sm:self-auto">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Log Today
-    </button>
+    <div class="flex items-center gap-2.5 self-start sm:self-auto">
+      <button id="export-pdf-btn"
+              class="flex items-center gap-2 bg-card border border-slate-200 dark:border-slate-700 text-charcoal text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all shadow-sm"
+              title="Download Progress & Nutrition PDF Report">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Export PDF</span>
+      </button>
+      <button id="open-log-btn"
+              class="flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl
+                     hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Log Today
+      </button>
+    </div>
+  </div>
+
+  <!-- ── PRO PAYWALL OVERLAY (For Free Tier Users) ── -->
+  <div id="progress-paywall" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+    <div class="bg-card w-full max-w-lg rounded-3xl p-6 sm:p-8 border-2 border-brand/50 shadow-2xl relative text-center">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-charcoal flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/20">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+        </svg>
+      </div>
+
+      <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950 px-3 py-1 rounded-full mb-2">
+        NutriGlance Pro Feature
+      </span>
+      <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-charcoal mb-2">
+        Progress Analytics is Locked
+      </h2>
+      <p class="text-sm text-muted mb-6 leading-relaxed">
+        Long-term weight logging, historical calorie trend graphs, streak analytics, and downloadable PDF reports are exclusive to <strong>NutriGlance Pro ($5/mo)</strong>.
+      </p>
+
+      <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 mb-6 text-left border border-slate-200 dark:border-slate-700">
+        <p class="text-xs font-bold text-charcoal uppercase tracking-wider mb-2.5">Unlock with Pro ($5/mo):</p>
+        <ul class="flex flex-col gap-2 text-xs text-charcoal/90">
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-bold">✔</span>
+            <span>Historical weight curves & transformation milestones</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-bold">✔</span>
+            <span>Consistency streak records & weekly macronutrient averages</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-bold">✔</span>
+            <span>Printable PDF progress reports for your doctor or trainer</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-bold">✔</span>
+            <span>Full unlocked access to AI Chef culinary assistant</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <a href="/premium"
+           class="w-full py-3.5 px-4 rounded-xl text-sm font-bold bg-brand text-white hover:bg-emerald-600 shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+          <span>Upgrade to Pro — $5/month</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="/nutriglance"
+           class="w-full py-2.5 text-center text-xs font-semibold text-muted hover:text-charcoal transition-colors">
+          Return to Dashboard
+        </a>
+      </div>
+    </div>
   </div>
 
   <!-- ── STAT CARDS ROW ── -->
@@ -1230,6 +1308,44 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
     document.querySelectorAll('.bottom-nav-link').forEach(l => l.classList.remove('active'));
     e.currentTarget.classList.add('active');
   });
+});
+
+// ─── Pro Tier Access & Lock for Free Tier Users ─────────────────
+function checkProgressAccess() {
+  const isPro = localStorage.getItem('nutriglance_is_premium') === '1';
+  const paywall = document.getElementById('progress-paywall');
+  const mainEl = document.querySelector('main');
+  const exportPdfBtn = document.getElementById('export-pdf-btn');
+
+  if (!isPro) {
+    if (paywall) paywall.classList.remove('hidden');
+    if (mainEl) {
+      mainEl.style.filter = 'blur(6px)';
+      mainEl.style.pointerEvents = 'none';
+      mainEl.style.userSelect = 'none';
+      mainEl.style.opacity = '0.35';
+    }
+  } else {
+    if (paywall) paywall.classList.add('hidden');
+    if (mainEl) {
+      mainEl.style.filter = '';
+      mainEl.style.pointerEvents = '';
+      mainEl.style.userSelect = '';
+      mainEl.style.opacity = '';
+    }
+  }
+}
+
+checkProgressAccess();
+
+// PDF Export Handler (Pro Feature)
+document.getElementById('export-pdf-btn')?.addEventListener('click', () => {
+  const isPro = localStorage.getItem('nutriglance_is_premium') === '1';
+  if (!isPro) {
+    checkProgressAccess();
+    return;
+  }
+  window.print();
 });
 </script>
 
