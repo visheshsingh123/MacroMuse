@@ -89,9 +89,16 @@
       border-radius: 6px;
     }
 
-    /* ── Upload drop-zone hover ring ── */
+    /* ── Upload drop-zone hover ring & drag state ── */
     #upload-zone:hover  { border-color: #10B981; }
     #upload-zone:active { transform: scale(0.98); }
+    #upload-outer.drag-active {
+      border-color: #10B981 !important;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25) !important;
+    }
+    #page-drag-overlay * {
+      pointer-events: none;
+    }
 
     /* ── Meal-item entrance animation ── */
     @keyframes fadeSlideIn {
@@ -230,6 +237,37 @@
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal">
+
+  <!-- ════════════════════════════════════════════════════════════════
+       FULL-PAGE DRAG & DROP OVERLAY
+       Shown whenever an image is dragged anywhere over the page.
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="page-drag-overlay"
+       class="hidden fixed inset-0 z-[90] flex items-center justify-center p-4
+              bg-charcoal/70 backdrop-blur-md select-none transition-all duration-200"
+       style="pointer-events: auto;">
+    <div class="pointer-events-none max-w-md w-full rounded-3xl border-2 border-dashed border-brand bg-card shadow-2xl p-8 sm:p-10 flex flex-col items-center justify-center text-center space-y-4">
+      <div class="w-20 h-20 rounded-2xl bg-brand/15 text-brand flex items-center justify-center">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="font-display text-2xl font-extrabold text-charcoal">Drop food image anywhere</h3>
+        <p class="text-sm text-muted mt-1.5">NutriGlance AI will scan & analyse your meal instantly</p>
+      </div>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-brand text-xs font-semibold">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span>Supports JPG, PNG, WebP & more</span>
+      </div>
+    </div>
+  </div>
 
   <!-- ════════════════════════════════════════════════════════════════
        ONBOARDING MODAL — collects profile details and calculates
@@ -641,7 +679,7 @@
             <p id="upload-label" class="text-muted font-semibold text-xs sm:text-sm text-center px-4">
               Upload your meals here
             </p>
-            <p class="text-slate-400 text-[11px]">Click to browse · AI will analyse nutrition instantly</p>
+            <p class="text-slate-400 text-[11px]">Click to browse or drag &amp; drop anywhere · AI will analyse nutrition instantly</p>
           </div>
 
           <!-- Analysing state (hidden by default) -->
@@ -1630,6 +1668,157 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       const file = cameraInput.files[0];
       cameraInput.value = ''; // reset so the same shot can be retaken
       processImageFile(file);
+    });
+
+    // ── Full-page Drag & Drop handler ─────────────────────────────────────────
+    const pageDragOverlay = document.getElementById('page-drag-overlay');
+    const uploadOuterEl   = document.getElementById('upload-outer');
+    let dragCounter = 0;
+
+    function isFileDrag(e) {
+      if (!e.dataTransfer) return false;
+      const types = Array.from(e.dataTransfer.types || []);
+      return types.includes('Files') || types.includes('application/x-moz-file') || types.includes('text/uri-list');
+    }
+
+    function showDragState() {
+      if (pageDragOverlay) {
+        pageDragOverlay.classList.remove('hidden');
+        pageDragOverlay.classList.add('flex');
+      }
+      if (uploadOuterEl) {
+        uploadOuterEl.classList.add('drag-active');
+      }
+    }
+
+    function hideDragState() {
+      if (pageDragOverlay) {
+        pageDragOverlay.classList.add('hidden');
+        pageDragOverlay.classList.remove('flex');
+      }
+      if (uploadOuterEl) {
+        uploadOuterEl.classList.remove('drag-active');
+      }
+    }
+
+    // Prevent default browser actions to prevent opening files directly in the browser
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      window.addEventListener(eventName, e => e.preventDefault(), false);
+      document.addEventListener(eventName, e => e.preventDefault(), false);
+    });
+
+    window.addEventListener('dragenter', e => {
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      dragCounter++;
+      if (dragCounter === 1) {
+        showDragState();
+      }
+    });
+
+    window.addEventListener('dragover', e => {
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+
+    window.addEventListener('dragleave', e => {
+      if (!isFileDrag(e)) return;
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        hideDragState();
+      }
+    });
+
+    window.addEventListener('dragend', () => {
+      dragCounter = 0;
+      hideDragState();
+    });
+
+    window.addEventListener('blur', () => {
+      dragCounter = 0;
+      hideDragState();
+    });
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        dragCounter = 0;
+        hideDragState();
+      }
+    });
+
+    async function handleDroppedData(e) {
+      const dt = e.dataTransfer;
+      if (!dt) return;
+
+      // 1. Files dropped directly from filesystem / desktop
+      if (dt.files && dt.files.length > 0) {
+        let imageFile = null;
+        for (const file of dt.files) {
+          if (file.type && file.type.startsWith('image/')) {
+            imageFile = file;
+            break;
+          }
+          const ext = (file.name || '').split('.').pop().toLowerCase();
+          if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic', 'heif', 'avif', 'bmp', 'svg'].includes(ext)) {
+            imageFile = file;
+            break;
+          }
+        }
+
+        if (imageFile) {
+          if (uploadOuterEl) {
+            uploadOuterEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+          processImageFile(imageFile);
+          return;
+        } else {
+          showToast('⚠️ Please drop an image file (JPG, PNG, WebP, etc.)');
+          return;
+        }
+      }
+
+      // 2. Fallback: image URL or data URI dragged from another page / tab
+      const rawUrl = dt.getData('URL') || dt.getData('text/uri-list');
+      if (rawUrl) {
+        if (rawUrl.startsWith('data:image/')) {
+          try {
+            const arr = rawUrl.split(',');
+            const mime = (arr[0].match(/:(.*?);/) || [])[1] || 'image/jpeg';
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) u8arr[n] = bstr.charCodeAt(n);
+            const blob = new Blob([u8arr], { type: mime });
+            processImageFile(blob);
+            return;
+          } catch (err) {
+            console.warn('Could not parse dropped data URI:', err);
+          }
+        }
+
+        try {
+          const res = await fetch(rawUrl);
+          const blob = await res.blob();
+          if (blob && blob.type.startsWith('image/')) {
+            processImageFile(blob);
+            return;
+          }
+        } catch (err) {
+          console.warn('Could not fetch dropped image URL:', err);
+        }
+      }
+
+      showToast('⚠️ No image detected. Please drop a meal image file.');
+    }
+
+    window.addEventListener('drop', async e => {
+      e.preventDefault();
+      dragCounter = 0;
+      hideDragState();
+      await handleDroppedData(e);
     });
 
     // Log button — commit pendingMeal to storage
