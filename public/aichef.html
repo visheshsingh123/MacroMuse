@@ -545,10 +545,17 @@
 
     // ── Call Groq chat completions ────────────────────────────────────────
     async function askAIChef(userText) {
+      let username = '';
+      try {
+        const prof = JSON.parse(localStorage.getItem('nutriglance_profile') || '{}');
+        username = prof?.name || (window.auth?.currentUser?.uid || window.auth?.currentUser?.email) || '';
+      } catch (e) {}
+
       const response = await fetch(GROQ_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(username ? { 'x-username': username } : {}),
         },
         body: JSON.stringify({
           model: GROQ_MODEL,

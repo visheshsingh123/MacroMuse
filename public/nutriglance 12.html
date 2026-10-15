@@ -1428,9 +1428,19 @@ All numeric values must be integers. Be realistic and accurate.`;
           if (model.includes('qwen')) {
             bodyPayload.reasoning_effort = 'none';
           }
+
+          let _reqUser = '';
+          try {
+            const _p = JSON.parse(localStorage.getItem('nutriglance_profile') || '{}');
+            _reqUser = _p?.name || (window.auth?.currentUser?.uid || window.auth?.currentUser?.email) || '';
+          } catch (e) {}
+
           const response = await fetch(GROQ_ENDPOINT, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              ...(_reqUser ? { 'x-username': _reqUser } : {}),
+            },
             body: JSON.stringify(bodyPayload),
           });
 
@@ -1573,10 +1583,17 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
             bodyPayload.reasoning_effort = 'none';
           }
 
+          let _reqUser = '';
+          try {
+            const _p = JSON.parse(localStorage.getItem('nutriglance_profile') || '{}');
+            _reqUser = _p?.name || (window.auth?.currentUser?.uid || window.auth?.currentUser?.email) || '';
+          } catch (e) {}
+
           const response = await fetch(GROQ_ENDPOINT, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              ...(_reqUser ? { 'x-username': _reqUser } : {}),
             },
             body: JSON.stringify(bodyPayload),
           });
