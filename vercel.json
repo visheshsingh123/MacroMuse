@@ -10,6 +10,10 @@
     { "source": "/login", "destination": "/public/login.html" },
     { "source": "/download", "destination": "/public/download.html" },
     { "source": "/qr", "destination": "/public/qr.html" },
+    { "source": "/about", "destination": "/public/about.html" },
+    { "source": "/privacy", "destination": "/public/privacy.html" },
+    { "source": "/privacy-policy", "destination": "/public/privacy.html" },
+    { "source": "/premium", "destination": "/public/premium.html" },
     { "source": "/index", "destination": "/public/index.html" },
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/(.*)", "destination": "/public/$1" }
