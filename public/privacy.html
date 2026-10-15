@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<!-- Developed for NutriGlance — October 2026 -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy – NutriGlance</title>
+
+  <!-- PWA: manifest + service worker -->
+  <link rel="manifest" href="/manifest.json" />
+  <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand:    '#10B981',
+            charcoal: '#0F172A',
+            bg:       '#EFF7F4',
+            card:     '#FFFFFF',
+            muted:    '#94A3B8',
+          },
+          fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            body:    ['"Inter"',         'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; }
+
+    /* ── Dark mode ── */
+    body.dark,
+    html.dark body { background-color: #0F172A !important; color: #E2E8F0 !important; }
+    body.dark.bg-bg,
+    html.dark body.bg-bg { background-color: #0F172A !important; }
+    body.dark .bg-card,
+    html.dark .bg-card { background-color: #1E293B !important; }
+    body.dark .text-charcoal,
+    html.dark .text-charcoal { color: #E2E8F0 !important; }
+    body.dark .text-muted,
+    html.dark .text-muted { color: #94A3B8 !important; }
+    body.dark .border-slate-200,
+    html.dark .border-slate-200 { border-color: #334155 !important; }
+    body.dark .border-slate-100,
+    html.dark .border-slate-100 { border-color: #334155 !important; }
+    body.dark nav.bg-brand,
+    html.dark nav.bg-brand { background-color: #059669 !important; }
+    body.dark footer.bg-charcoal,
+    html.dark footer.bg-charcoal { background-color: #020617 !important; }
+
+    /* ── Info cards ── */
+    .info-card {
+      background-color: #F8FAFC;
+      border: 1px solid #E2E8F0;
+    }
+    body.dark .info-card,
+    html.dark .info-card {
+      background-color: #1E293B !important;
+      border-color: #334155 !important;
+    }
+    .info-desc {
+      color: #475569;
+    }
+    body.dark .info-desc {
+      color: #94A3B8 !important;
+    }
+
+    /* ── Decorative leaf blobs (background) ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Footer link hover ── */
+    .footer-link:hover { color: #10B981; }
+
+    /* ── Fade-in animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .page-animate { animation: fadeUp 0.4s ease both; }
+
+    /* ── Scrollbar ── */
+    html {
+      scrollbar-color: #CBD5E1 #EFF7F4;
+      scrollbar-width: thin;
+    }
+    html.dark,
+    body.dark {
+      scrollbar-color: #334155 #0F172A;
+    }
+  </style>
+
+  <script>
+    // Apply saved dark mode preference immediately
+    (function () {
+      if (localStorage.getItem('nutriglance_darkmode') === '1') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+</head>
+
+<body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
+
+  <!-- Decorative background blobs -->
+  <div class="blob w-96 h-96 bg-brand top-[-80px] right-[-80px]" style="position:fixed;"></div>
+  <div class="blob w-72 h-72 bg-emerald-300 bottom-[-60px] left-[-60px]" style="position:fixed;"></div>
+
+  <!-- ── Navbar (same as login page) ── -->
+  <nav class="bg-brand shadow-sm sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-14">
+        <a href="/" class="flex items-center gap-2">
+          <span class="font-display text-xl font-extrabold tracking-tight">
+            <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand"></span>
+          </span>
+          <span class="hidden sm:inline text-charcoal/70 font-medium text-xs">Your personal AI dietitian</span>
+        </a>
+
+        <!-- Dark mode toggle -->
+        <button id="dark-toggle" aria-label="Toggle dark mode"
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-white/80
+                 hover:bg-white/20 transition-colors duration-150">
+          <!-- Moon (light mode) -->
+          <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <!-- Sun (dark mode) -->
+          <svg id="icon-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Main Content ── -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 relative z-10 page-animate">
+
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs font-medium text-muted mb-6">
+      <a href="/" class="hover:text-charcoal transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-charcoal font-semibold">Privacy Policy</span>
+    </nav>
+
+    <!-- Header Card -->
+    <div class="bg-card rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 mb-4">
+        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+        Privacy & Data Security
+      </div>
+      <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-charcoal tracking-tight">
+        Privacy Policy
+      </h1>
+      <p class="text-sm text-muted mt-3 max-w-2xl leading-relaxed">
+        Your privacy is paramount. This policy explains how NutriGlance collects, protects, processes, and respects your meal scans, health targets, and personal information.
+      </p>
+      <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-muted">
+        <span>Effective Date: June 1, 2026</span>
+        <span>Last Updated: October 2026</span>
+      </div>
+    </div>
+
+    <!-- Policy Content Card -->
+    <div class="bg-card rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 space-y-8 text-sm leading-relaxed">
+
+      <!-- Section 1 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">1</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Overview & Core Principles</h2>
+        </div>
+        <p class="text-charcoal/80">
+          NutriGlance ("we", "our", or "us") provides an AI-powered personal dietitian and nutrition logging service available via our web and mobile applications. We believe your dietary choices, meal photos, and biometrics belong strictly to you.
+        </p>
+        <p class="text-charcoal/80">
+          Our core privacy commitments:
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2">
+          <li>We never sell or rent your personal, dietary, or biometric data to third-party advertisers or brokers.</li>
+          <li>Meal images are processed exclusively for nutritional analysis and recipe generation.</li>
+          <li>You retain complete control: you can inspect, modify, or permanently delete your meal history at any time.</li>
+        </ul>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 2 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">2</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Information We Collect</h2>
+        </div>
+        <p class="text-charcoal/80">
+          To provide nutritional insights, macro calculations, and personalized meal recommendations, we collect the following types of information:
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="p-4 rounded-xl info-card">
+            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Profile & Biometric Targets
+            </h3>
+            <p class="text-xs info-desc leading-relaxed">
+              Optional user profile details such as age, gender, height, current weight, daily target calories, and macro breakdown (protein, carbs, fat) used solely to calibrate your nutrition goals.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl info-card">
+            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Meal Images & Food Logs
+            </h3>
+            <p class="text-xs info-desc leading-relaxed">
+              Photos of food, handwritten meal notes, text descriptions (e.g. "2 rotis with dal"), meal timestamps, estimated macro values, and daily water hydration counts you record.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl info-card">
+            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Authentication Credentials
+            </h3>
+            <p class="text-xs info-desc leading-relaxed">
+              If you register an account, we securely manage your email address, display name, and Firebase User ID (UID), or public Google account profile via Google OAuth. Passwords are never stored on our servers.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl info-card">
+            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Technical & Device Information
+            </h3>
+            <p class="text-xs info-desc leading-relaxed">
+              Browser type, operating system, and local display preferences (such as light or dark theme) to optimize visual presentation and offline PWA functionality.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 3 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">3</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">How We Use Your Information</h2>
+        </div>
+        <p class="text-charcoal/80">
+          We use the information we collect strictly to deliver and refine your dietitian experience:
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2">
+          <li><strong>Real-Time Meal Scanning:</strong> Analyzing uploaded food images through AI vision models to detect dishes and estimate calories, protein, carbohydrates, and fats.</li>
+          <li><strong>AI Chef Personalization:</strong> Formulating customized recipe ideas, ingredient suggestions, and nutritional alternatives based on your remaining daily macros.</li>
+          <li><strong>Progress & Habit Tracking:</strong> Aggregating your daily intake, calorie burn ratios, and hydration streaks over weekly and monthly trends.</li>
+          <li><strong>Cross-Device Synchronization:</strong> Syncing your meal timeline seamlessly across your browser, tablet, and mobile PWA via encrypted cloud database.</li>
+        </ul>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 4 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">4</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">AI Processing & Third-Party Service Providers</h2>
+        </div>
+        <p class="text-charcoal/80">
+          NutriGlance integrates select, industry-standard infrastructure partners to process meal scans and authenticate users:
+        </p>
+        <div class="space-y-2.5 pt-1">
+          <div class="p-3.5 rounded-xl info-card">
+            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">AI Inference (Groq & Vision APIs)</span>
+            <p class="text-xs info-desc">
+              When you scan a meal or ask the AI Chef for recipes, visual or textual prompts are securely processed by high-speed inference endpoints. Image payloads are ephemeral: they are analyzed to extract food composition and nutritional data, not repurposed to train public models without your explicit consent.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl info-card">
+            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">Authentication & Storage (Google Firebase)</span>
+            <p class="text-xs info-desc">
+              Account authentication and user records are managed via Google Firebase Authentication and Cloud Firestore, protected by granular Firestore Security Rules ensuring users can only read and write their own data.
+            </p>
+          </div>
+
+          <div class="p-3.5 rounded-xl info-card">
+            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">Hosting & Deployment (Vercel)</span>
+            <p class="text-xs info-desc">
+              Our web infrastructure is hosted on Vercel's global edge network with automated HTTPS encryption, DDOS protection, and high-availability caching.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 5 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">5</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Data Storage, Local Caching & Security</h2>
+        </div>
+        <p class="text-charcoal/80">
+          We implement rigorous administrative, technical, and physical security safeguards to maintain your data integrity:
+        </p>
+        <ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2">
+          <li><strong>Encryption in Transit:</strong> All communications between your device, our serverless APIs, and AI models use modern TLS 1.3 encryption.</li>
+          <li><strong>Offline Local Storage:</strong> NutriGlance caches your current day's meals locally using browser <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand font-mono text-xs">localStorage</code> so you can review meals even with intermittent connectivity.</li>
+          <li><strong>Least-Privilege Database Access:</strong> Firestore rules enforce authentication checks so that no user can query or modify another user's dietary logs.</li>
+        </ul>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 6 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">6</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Your Rights & Data Control</h2>
+        </div>
+        <p class="text-charcoal/80">
+          You have full authority over your data. At any time, you can:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <div class="p-3 rounded-lg info-card text-center">
+            <span class="font-semibold text-charcoal block text-xs mb-1">Delete Log Entries</span>
+            <span class="text-xs info-desc">Remove any individual meal entry directly from your dashboard or meals history tab.</span>
+          </div>
+          <div class="p-3 rounded-lg info-card text-center">
+            <span class="font-semibold text-charcoal block text-xs mb-1">Update Targets</span>
+            <span class="text-xs info-desc">Re-adjust your height, weight, activity levels, or target calorie thresholds in settings.</span>
+          </div>
+          <div class="p-3 rounded-lg info-card text-center">
+            <span class="font-semibold text-charcoal block text-xs mb-1">Purge Account</span>
+            <span class="text-xs info-desc">Request complete deletion of your Firebase profile and associated food logs permanently.</span>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 7 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">7</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Cookies & Local Storage</h2>
+        </div>
+        <p class="text-charcoal/80">
+          NutriGlance does not use invasive third-party tracking or advertising cookies. We strictly utilize necessary client-side storage technologies (<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand font-mono text-xs">localStorage</code> and Service Worker cache) to:
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-charcoal/80 pl-2">
+          <li>Remember your light / dark mode color scheme preference.</li>
+          <li>Store offline session tokens so you remain signed in.</li>
+          <li>Cache nutritional meal history for rapid dashboard rendering.</li>
+        </ul>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 8 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">8</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Children's Privacy</h2>
+        </div>
+        <p class="text-charcoal/80">
+          NutriGlance is intended for general audiences aged 13 and older (or the applicable minimum legal age in your jurisdiction). We do not knowingly solicit or collect personal or nutritional data from children under 13 without verified parental consent. If we become aware that such information has been logged, we promptly take steps to delete it.
+        </p>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 9 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">9</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Updates to This Policy</h2>
+        </div>
+        <p class="text-charcoal/80">
+          As we release new AI capabilities, nutritional calculators, or integrations, we may update this Privacy Policy periodically. Significant updates will be highlighted on this page along with a revised "Last Updated" date. Continued use of NutriGlance after changes indicates your acknowledgement of the updated terms.
+        </p>
+      </section>
+
+      <hr class="border-slate-100 dark:border-slate-800" />
+
+      <!-- Section 10 -->
+      <section class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">10</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Contact Us</h2>
+        </div>
+        <p class="text-charcoal/80">
+          If you have questions regarding this Privacy Policy, your personal data, or data deletion requests, please connect with us:
+        </p>
+        <div class="mt-3 p-4 rounded-xl info-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <span class="font-semibold text-charcoal block">NutriGlance Privacy & Support</span>
+            <span class="text-xs info-desc">Created & maintained by Vishesh Singh</span>
+          </div>
+          <a href="mailto:support@nutriglance.vercel.app" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-emerald-600 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Contact Support
+          </a>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       FOOTER — exactly like index.html
+  ════════════════════════════════════════════════════════════════ -->
+  <footer class="bg-charcoal text-white mt-12 relative z-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+
+      <!-- Top row: brand + nav columns -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 pb-8 border-b border-white/10">
+
+        <!-- Brand col -->
+        <div class="col-span-2 sm:col-span-1">
+          <span class="font-display text-lg font-extrabold">
+            <span class="text-brand">Nutri</span><span class="text-white">Glance</span><span class="text-white/70">.ai</span>
+          </span>
+          <p class="text-xs text-white/50 mt-2 leading-relaxed">
+            Your personal AI dietitian.<br/>
+            Track meals, macros, and habits — all in one place.
+          </p>
+          <!-- Social icons -->
+          <div class="flex gap-3 mt-4">
+            <a href="#" aria-label="Twitter" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-brand transition-colors flex items-center justify-center">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" aria-label="Instagram" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-brand transition-colors flex items-center justify-center">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="#" aria-label="GitHub" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-brand transition-colors flex items-center justify-center">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Product links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Product</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="/nutriglance" class="footer-link text-sm text-white/70 transition-colors">Dashboard</a></li>
+            <li><a href="/#features" class="footer-link text-sm text-white/70 transition-colors">Meal Scanner</a></li>
+            <li><a href="/#ai-chef" class="footer-link text-sm text-white/70 transition-colors">AI Chef</a></li>
+            <li><a href="/progress" class="footer-link text-sm text-white/70 transition-colors">Progress Tracker</a></li>
+            <li><a href="/download" class="footer-link text-sm text-white/70 transition-colors">Download App</a></li>
+          </ul>
+        </div>
+
+        <!-- Company links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Company</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="/#how-it-works" class="footer-link text-sm text-white/70 transition-colors">How it works</a></li>
+            <li><a href="/#features" class="footer-link text-sm text-white/70 transition-colors">Features</a></li>
+            <li><a href="/qr" class="footer-link text-sm text-white/70 transition-colors">QR Code</a></li>
+            <li><a href="/login" class="footer-link text-sm text-white/70 transition-colors">Sign In</a></li>
+          </ul>
+        </div>
+
+        <!-- Support links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Support</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="/#faq" class="footer-link text-sm text-white/70 transition-colors">FAQ & Help</a></li>
+            <li><a href="/privacy" class="footer-link text-sm text-brand font-semibold transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="footer-link text-sm text-white/70 transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="footer-link text-sm text-white/70 transition-colors">Cookie Policy</a></li>
+          </ul>
+        </div>
+
+      </div><!-- /top row -->
+
+      <!-- Bottom row: copyright + badge -->
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <p>© 2026 NutriGlance. All rights reserved.</p>
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
+          <span>All systems operational</span>
+        </div>
+      </div>
+
+      <div class="pt-4 text-center text-xs text-white/40">
+        <p>Made with <span class="text-red-500">♥</span> by <a href="https://visheshsingh.vercel.app" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand transition-colors underline underline-offset-2">Vishesh Singh</a></p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ── Scripts ── -->
+  <script>
+    // Dark mode toggle (synced with localStorage key 'nutriglance_darkmode')
+    const DARK_KEY = 'nutriglance_darkmode';
+    const darkToggle = document.getElementById('dark-toggle');
+    const iconMoon   = document.getElementById('icon-moon');
+    const iconSun    = document.getElementById('icon-sun');
+
+    function applyDark(on) {
+      document.body.classList.toggle('dark', on);
+      document.documentElement.classList.toggle('dark', on);
+      if (iconMoon) iconMoon.classList.toggle('hidden', on);
+      if (iconSun) iconSun.classList.toggle('hidden', !on);
+      localStorage.setItem(DARK_KEY, on ? '1' : '0');
+    }
+
+    applyDark(localStorage.getItem(DARK_KEY) === '1');
+    if (darkToggle) {
+      darkToggle.addEventListener('click', () => {
+        applyDark(!document.body.classList.contains('dark'));
+      });
+    }
+  </script>
+
+</body>
+</html>
