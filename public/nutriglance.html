@@ -421,8 +421,19 @@
           <a href="/settings" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Settings</a>
         </div>
 
-        <!-- Desktop right: avatar -->
+        <!-- Desktop right: avatar & premium crown button -->
         <div class="hidden md:flex items-center gap-2">
+          <!-- Premium Crown Button (Reminds Free users to upgrade) -->
+          <a href="/premium"
+             id="premium-crown-btn"
+             class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-300 text-charcoal font-bold text-xs shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all select-none group"
+             title="Free Tier: Upgrade to Pro for $5/mo" aria-label="Upgrade to Pro">
+            <svg class="text-amber-900 group-hover:rotate-12 transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+            </svg>
+            <span id="crown-btn-text" class="text-amber-950 font-extrabold tracking-wide">PRO</span>
+          </a>
+
           <a href="/settings"
              id="profile-btn"
              class="flex items-center gap-2 w-8 h-8 rounded-full bg-charcoal/20 justify-center text-charcoal font-bold text-sm select-none cursor-pointer hover:bg-charcoal/30 transition-colors"
@@ -471,17 +482,27 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
           Settings
         </a>
-        <div class="border-t border-white/20 mt-1 pt-3 flex items-center gap-3 px-3">
-          <a href="/settings"
-             id="profile-btn-mobile"
-             class="w-8 h-8 rounded-full bg-charcoal/20 flex items-center justify-center text-charcoal font-bold text-sm hover:bg-charcoal/30 transition-colors"
-             aria-label="Open settings">
-            <span id="avatar-initial-mobile">A</span>
-          </a>
-          <div>
-            <p class="text-sm font-semibold text-charcoal" id="mobile-profile-name">Alex</p>
-            <p class="text-xs text-charcoal/60">Tap avatar to open settings</p>
+        <div class="border-t border-white/20 mt-1 pt-3 flex items-center justify-between px-3">
+          <div class="flex items-center gap-3">
+            <a href="/settings"
+               id="profile-btn-mobile"
+               class="w-8 h-8 rounded-full bg-charcoal/20 flex items-center justify-center text-charcoal font-bold text-sm hover:bg-charcoal/30 transition-colors"
+               aria-label="Open settings">
+              <span id="avatar-initial-mobile">A</span>
+            </a>
+            <div>
+              <p class="text-sm font-semibold text-charcoal" id="mobile-profile-name">Alex</p>
+              <p class="text-xs text-charcoal/60">Tap avatar to open settings</p>
+            </div>
           </div>
+          <!-- Mobile Crown button -->
+          <a href="/premium"
+             id="premium-crown-btn-mobile"
+             class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-charcoal font-bold text-xs shadow-sm active:scale-95 transition-all"
+             title="Upgrade to Premium ($5/mo)">
+            <svg class="text-amber-950" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            <span class="text-amber-950 font-extrabold text-[11px]">PRO</span>
+          </a>
         </div>
       </div>
     </div><!-- /mobile-menu -->
@@ -1349,6 +1370,21 @@
       return name ? name.trim()[0].toUpperCase() : '?';
     }
 
+    function updatePremiumBadge() {
+      const isPro = localStorage.getItem('nutriglance_is_premium') === '1';
+      const crownBtn = document.getElementById('premium-crown-btn');
+      const crownText = document.getElementById('crown-btn-text');
+      if (crownBtn) {
+        if (isPro) {
+          crownBtn.title = 'NutriGlance Pro Active ($5/mo)';
+          if (crownText) crownText.textContent = 'PRO VIP';
+        } else {
+          crownBtn.title = 'Free Tier: Upgrade to Pro for $5/mo';
+          if (crownText) crownText.textContent = 'PRO';
+        }
+      }
+    }
+
     function updateAvatars() {
       const profile = loadProfile();
       const initial = profile?.name ? getInitial(profile.name) : '?';
@@ -1356,6 +1392,7 @@
       document.getElementById('avatar-initial').textContent = initial;
       document.getElementById('avatar-initial-mobile').textContent = initial;
       document.getElementById('mobile-profile-name').textContent = displayName;
+      updatePremiumBadge();
     }
 
     // Run on page load
