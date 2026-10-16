@@ -271,22 +271,14 @@
         <div class="hidden md:flex items-center gap-1">
           <a href="/nutriglance" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Dashboard</a>
           <a href="/meals" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Meals</a>
-          <a href="/progress" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors inline-flex items-center gap-1.5"><span>Progress</span><span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400">PRO</span></a>
-          <a href="/aichef" class="nav-link active px-4 py-1.5 text-sm text-charcoal/90 transition-colors inline-flex items-center gap-1.5"><span>AI Chef</span><span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-400">PRO</span></a>
+          <a href="/progress" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Progress</a>
+          <a href="/aichef" class="nav-link active px-4 py-1.5 text-sm text-charcoal/90 transition-colors">AI Chef</a>
           <a href="/settings" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Settings</a>
         </div>
 
-        <!-- Desktop right: avatar & premium crown button -->
+        <!-- Desktop right: avatar -->
         <div class="hidden md:flex items-center gap-2">
-          <a href="/premium"
-             id="premium-crown-btn"
-             class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-300 text-charcoal font-bold text-xs shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all select-none group"
-             title="Free Tier: Upgrade to Pro for $5/mo" aria-label="Upgrade to Pro">
-            <svg class="text-amber-900 group-hover:rotate-12 transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
-            </svg>
-            <span class="text-amber-950 font-extrabold tracking-wide">PRO</span>
-          </a>
+
 
           <a href="/settings"
              id="profile-btn"
@@ -333,7 +325,6 @@
         <a href="/aichef" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-charcoal bg-white/25">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
           AI Chef
-          <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-400 text-charcoal">PRO</span>
         </a>
         </a>
         <a href="/settings"
@@ -353,12 +344,7 @@
               <p class="text-xs text-charcoal/60">Tap to edit profile</p>
             </div>
           </div>
-          <a href="/premium"
-             class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 text-charcoal font-bold text-xs shadow-sm active:scale-95 transition-all"
-             title="Upgrade to Premium ($5/mo)">
-            <svg class="text-amber-950" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
-            <span class="text-amber-950 font-extrabold text-[11px]">PRO</span>
-          </a>
+
         </div>
       </div>
     </div>
@@ -391,60 +377,8 @@
     </a>
   </nav>
 
-  <!-- ── PRO PAYWALL OVERLAY (For Free Tier Users) ── -->
-  <div id="aichef-paywall" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-    <div class="bg-card w-full max-w-lg rounded-3xl p-6 sm:p-8 border-2 border-brand/50 shadow-2xl relative text-center">
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-charcoal flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/20">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-        </svg>
-      </div>
 
-      <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950 px-3 py-1 rounded-full mb-2">
-        NutriGlance Pro Feature
-      </span>
-      <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-charcoal mb-2">
-        AI Chef Assistant is Locked
-      </h2>
-      <p class="text-sm text-muted mb-6 leading-relaxed">
-        Interactive culinary advice, personalized recipe generation matching your macros, and ingredient swaps are exclusive to <strong>NutriGlance Pro ($5/mo)</strong>.
-      </p>
 
-      <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 mb-6 text-left border border-slate-200 dark:border-slate-700">
-        <p class="text-xs font-bold text-charcoal uppercase tracking-wider mb-2.5">Unlock with Pro ($5/mo):</p>
-        <ul class="flex flex-col gap-2 text-xs text-charcoal/90">
-          <li class="flex items-center gap-2">
-            <span class="text-emerald-500 font-bold">✔</span>
-            <span>Unlimited conversational culinary consultations</span>
-          </li>
-          <li class="flex items-center gap-2">
-            <span class="text-emerald-500 font-bold">✔</span>
-            <span>Custom high-protein, low-carb & diet-specific recipe ideas</span>
-          </li>
-          <li class="flex items-center gap-2">
-            <span class="text-emerald-500 font-bold">✔</span>
-            <span>Meal suggestions built around what's in your pantry</span>
-          </li>
-          <li class="flex items-center gap-2">
-            <span class="text-emerald-500 font-bold">✔</span>
-            <span>Full unlocked access to Progress tracking & PDF reports</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="flex flex-col gap-3">
-        <a href="/premium"
-           class="w-full py-3.5 px-4 rounded-xl text-sm font-bold bg-brand text-white hover:bg-emerald-600 shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
-          <span>Upgrade to Pro — $5/month</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-        <a href="/nutriglance"
-           class="w-full py-2.5 text-center text-xs font-semibold text-muted hover:text-charcoal transition-colors">
-          Return to Dashboard
-        </a>
-      </div>
-    </div>
-  </div>
 
   <!-- ════════════════════════════════════════════════════════════════
        MAIN — chat interface
@@ -905,32 +839,7 @@
       });
     });
 
-    // ── Pro Tier Access & Lock for Free Tier Users ─────────────────
-    function checkAIChefAccess() {
-      const isPro = localStorage.getItem('nutriglance_is_premium') === '1';
-      const paywall = document.getElementById('aichef-paywall');
-      const mainEl = document.querySelector('main');
 
-      if (!isPro) {
-        if (paywall) paywall.classList.remove('hidden');
-        if (mainEl) {
-          mainEl.style.filter = 'blur(6px)';
-          mainEl.style.pointerEvents = 'none';
-          mainEl.style.userSelect = 'none';
-          mainEl.style.opacity = '0.35';
-        }
-      } else {
-        if (paywall) paywall.classList.add('hidden');
-        if (mainEl) {
-          mainEl.style.filter = '';
-          mainEl.style.pointerEvents = '';
-          mainEl.style.userSelect = '';
-          mainEl.style.opacity = '';
-        }
-      }
-    }
-
-    checkAIChefAccess();
   </script>
 
   <!-- Firebase SDKs, Auth protection & Firestore data sync -->

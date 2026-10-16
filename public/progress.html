@@ -1310,41 +1310,8 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
   });
 });
 
-// ─── Pro Tier Access & Lock for Free Tier Users ─────────────────
-function checkProgressAccess() {
-  const isPro = localStorage.getItem('nutriglance_is_premium') === '1';
-  const paywall = document.getElementById('progress-paywall');
-  const mainEl = document.querySelector('main');
-  const exportPdfBtn = document.getElementById('export-pdf-btn');
-
-  if (!isPro) {
-    if (paywall) paywall.classList.remove('hidden');
-    if (mainEl) {
-      mainEl.style.filter = 'blur(6px)';
-      mainEl.style.pointerEvents = 'none';
-      mainEl.style.userSelect = 'none';
-      mainEl.style.opacity = '0.35';
-    }
-  } else {
-    if (paywall) paywall.classList.add('hidden');
-    if (mainEl) {
-      mainEl.style.filter = '';
-      mainEl.style.pointerEvents = '';
-      mainEl.style.userSelect = '';
-      mainEl.style.opacity = '';
-    }
-  }
-}
-
-checkProgressAccess();
-
-// PDF Export Handler (Pro Feature)
+// PDF Export Handler
 document.getElementById('export-pdf-btn')?.addEventListener('click', () => {
-  const isPro = localStorage.getItem('nutriglance_is_premium') === '1';
-  if (!isPro) {
-    checkProgressAccess();
-    return;
-  }
   window.print();
 });
 </script>
