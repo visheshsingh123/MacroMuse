@@ -1,5 +1,7 @@
 /* Refine the original three-column dashboard without changing its arrangement. */
 #dashboard-page { --dash-ink:#0f172a; --dash-muted:#64748b; --dash-line:#e2e8f0; --dash-card:#fff; --dash-soft:#f8fafc; max-width:1200px; padding:32px 24px 96px; }
+.dashboard-greeting { margin-bottom:24px; }
+.dashboard-greeting h1 { font-family:'Space Grotesk',sans-serif; color:var(--dash-ink); font-size:clamp(24px,3vw,32px); font-weight:700; line-height:1.3; letter-spacing:-.035em; overflow-wrap:anywhere; }
 #dashboard-page .dashboard-grid { display:grid; grid-template-columns:260px minmax(0,1fr) 220px; gap:20px; align-items:start; }
 #dashboard-page .dashboard-grid > * { min-width:0; }
 #dashboard-page .text-muted { color:var(--dash-muted); }

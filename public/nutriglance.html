@@ -523,6 +523,9 @@
        MAIN DASHBOARD GRID
   ════════════════════════════════════════════════════════════════ -->
   <main id="dashboard-page" class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8">
+    <header class="dashboard-greeting">
+      <h1 id="dashboard-greeting">Hello!</h1>
+    </header>
 
     <!--
       Desktop layout (md+):  3 columns
@@ -1321,11 +1324,13 @@
 
     function updateAvatars() {
       const profile = loadProfile();
-      const initial = profile?.name ? getInitial(profile.name) : '?';
-      const displayName = profile?.name || 'Profile';
+      const name = typeof profile?.name === 'string' ? profile.name.trim() : '';
+      const initial = name ? getInitial(name) : '?';
+      const displayName = name || 'Profile';
       document.getElementById('avatar-initial').textContent = initial;
       document.getElementById('avatar-initial-mobile').textContent = initial;
       document.getElementById('mobile-profile-name').textContent = displayName;
+      document.getElementById('dashboard-greeting').textContent = name ? `Hello, ${name}!` : 'Hello!';
     }
 
     // Run on page load
@@ -1994,6 +1999,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // ── Sync dark mode if changed from settings.html (or any other tab) ──
     window.addEventListener('storage', (e) => {
+      if (e.key === PROFILE_KEY || e.key === null) updateAvatars();
       if (e.key === 'nutriglance_darkmode') {
         document.body.classList.toggle('dark', e.newValue === '1');
       document.documentElement.classList.toggle('dark', e.newValue === '1');
@@ -2002,6 +2008,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // ── Also apply on page focus (user navigates back from settings) ──
     window.addEventListener('focus', () => {
+      updateAvatars();
       const isDark = localStorage.getItem('nutriglance_darkmode') === '1';
       document.body.classList.toggle('dark', isDark);
       document.documentElement.classList.toggle('dark', isDark);
