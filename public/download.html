@@ -161,14 +161,6 @@
     }
     .pulse-dot { animation: pulseDot 1.6s ease-in-out infinite; }
 
-    /* ── QR code placeholder card ── */
-    .qr-frame {
-      background: repeating-linear-gradient(45deg, #E2E8F0 0 10px, #F1F5F9 10px 20px);
-    }
-    body.dark .qr-frame {
-      background: repeating-linear-gradient(45deg, #334155 0 10px, #1E293B 10px 20px);
-    }
-
     @media (prefers-reduced-motion: reduce) {
       .reveal, .meal-item, .pulse-dot {
         animation: none !important;
@@ -239,9 +231,10 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/download.css" />
 </head>
 
-<body class="bg-bg min-h-screen font-body text-charcoal">
+<body class="download-page bg-bg min-h-screen font-body text-charcoal">
 
   <!-- ════════════════════════════════════════════════════════════════
        NAVBAR
@@ -331,80 +324,52 @@
   <!-- ════════════════════════════════════════════════════════════════
        DOWNLOAD HERO
   ════════════════════════════════════════════════════════════════ -->
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-20">
-
-    <div class="text-center max-w-2xl mx-auto reveal reveal-visible">
-      <span class="inline-block text-brand text-xs font-bold uppercase tracking-wider mb-3">
-        Get the app
-      </span>
-      <h1 class="font-display text-4xl sm:text-5xl font-extrabold leading-tight text-charcoal">
-        Download NutriGlance
-      </h1>
-      <p class="text-muted text-base sm:text-lg leading-relaxed mt-5">
-        Snap a photo, know your macros, and build better habits — right from your phone.
-        Choose your platform below to get started.
-      </p>
-    </div>
-
-    <!-- Platform card -->
-    <div class="max-w-sm mx-auto mt-12">
-
-      <!-- Android card -->
-      <div class="bg-card rounded-2xl shadow-sm border border-slate-100 p-7 flex flex-col items-center text-center reveal reveal-visible">
-        <div class="w-14 h-14 rounded-2xl bg-[#3DDC84]/10 flex items-center justify-center mb-4">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="#3DDC84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <line x1="8.5" y1="3.5" x2="6" y2="1" stroke="#3DDC84" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="15.5" y1="3.5" x2="18" y2="1" stroke="#3DDC84" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M5 10.5C5 7.46243 7.46243 5 10.5 5H13.5C16.5376 5 19 7.46243 19 10.5V11H5V10.5Z" fill="#3DDC84"/>
-            <circle cx="9" cy="8.5" r="1" fill="#FFFFFF"/>
-            <circle cx="15" cy="8.5" r="1" fill="#FFFFFF"/>
-            <rect x="3" y="11" width="18" height="9" rx="2" fill="#3DDC84"/>
-            <rect x="0.5" y="11" width="2" height="6" rx="1" fill="#3DDC84"/>
-            <rect x="21.5" y="11" width="2" height="6" rx="1" fill="#3DDC84"/>
-            <rect x="7" y="20" width="2.5" height="3" rx="1.25" fill="#3DDC84"/>
-            <rect x="14.5" y="20" width="2.5" height="3" rx="1.25" fill="#3DDC84"/>
-          </svg>
+  <main id="download-page">
+    <section class="download-hero" aria-labelledby="download-heading">
+      <div class="download-copy">
+        <div class="download-app-label"><img src="/icons/icon-192.png" width="40" height="40" alt="" /><span>NutriGlance for Android</span></div>
+        <p class="download-eyebrow">GOOD HABITS. TO GO.</p>
+        <h1 id="download-heading">A healthier day,<br><span>right in your pocket.</span></h1>
+        <p class="download-lead">From your first meal to your next milestone. Keep your nutrition, recipes, and everyday progress close at hand.</p>
+        <div class="download-actions">
+          <a id="download-apk" href="/NutriGlance.apk" download="NutriGlance.apk" class="download-primary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5"/></svg>Download for Android</a>
+          <a href="/nutriglance" class="download-secondary">Use the web app <span aria-hidden="true">→</span></a>
         </div>
-        <h3 class="font-display font-bold text-lg text-charcoal">Android</h3>
-        <p class="text-xs text-muted mt-1.5 leading-relaxed">
-          Direct APK download. Requires Android 8.0 or newer.
-        </p>
-        <a href="NutriGlance.apk" download="NutriGlance.apk"
-           class="mt-5 w-full inline-flex items-center justify-center gap-2.5 text-sm font-semibold text-white rounded-xl px-5 py-3
-                  bg-[#3DDC84] hover:bg-[#2fc275] active:scale-95 transition-all duration-150 shadow-sm">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-          Download APK
-        </a>
-        <p class="text-[11px] text-muted mt-3">v2.4.1 · 2 MB</p>
+        <p class="download-file-info">Android APK · 1.1 MB · Direct download</p>
+        <a href="#installation" class="download-guide-link">Need a hand installing? <span aria-hidden="true">↓</span></a>
       </div>
+      <figure class="download-showcase">
+        <div class="download-phone" aria-hidden="true">
+          <div class="phone-status"><span>9:41</span><span>● ● ▰</span></div>
+          <div class="phone-brand">Nutri<span>Glance</span><span class="phone-avatar">N</span></div>
+          <div class="phone-content"><p class="phone-eyebrow">YOUR DAILY BALANCE</p><h2>A little better, every day.</h2>
+            <div class="phone-nutrition"><div class="phone-ring"><div><strong>1,370</strong><span>of 2,100 kcal</span></div></div><p>You're making progress.</p>
+              <div class="phone-macro"><span>Protein</span><span>65 / 90 g</span><i style="--fill:72%"></i></div>
+              <div class="phone-macro"><span>Carbs</span><span>140 / 200 g</span><i style="--fill:70%"></i></div>
+              <div class="phone-macro"><span>Fat</span><span>42 / 70 g</span><i style="--fill:60%"></i></div>
+            </div>
+            <div class="phone-meal"><span class="phone-meal-icon">✦</span><div><strong>Your next good habit</strong><p>One meal at a time.</p></div><span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19 19 5M5 5h14v14"/></svg></span></div>
+          </div>
+        </div>
+        <figcaption>App illustration · Sample nutrition values</figcaption>
+      </figure>
+    </section>
 
-    </div>
+    <section class="download-features" aria-label="What you can do with NutriGlance">
+      <article><span class="download-feature-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 7V3h4m10 0h4v4M3 17v4h4m10 0h4v-4M7 12h10"/></svg></span><h2>Snap. Understand. Log.</h2><p>Turn a meal photo into a nutrition estimate, then add it to your day.</p></article>
+      <article><span class="download-feature-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-5 4 3 6-8"/></svg></span><h2>See the bigger picture.</h2><p>Keep track of your macros, water, and the habits you're building.</p></article>
+      <article><span class="download-feature-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5 5 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6Z"/><path d="M6 17h12"/></svg></span><h2>Make something good.</h2><p>Ask AI Chef for recipe ideas using the ingredients you already have.</p></article>
+    </section>
 
-    <!-- QR + web fallback -->
-    <div class="bg-card rounded-2xl shadow-sm border border-slate-100 p-8 mt-8 max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-8 reveal reveal-visible">
-      <div class="qr-frame w-28 h-28 rounded-xl flex-shrink-0 border border-slate-200"></div>
-      <div class="text-center sm:text-left">
-        <h3 class="font-display font-bold text-lg text-charcoal">Scan to download on your phone</h3>
-        <p class="text-sm text-muted mt-2 leading-relaxed">
-          Prefer not to install anything right now? You can use every feature of NutriGlance
-          straight from your browser — no app store required.
-        </p>
-        <a href="/nutriglance"
-           class="inline-flex items-center gap-2 bg-brand text-white text-sm font-semibold rounded-xl px-5 py-2.5 mt-4
-                  shadow-sm hover:bg-emerald-600 active:scale-95 transition-all duration-150">
-          Continue on Web
-        </a>
+    <section id="installation" class="download-install" aria-labelledby="installation-heading">
+      <div class="download-install-copy"><p class="download-eyebrow">READY WHEN YOU ARE</p><h2 id="installation-heading">A few taps. You're in.</h2><p>Download the Android app and follow your phone's installation prompts.</p>
+        <ol class="download-steps"><li><span aria-hidden="true">01</span><div><h3>Download the APK</h3><p>Tap Download for Android to save the app to your phone.</p></div></li><li><span aria-hidden="true">02</span><div><h3>Open and install</h3><p>Open NutriGlance.apk from Downloads and follow Android's prompts.</p></div></li><li><span aria-hidden="true">03</span><div><h3>Make yourself at home</h3><p>Sign in or create an account, then start logging your meals.</p></div></li></ol>
       </div>
-    </div>
+      <aside class="download-qr-card" aria-labelledby="download-qr-heading"><img id="download-qr" src="/download-qr.svg" width="180" height="180" alt="QR code for the NutriGlance download page" loading="lazy" /><h3 id="download-qr-heading">On your computer?</h3><p>Scan with your phone's camera to open this page and download the app.</p><a href="https://nutriglance.vercel.app/download">nutriglance.vercel.app/download</a></aside>
+    </section>
 
-    <!-- Back link -->
-    <div class="text-center mt-10">
-      <a href="/" class="text-sm text-muted hover:text-brand transition-colors inline-flex items-center gap-1.5">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Back to home
-      </a>
-    </div>
-
+    <section class="download-web" aria-labelledby="download-web-heading"><div><p class="download-eyebrow">ANY SCREEN. SAME GOOD HABITS.</p><h2 id="download-web-heading">Your browser works, too.</h2><p>On iPhone, a tablet, or a desktop? Open NutriGlance on the web to get started.</p></div><a href="/nutriglance" class="download-primary">Continue on Web <span aria-hidden="true">→</span></a></section>
+    <a href="/" class="download-back">← Back to home</a>
   </main>
 
   <!-- ════════════════════════════════════════════════════════════════
