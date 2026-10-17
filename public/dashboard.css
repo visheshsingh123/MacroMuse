@@ -21,15 +21,17 @@
 #dashboard-page #result-name { font-size:16px; overflow-wrap:anywhere; }
 #dashboard-page #result-desc { line-height:1.7; overflow-wrap:anywhere; }
 #dashboard-page #result-log-btn,#dashboard-page #result-retry-btn { min-height:42px; }
-#dashboard-page .dashboard-recent { padding:22px; }
+#dashboard-page .dashboard-recent { display:flex; flex-direction:column; padding:22px; }
+#dashboard-page #meals-container { flex:1; }
 #dashboard-page .dashboard-recent h2 { font-size:19px; letter-spacing:-.025em; }
 #dashboard-page .meal-item { padding-block:16px; gap:10px; }
 #dashboard-page .meal-item .truncate { white-space:normal; overflow-wrap:anywhere; }
 #dashboard-page .meal-item > div:nth-child(2) > p:last-child { line-height:1.8; font-size:11px; }
 #dashboard-page .meal-item > span:last-child { font-size:10px; }
-.dashboard-empty { text-align:center; padding:32px 12px; }
+.dashboard-empty { display:flex; flex:1; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px 12px; min-height:190px; }
+.dashboard-empty-icon { width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:16px; background:#ecfdf5; color:#047857; margin-bottom:16px; }
 .dashboard-empty p { color:var(--dash-ink); font-size:14px; font-weight:600; }
-.dashboard-empty span { display:block; margin-top:8px; color:var(--dash-muted); font-size:12px; line-height:1.8; }
+.dashboard-empty span { max-width:270px; display:block; margin-top:8px; color:var(--dash-muted); font-size:12px; line-height:1.8; }
 #dashboard-page .dashboard-empty.hidden { display:none; }
 #dashboard-page .dashboard-quick-actions > * { padding:20px; border:1px solid var(--dash-line); border-radius:22px; box-shadow:none; }
 #dashboard-page .dashboard-quick-actions #scan-btn { background:#ecfdf5; border-color:#a7f3d0; }
@@ -68,3 +70,9 @@ html.dark #dashboard-page #water-drops button.bg-white,body.dark #dashboard-page
   #dashboard-page .dashboard-quick-actions > * { padding:16px; }
   #dashboard-page #scan-btn > div,#dashboard-page #ai-chef-btn > div { flex-wrap:wrap; font-size:16px; }
 }
+
+/* Balance the empty dashboard without stretching sidebars when history grows. */
+@media(min-width:768px) {
+  #dashboard-page .dashboard-grid:has(.dashboard-empty:not(.hidden)) { align-items:stretch; }
+}
+html.dark #dashboard-page .dashboard-empty-icon,body.dark #dashboard-page .dashboard-empty-icon { background:#064e3b; color:#6ee7b7; }
