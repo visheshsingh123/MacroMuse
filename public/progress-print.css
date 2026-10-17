@@ -1,0 +1,37 @@
+.progress-actions { display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+.progress-export-action { display:flex; flex-direction:column; gap:6px; }
+#export-pdf-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 18px; min-height:40px; border:1px solid #a7f3d0; border-radius:12px; background:#ecfdf5; color:#047857; font:600 14px 'Inter',sans-serif; cursor:pointer; }
+#export-pdf-btn:hover { background:#d1fae5; }
+#export-pdf-btn:focus-visible { outline:3px solid #059669; outline-offset:3px; }
+#export-pdf-hint { font-size:11px; color:#64748b; max-width:210px; line-height:1.5; }
+html.dark #export-pdf-btn,body.dark #export-pdf-btn { background:#064e3b; color:#a7f3d0; border-color:#059669; }
+html.dark #export-pdf-hint,body.dark #export-pdf-hint { color:#94a3b8; }
+#progress-print-report { display:none; }
+@page { size:A4 portrait; margin:15mm; }
+@media print {
+  html,html.dark,body,body.dark,html.dark body { background:#fff!important; color:#0f172a!important; margin:0!important; padding:0!important; display:block!important; overflow:visible!important; height:auto!important; min-height:0!important; transition:none!important; animation:none!important; }
+  body > :not(#progress-print-report) { display:none!important; }
+  #progress-print-report { display:block!important; font:10pt/1.5 Arial,sans-serif; color:#0f172a!important; background:#fff!important; }
+  #progress-print-report * { box-sizing:border-box; color:inherit; animation:none!important; transition:none!important; }
+  #progress-print-report header { border-bottom:2px solid #059669; padding-bottom:12pt; margin-bottom:16pt; break-inside:avoid; }
+  #progress-print-report .report-brand { color:#047857; font-weight:700; font-size:12pt; margin:0 0 4pt; }
+  #progress-print-report h1 { font-size:24pt; line-height:1.2; margin:0 0 8pt; }
+  #progress-print-report h2 { font-size:13pt; margin:16pt 0 6pt; break-after:avoid; }
+  #progress-print-report p { margin:4pt 0; }
+  #progress-print-report .report-name { font-weight:700; }
+  #progress-print-report .report-meta { font-size:9pt; color:#475569; }
+  #progress-print-report .report-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:12pt; margin:0 0 16pt; break-inside:avoid; }
+  #progress-print-report .report-summary > div { border:1px solid #cbd5e1; border-radius:6pt; padding:10pt; }
+  #progress-print-report dt { font-size:9pt; color:#475569; }
+  #progress-print-report dd { margin:4pt 0 0; font-size:19pt; font-weight:700; }
+  #progress-print-report .report-targets { break-inside:avoid; }
+  #progress-print-report table { width:100%; border-collapse:collapse; font-size:8pt; table-layout:fixed; }
+  #progress-print-report caption { text-align:left; font-size:8pt; color:#475569; margin-bottom:8pt; }
+  #progress-print-report thead { display:table-header-group; }
+  #progress-print-report th,#progress-print-report td { border-bottom:1px solid #cbd5e1; padding:7pt 3pt; text-align:right; overflow-wrap:anywhere; vertical-align:top; }
+  #progress-print-report th:first-child { text-align:left; width:19%; }
+  #progress-print-report th:last-child,#progress-print-report td:last-child { text-align:left; }
+  #progress-print-report thead th { color:#047857; font-weight:700; border-bottom:2px solid #059669; }
+  #progress-print-report tbody,#progress-print-report tr { break-inside:avoid; }
+  #progress-print-report .report-notes { text-align:left; white-space:pre-wrap; font-size:8pt; color:#475569; padding-top:0; }
+}

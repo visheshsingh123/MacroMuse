@@ -217,6 +217,8 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/progress-print.css" />
+  <script src="/progress-export.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -339,12 +341,21 @@
       <h1 class="font-display text-3xl font-extrabold text-charcoal">Your Journey</h1>
       <p class="text-sm text-muted mt-1">Log your daily nutrition and watch your habits build over time.</p>
     </div>
-    <button id="open-log-btn"
-            class="flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl
-                   hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-sm self-start sm:self-auto">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Log Today
-    </button>
+    <div class="progress-actions">
+      <div class="progress-export-action">
+        <button id="export-pdf-btn" type="button" aria-describedby="export-pdf-hint">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5"/></svg>
+          Export as PDF
+        </button>
+        <span id="export-pdf-hint">Save as PDF or print all your logged days.</span>
+      </div>
+      <button id="open-log-btn"
+              class="flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl
+                     hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-sm self-start sm:self-auto">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Log Today
+      </button>
+    </div>
   </div>
 
   <!-- ── STAT CARDS ROW ── -->
@@ -1319,5 +1330,6 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
     });
   </script>
 
+  <section id="progress-print-report" aria-label="NutriGlance progress report"></section>
 </body>
 </html>
