@@ -56,3 +56,6 @@ html.dark .flavor-strip { background:#064e3b; }
 @media(prefers-reduced-motion:reduce) { .landing-page *, .landing-page *::before, .landing-page *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
 html.dark .landing-page #ham-top,html.dark .landing-page #ham-mid,html.dark .landing-page #ham-bot { background:#e2e8f0; }
 html.dark .landing-page #mobile-menu a,html.dark .landing-page #mobile-menu > div > div { color:#e2e8f0; }
+
+html:has(body.landing-page) { scroll-behavior:smooth; }
+@media(prefers-reduced-motion:reduce) { html:has(body.landing-page) { scroll-behavior:auto; } }
