@@ -9,7 +9,7 @@
 #landing-hero h1 { font-size:clamp(3rem,5.7vw,5rem); line-height:1.04; letter-spacing:-.065em; color:var(--ink); }
 .hero-highlight { color:#047857; position:relative; }
 #landing-hero h1 + p { font-size:17px; max-width:440px; line-height:1.8; }
-#landing-hero a[href='/nutriglance'] { order:-1; background:var(--ink); border-radius:99px; padding:16px 23px; box-shadow:0 5px 0 #a7f3d0; }
+#landing-hero a[href='/dashboard'] { order:-1; background:var(--ink); border-radius:99px; padding:16px 23px; box-shadow:0 5px 0 #a7f3d0; }
 #landing-hero a[href='/download'] { background:transparent; color:var(--ink); border:1px solid #94a3b8; border-radius:99px; padding:15px 18px; }
 #landing-hero a[href='/download'] svg { display:none; }
 .hero-benefits { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:28px; font-size:11px; font-weight:600; color:#64748b; }
@@ -45,7 +45,7 @@
 html.dark .landing-page { --ink:#e2e8f0; --paper:#0f172a; background:var(--paper)!important; }
 html.dark .landing-page .text-muted,html.dark .hero-benefits { color:#94a3b8; }
 html.dark .landing-page .text-brand { color:#34d399; }
-html.dark #landing-hero a[href='/nutriglance'] { background:#6ee7b7; color:#0f172a; }
+html.dark #landing-hero a[href='/dashboard'] { background:#6ee7b7; color:#0f172a; }
 html.dark .hero-highlight { color:#6ee7b7; }
 html.dark #how-it-works .grid > div,html.dark #features .grid > div { background:#1e293b!important; border-color:#334155; }
 html.dark #how-it-works .grid > div > p:first-child { color:#6ee7b7; }

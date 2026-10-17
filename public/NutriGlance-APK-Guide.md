@@ -25,7 +25,7 @@ Already generated — upload it to your site root:
 
 ### 3. Link them in every HTML page
 Add these lines inside the `<head>` of all your HTML files
-(nutriglance.html, login.html, meals.html, etc.):
+(dashboard.html, login.html, meals.html, etc.):
 
 ```html
 <link rel="manifest" href="/manifest.json" />
@@ -79,7 +79,7 @@ It will ask you a few questions — answer like this:
 |---|---|
 | Application name | NutriGlance |
 | Package ID | com.yourname.nutriglance |
-| Start URL | https://your-site.com/nutriglance |
+| Start URL | https://your-site.com/dashboard |
 | Theme colour | #10B981 |
 | Background colour | #EFF7F4 |
 | Icon URL | https://your-site.com/icons/icon-512.png |

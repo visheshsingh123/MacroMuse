@@ -272,7 +272,7 @@
 
         <!-- Desktop nav links -->
         <div class="hidden md:flex items-center gap-1">
-          <a href="/nutriglance" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Dashboard</a>
+          <a href="/dashboard" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Dashboard</a>
           <a href="/meals" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Meals</a>
           <a href="/progress" class="nav-link px-4 py-1.5 text-sm text-charcoal/70 hover:text-charcoal transition-colors">Progress</a>
           <a href="/aichef" class="nav-link active px-4 py-1.5 text-sm text-charcoal/90 transition-colors">AI Chef</a>
@@ -308,7 +308,7 @@
     <!-- Mobile collapsible menu -->
     <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
       <div class="max-w-5xl mx-auto px-4 pb-4 flex flex-col gap-1">
-        <a href="/nutriglance" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/70 hover:bg-white/20 hover:text-charcoal transition-colors">
+        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/70 hover:bg-white/20 hover:text-charcoal transition-colors">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Dashboard
         </a>
@@ -349,7 +349,7 @@
        BOTTOM NAVBAR — mobile only
   ════════════════════════════════════════════════════════════════ -->
   <nav id="bottom-nav" class="md:hidden flex items-stretch shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
-    <a href="/nutriglance" class="bottom-nav-link">
+    <a href="/dashboard" class="bottom-nav-link">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Dashboard
     </a>
@@ -700,7 +700,7 @@
        PROFILE + SETTINGS + DARK MODE SCRIPTS
   ════════════════════════════════════════════════════════════════ -->
   <script>
-    // ── Profile helpers (shared with nutriglance.html via localStorage) ──
+    // ── Profile helpers (shared with dashboard.html via localStorage) ──
     const PROFILE_KEY = 'nutriglance_profile';
     function loadProfile() {
       try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); } catch { return null; }

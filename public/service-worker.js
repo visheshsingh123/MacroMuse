@@ -1,8 +1,8 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v1';
+const CACHE_NAME = 'nutriglance-v2';
 const PRECACHE = [
   '/',
-  '/nutriglance',
+  '/dashboard',
   '/meals',
   '/progress',
   '/aichef',
