@@ -3,9 +3,7 @@
 #export-pdf-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 18px; min-height:40px; border:1px solid #a7f3d0; border-radius:12px; background:#ecfdf5; color:#047857; font:600 14px 'Inter',sans-serif; cursor:pointer; }
 #export-pdf-btn:hover { background:#d1fae5; }
 #export-pdf-btn:focus-visible { outline:3px solid #059669; outline-offset:3px; }
-#export-pdf-hint { font-size:11px; color:#64748b; max-width:210px; line-height:1.5; }
 html.dark #export-pdf-btn,body.dark #export-pdf-btn { background:#064e3b; color:#a7f3d0; border-color:#059669; }
-html.dark #export-pdf-hint,body.dark #export-pdf-hint { color:#94a3b8; }
 #progress-print-report { display:none; }
 @page { size:A4 portrait; margin:15mm; }
 @media print {
