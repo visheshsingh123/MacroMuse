@@ -1,0 +1,75 @@
+/* Progress uses the shared emerald workspace layout; PDF styling stays separate. */
+#progress-page { --pg-ink:#0f172a; --pg-muted:#64748b; --pg-line:#e2e8f0; --pg-card:#fff; max-width:1200px; padding:36px 24px 96px; }
+#progress-page h1 { font-size:36px; line-height:1.15; letter-spacing:-.045em; }
+#progress-page h1 + p { font-size:14px; line-height:1.7; margin-top:10px; max-width:460px; }
+#progress-page .text-muted { color:var(--pg-muted); }
+#progress-page .progress-actions { align-items:center; }
+#progress-page #export-pdf-btn,#progress-page #open-log-btn { min-height:44px; }
+.progress-stats { gap:16px; margin-bottom:24px; }
+#progress-page .progress-stats > div { border:1px solid var(--pg-line); border-radius:20px; box-shadow:none; padding:22px; background:var(--pg-card); }
+#progress-page .progress-stats > div:first-child { background:#ecfdf5; border-color:#a7f3d0; }
+.progress-stats > div > p:first-child { font-size:10px; line-height:1.5; letter-spacing:.07em; }
+.progress-stats > div > p:nth-child(2) { margin-block:6px; font-size:34px; letter-spacing:-.04em; }
+.progress-stats > div > p:last-child { font-size:11px; line-height:1.6; }
+.progress-workspace { display:grid; grid-template-columns:300px minmax(0,1fr); align-items:start; gap:24px; }
+.progress-sidebar,.progress-trends { display:flex; flex-direction:column; gap:20px; min-width:0; }
+#progress-page .progress-card { min-width:0; padding:24px; border:1px solid var(--pg-line); border-radius:24px; box-shadow:none; background:var(--pg-card); }
+#progress-page .progress-card h2 { font-size:19px; letter-spacing:-.03em; }
+#progress-page .progress-today { background:#ecfdf5; border-color:#a7f3d0; gap:20px; }
+.progress-today > div:first-child { flex-wrap:wrap; gap:6px; }
+#progress-page .progress-today h2 { font-size:20px; }
+#progress-page .ring-fill { stroke:#059669; }
+.progress-calendar-legend { display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:10px; }
+.progress-chart-header { gap:16px; flex-wrap:wrap; }
+#progress-page .range-btn { min-width:40px; min-height:36px; border:1px solid transparent; }
+#progress-page .range-btn.bg-brand { background:#047857; }
+#progress-page .progress-calories > .relative { height:260px; }
+#progress-page .progress-macros > .relative { height:220px; }
+#progress-page .progress-tip { min-height:0; background:#f8fafc; }
+#progress-page #tip-category { display:inline-block; margin:6px 0 0; }
+#progress-page #progress-daily-tip { color:var(--pg-muted); font-size:13px; line-height:1.8; }
+#progress-page .progress-history { margin-top:0; }
+#history-table > div:first-child,#progress-page .progress-history-row { grid-template-columns:minmax(180px,2fr) repeat(4,minmax(58px,1fr)); }
+#progress-page .progress-history-row { padding-block:16px; align-items:center; font-size:13px; gap:8px; }
+.progress-history-date { grid-column:auto!important; display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
+#history-table > div:first-child > span:first-child { grid-column:auto; }
+#progress-page a:focus-visible,#progress-page button:focus-visible { outline:3px solid #059669; outline-offset:4px; }
+html.dark #progress-page,body.dark #progress-page { --pg-ink:#e2e8f0; --pg-muted:#94a3b8; --pg-line:#334155; --pg-card:#1e293b; }
+html.dark #progress-page .progress-today,body.dark #progress-page .progress-today,html.dark #progress-page .progress-stats > div:first-child,body.dark #progress-page .progress-stats > div:first-child { background:#12382e!important; border-color:#245b49; }
+html.dark #progress-page #today-ring-kcal,body.dark #progress-page #today-ring-kcal { fill:#e2e8f0; }
+html.dark #progress-page .progress-today svg > text:last-child,body.dark #progress-page .progress-today svg > text:last-child { fill:#94a3b8; }
+html.dark #progress-page .progress-tip,body.dark #progress-page .progress-tip { background:#172333!important; }
+@media(max-width:1000px) {
+  .progress-workspace { grid-template-columns:260px minmax(0,1fr); gap:20px; }
+  #progress-page .progress-card { padding:20px; }
+  #history-table > div:first-child { display:none; }
+  #progress-page .progress-history-row { grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px 8px; }
+  .progress-history-date { grid-column:1/-1!important; }
+  .progress-history-row > span[data-label] { text-align:left; font-weight:600; }
+  .progress-history-row > span[data-label]::before { content:attr(data-label); display:block; font-size:10px; color:var(--pg-muted); font-weight:500; margin-bottom:4px; }
+}
+@media(max-width:767px) {
+  #progress-page { padding:28px 16px 90px; }
+  #progress-page h1 { font-size:32px; }
+  #progress-page h1 + p { font-size:13px; }
+  .progress-stats { gap:12px; }
+  #progress-page .progress-stats > div { padding:16px; }
+  .progress-stats > div > p:nth-child(2) { font-size:30px; }
+  .progress-workspace { display:flex; flex-direction:column; gap:20px; }
+  .progress-sidebar,.progress-trends { display:contents; }
+  #progress-page .progress-card { width:100%; }
+  #progress-page .progress-today { order:1; display:grid; grid-template-columns:120px minmax(0,1fr); gap:16px; }
+  .progress-today > div:first-child,.progress-today > button { grid-column:1/-1; }
+  .progress-today > svg { width:120px; height:120px; }
+  .progress-today > .w-full.flex.flex-col { gap:12px; }
+  #progress-page .progress-calories { order:2; }
+  #progress-page .progress-macros { order:3; }
+  #progress-page .progress-calendar { order:4; }
+  #progress-page .progress-tip { order:5; }
+  #progress-page .progress-history { order:6; }
+  .progress-calendar-legend { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #progress-page .progress-calendar #calendar-grid { gap:6px; }
+  #progress-page .cal-day { max-height:38px; }
+  #progress-page .progress-card h2 { font-size:18px; }
+  #progress-page .progress-calories > .relative { height:230px; }
+}

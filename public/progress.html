@@ -219,6 +219,7 @@
   <script src="/site-shell.js" defer></script>
   <link rel="stylesheet" href="/progress-print.css" />
   <script src="/progress-export.js" defer></script>
+  <link rel="stylesheet" href="/progress-layout.css" />
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -332,7 +333,7 @@
 <!-- ══════════════════════════════════════════════════════════════
      MAIN
 ══════════════════════════════════════════════════════════════ -->
-<main class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8 flex-1 w-full">
+<main id="progress-page" class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8 flex-1 w-full">
 
   <!-- Page header -->
   <div class="mb-7 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -358,7 +359,7 @@
   </div>
 
   <!-- ── STAT CARDS ROW ── -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  <div class="progress-stats grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
     <!-- Streak -->
     <div class="bg-card rounded-2xl p-5 shadow-sm flex flex-col gap-1 fade-in">
@@ -369,9 +370,9 @@
 
     <!-- Avg Calories -->
     <div class="bg-card rounded-2xl p-5 shadow-sm flex flex-col gap-1 fade-in" style="animation-delay:0.05s">
-      <p class="text-xs font-semibold text-muted uppercase tracking-wider">7-Day Avg</p>
+      <p class="text-xs font-semibold text-muted uppercase tracking-wider">Recent average</p>
       <p class="font-display text-3xl font-extrabold text-charcoal" id="stat-avg-cal">—</p>
-      <p class="text-xs text-muted">kcal / day</p>
+      <p class="text-xs text-muted">kcal · up to 7 logged days</p>
     </div>
 
     <!-- Days Logged -->
@@ -385,86 +386,17 @@
     <div class="bg-card rounded-2xl p-5 shadow-sm flex flex-col gap-1 fade-in" style="animation-delay:0.15s">
       <p class="text-xs font-semibold text-muted uppercase tracking-wider">Goal Hit Rate</p>
       <p class="font-display text-3xl font-extrabold text-charcoal" id="stat-goal-rate">—</p>
-      <p class="text-xs text-muted">within ±10% target</p>
+      <p class="text-xs text-muted">within ±10% of current target</p>
     </div>
 
   </div>
 
-  <!-- ── MAIN GRID ── -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-    <!-- LEFT: Chart (2/3 width) -->
-    <div class="lg:col-span-2 flex flex-col gap-5">
-
-      <!-- Calorie chart card -->
-      <div class="bg-card rounded-2xl p-6 shadow-sm">
-        <div class="flex items-center justify-between mb-5">
-          <div>
-            <h2 class="font-display text-xl font-extrabold text-charcoal">Calorie History</h2>
-            <p class="text-xs text-muted mt-0.5">Daily intake vs. your goal</p>
-          </div>
-          <div class="flex gap-1.5">
-            <button data-range="7"  class="range-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-brand text-white transition-colors">7d</button>
-            <button data-range="14" class="range-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-muted hover:bg-slate-200 transition-colors">14d</button>
-            <button data-range="30" class="range-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-muted hover:bg-slate-200 transition-colors">30d</button>
-          </div>
-        </div>
-        <div class="relative h-56">
-          <canvas id="calorie-chart"></canvas>
-          <div id="chart-empty" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 16 11 10 15 13 19 7"/></svg>
-            <p class="text-sm font-semibold text-muted">No data yet</p>
-            <p class="text-xs text-slate-400">Start logging days to see your chart</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Macro chart card -->
-      <div class="bg-card rounded-2xl p-6 shadow-sm">
-        <h2 class="font-display text-xl font-extrabold text-charcoal mb-1">Macro Trends</h2>
-        <p class="text-xs text-muted mb-5">7-day protein, carbs & fat (g)</p>
-        <div class="relative h-48">
-          <canvas id="macro-chart"></canvas>
-          <div id="macro-chart-empty" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-            <p class="text-sm font-semibold text-muted">No macro data yet</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Daily tip card -->
-      <div class="bg-card rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between flex-1 min-h-[145px]">
-        <div>
-          <div class="flex items-center justify-between gap-3 mb-2.5">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-base flex-shrink-0 text-brand select-none">
-                💡
-              </div>
-              <div>
-                <span class="font-display text-base font-extrabold text-charcoal">Daily Tip</span>
-                <span id="tip-category" class="ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-brand">Mindful Eating</span>
-              </div>
-            </div>
-            <button id="next-tip-btn" type="button" title="Next Tip"
-                    class="flex items-center gap-1 text-xs font-semibold text-muted hover:text-brand px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-              <span>Next</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
-          </div>
-          <p id="progress-daily-tip" class="text-sm font-medium text-charcoal leading-relaxed transition-opacity duration-150">
-            Eating slowly helps your brain register fullness — aim for 20 minutes per meal.
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- RIGHT: Today's ring + Calendar (1/3) -->
-    <div class="flex flex-col gap-5">
-
+  <div class="progress-workspace">
+    <aside class="progress-sidebar">
       <!-- Today's summary ring -->
-      <div class="bg-card rounded-2xl p-6 shadow-sm flex flex-col items-center gap-4">
+      <section class="progress-card progress-today bg-card rounded-2xl p-6 shadow-sm flex flex-col items-center gap-4" aria-label="Today's nutrition">
         <div class="w-full flex items-center justify-between">
-          <h2 class="font-display text-lg font-extrabold text-charcoal">Today</h2>
+          <h2 class="font-display text-lg font-extrabold text-charcoal">Today at a glance</h2>
           <span class="text-xs text-muted" id="today-date-label"></span>
         </div>
 
@@ -503,25 +435,84 @@
                        hover:bg-emerald-600 active:scale-95 transition-all duration-150">
           + Update Today
         </button>
-      </div>
+      </section>
 
       <!-- Calendar heatmap -->
-      <div class="bg-card rounded-2xl p-5 shadow-sm">
+      <section class="progress-card progress-calendar bg-card rounded-2xl p-5 shadow-sm" aria-label="Monthly log">
         <h2 class="font-display text-lg font-extrabold text-charcoal mb-4">Monthly Log</h2>
         <div id="calendar-grid" class="grid grid-cols-7 gap-1.5"></div>
-        <div class="flex items-center gap-3 mt-4 text-xs text-muted">
+        <div class="progress-calendar-legend flex items-center gap-3 mt-4 text-xs text-muted">
           <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-sm bg-slate-100"></div> None</div>
           <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-sm bg-emerald-200"></div> Under</div>
           <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-sm bg-brand"></div> On target</div>
           <div class="flex items-center gap-1"><div class="w-3 h-3 rounded-sm bg-amber-400"></div> Over</div>
-       <br><br><br> </div>
+        </div>
+      </section>
+
+    </aside>
+    <div class="progress-trends">
+      <!-- Calorie chart card -->
+      <section class="progress-card progress-calories bg-card rounded-2xl p-6 shadow-sm" aria-label="Calorie history">
+        <div class="progress-chart-header flex items-center justify-between mb-5">
+          <div>
+            <h2 class="font-display text-xl font-extrabold text-charcoal">Calorie History</h2>
+            <p class="text-xs text-muted mt-0.5">Daily intake vs. your goal</p>
+          </div>
+          <div class="flex gap-1.5">
+            <button aria-pressed="true" aria-label="Show 7 days of calorie history" data-range="7"  class="range-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-brand text-white transition-colors">7d</button>
+            <button aria-pressed="false" aria-label="Show 14 days of calorie history" data-range="14" class="range-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-muted hover:bg-slate-200 transition-colors">14d</button>
+            <button aria-pressed="false" aria-label="Show 30 days of calorie history" data-range="30" class="range-btn text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-muted hover:bg-slate-200 transition-colors">30d</button>
+          </div>
+        </div>
+        <div class="relative h-56">
+          <canvas id="calorie-chart"></canvas>
+          <div id="chart-empty" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 16 11 10 15 13 19 7"/></svg>
+            <p class="text-sm font-semibold text-muted">No data yet</p>
+            <p class="text-xs text-slate-400">Start logging days to see your chart</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Macro chart card -->
+      <section class="progress-card progress-macros bg-card rounded-2xl p-6 shadow-sm" aria-label="Macro trends">
+        <h2 class="font-display text-xl font-extrabold text-charcoal mb-1">Macro Trends</h2>
+        <p class="text-xs text-muted mb-5">7-day protein, carbs & fat (g)</p>
+        <div class="relative h-48">
+          <canvas id="macro-chart"></canvas>
+          <div id="macro-chart-empty" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
+            <p class="text-sm font-semibold text-muted">No macro data yet</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Daily tip card -->
+      <div class="progress-card progress-tip bg-card rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between flex-1 min-h-[145px]">
+        <div>
+          <div class="flex items-center justify-between gap-3 mb-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center text-base flex-shrink-0 text-brand select-none">
+                💡
+              </div>
+              <div>
+                <span class="font-display text-base font-extrabold text-charcoal">Daily Tip</span>
+                <span id="tip-category" class="ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-brand">Mindful Eating</span>
+              </div>
+            </div>
+            <button id="next-tip-btn" type="button" title="Next Tip"
+                    class="flex items-center gap-1 text-xs font-semibold text-muted hover:text-brand px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              <span>Next</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+          <p id="progress-daily-tip" class="text-sm font-medium text-charcoal leading-relaxed transition-opacity duration-150">
+            Eating slowly helps your brain register fullness — aim for 20 minutes per meal.
+          </p>
+        </div>
       </div>
 
-    </div>
-  </div>
-
   <!-- ── LOG HISTORY TABLE ── -->
-  <div class="bg-card rounded-2xl p-6 shadow-sm mt-5">
+  <section class="progress-card progress-history bg-card rounded-2xl p-6 shadow-sm" aria-label="Log history">
     <div class="flex items-center justify-between mb-5">
       <h2 class="font-display text-xl font-extrabold text-charcoal">Log History</h2>
       <button id="clear-all-btn"
@@ -545,6 +536,9 @@
         <span class="text-right">Fat</span>
       </div>
       <div id="history-rows" class="flex flex-col divide-y divide-slate-100"></div>
+    </div>
+  </section>
+
     </div>
   </div>
 
@@ -802,6 +796,8 @@ function renderStats() {
   if (last7.length) {
     const avg = Math.round(last7.reduce((s,k) => s + (data[k].kcal||0), 0) / last7.length);
     document.getElementById('stat-avg-cal').textContent = avg.toLocaleString();
+  } else {
+    document.getElementById('stat-avg-cal').textContent = '—';
   }
 
   // Goal hit rate (within ±10%)
@@ -811,6 +807,8 @@ function renderStats() {
       return kcal >= goal * 0.9 && kcal <= goal * 1.1;
     }).length;
     document.getElementById('stat-goal-rate').textContent = Math.round(hits/keys.length*100) + '%';
+  } else {
+    document.getElementById('stat-goal-rate').textContent = '—';
   }
 }
 
@@ -841,7 +839,7 @@ function renderCalorieChart(days = 7) {
   if (calorieChart) calorieChart.destroy();
 
   const gridColor = dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-  const tickColor = dark ? '#64748B' : '#94A3B8';
+  const tickColor = dark ? '#94A3B8' : '#64748B';
 
   calorieChart = new Chart(ctx, {
     type: 'bar',
@@ -862,7 +860,7 @@ function renderCalorieChart(days = 7) {
           label: 'Goal',
           data: goalArr,
           type: 'line',
-          borderColor: '#0F172A',
+          borderColor: dark ? '#CBD5E1' : '#0F172A',
           borderWidth: 2,
           borderDash: [6, 3],
           pointRadius: 0,
@@ -907,7 +905,7 @@ function renderMacroChart() {
   const ctx = document.getElementById('macro-chart').getContext('2d');
   if (macroChart) macroChart.destroy();
   const gridColor = dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-  const tickColor = dark ? '#64748B' : '#94A3B8';
+  const tickColor = dark ? '#94A3B8' : '#64748B';
 
   macroChart = new Chart(ctx, {
     type: 'line',
@@ -999,18 +997,18 @@ function renderHistory() {
     const color = e.kcal >= goal*0.9 && e.kcal <= goal*1.1 ? 'text-brand' : e.kcal > goal*1.1 ? 'text-amber-500' : 'text-muted';
 
     const row = document.createElement('div');
-    row.className = 'grid grid-cols-6 py-2.5 px-1 text-sm hover:bg-slate-50 rounded-lg transition-colors fade-in';
+    row.className = 'progress-history-row grid grid-cols-6 py-2.5 px-1 text-sm hover:bg-slate-50 rounded-lg transition-colors fade-in';
     const badge = e.source === 'manual'
       ? '<span class="text-[9px] font-semibold uppercase tracking-wide text-muted/70 ml-1.5 align-middle">manual</span>'
       : '<span class="text-[9px] font-semibold uppercase tracking-wide text-brand/70 ml-1.5 align-middle">scanned</span>';
     row.innerHTML = `
-      <span class="col-span-2 font-medium text-charcoal">${formatDate(k)}
+      <span class="progress-history-date col-span-2 font-medium text-charcoal">${formatDate(k)}
         <span class="text-xs ${color} ml-1">${pct ? pct+'%' : ''}</span>${badge}
       </span>
-      <span class="text-right font-semibold ${color}">${e.kcal||'—'}</span>
-      <span class="text-right text-muted">${e.protein!=null?e.protein+'g':'—'}</span>
-      <span class="text-right text-muted">${e.carbs  !=null?e.carbs  +'g':'—'}</span>
-      <span class="text-right text-muted">${e.fat    !=null?e.fat    +'g':'—'}</span>
+      <span data-label="Calories" class="text-right font-semibold ${color}">${e.kcal??'—'}</span>
+      <span data-label="Protein" class="text-right text-muted">${e.protein!=null?e.protein+'g':'—'}</span>
+      <span data-label="Carbs" class="text-right text-muted">${e.carbs  !=null?e.carbs  +'g':'—'}</span>
+      <span data-label="Fat" class="text-right text-muted">${e.fat    !=null?e.fat    +'g':'—'}</span>
     `;
     rows.appendChild(row);
   });
@@ -1104,6 +1102,7 @@ document.querySelectorAll('.range-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     currentRange = parseInt(btn.dataset.range);
     document.querySelectorAll('.range-btn').forEach(b => {
+      b.setAttribute('aria-pressed', String(b === btn));
       b.classList.toggle('bg-brand', b === btn);
       b.classList.toggle('text-white', b === btn);
       b.classList.toggle('bg-slate-100', b !== btn);
