@@ -87,8 +87,9 @@ test('shared quotas survive new handlers and serialize concurrent requests', asy
   await assert.rejects(consumeQuota(global, 'another-account', 'ai', now), error => error.status === 429);
 });
 
-function client(initial = {}, path = '/dashboard') {
+function client(initial = {}, path = '/dashboard', tabInitial = {}) {
   const data = { ...initial }, events = {}, classes = new Set();
+  const tabData = { ...tabInitial };
   let reloads = 0;
   const storage = new Proxy({ getItem: key => data[key] ?? null, setItem: (key, value) => data[key] = String(value), removeItem: key => delete data[key] }, {
     ownKeys: () => Object.keys(data), getOwnPropertyDescriptor: () => ({ enumerable: true, configurable: true }),
@@ -96,10 +97,14 @@ function client(initial = {}, path = '/dashboard') {
   const context = { localStorage: storage, location: { pathname: path, reload: () => reloads++, replace: () => {} },
     document: { documentElement: { classList: { add: key => classes.add(key), remove: key => classes.delete(key) }, dataset: {} } },
     Headers, AbortSignal, fetch: async () => ({ status: 200 }),
-    window: { addEventListener: (event, fn) => events[event] = fn },
+    window: { addEventListener: (event, fn) => events[event] = fn, sessionStorage: {
+      getItem: key => tabData[key] ?? null,
+      setItem: (key, value) => tabData[key] = String(value),
+      removeItem: key => delete tabData[key],
+    } },
   };
   vm.runInNewContext(readFileSync(new URL('../public/security.js', import.meta.url), 'utf8'), context);
-  return { security: context.window.NutriSecurity, data, events, classes, context, reloads: () => reloads };
+  return { security: context.window.NutriSecurity, data, tabData, events, classes, context, reloads: () => reloads };
 }
 
 test('nutrition parsing rejects injected HTML, nonfinite/negative numbers and invalid shapes', () => {
@@ -137,6 +142,32 @@ test('a delayed AI response cannot write back after logout', async () => {
   fixture.security.bindSession(null);
   resolve({ status: 200 });
   await assert.rejects(pending, /account changed/);
+});
+
+test('recent verified navigation paints the same account cache without authorizing API calls', async () => {
+  const data = { nutriglance_session_uid: 'alice', nutriglance_profile: 'private-profile' };
+  const first = client(data);
+  assert(first.classes.has('session-pending'));
+  first.security.bindSession({ uid: 'alice' });
+  const nextPage = client(data, '/meals', first.tabData);
+  assert(!nextPage.classes.has('session-pending'));
+  await assert.rejects(nextPage.security.apiFetch('/api/groq', { headers: {} }), /sign in/);
+  nextPage.security.bindSession(null);
+  assert.equal(nextPage.tabData.nutriglance_recent_session, undefined);
+  assert.equal(nextPage.data.nutriglance_profile, undefined);
+});
+
+test('expired, mismatched and cross-tab invalidated navigation hints keep account data hidden', () => {
+  const data = { nutriglance_session_uid: 'alice' };
+  for (const hint of [{ uid: 'alice', verifiedAt: Date.now() - 360000 }, { uid: 'bob', verifiedAt: Date.now() }, { uid: 'alice', verifiedAt: Date.now() + 60000 }]) {
+    const page = client(data, '/progress', { nutriglance_recent_session: JSON.stringify(hint) });
+    assert(page.classes.has('session-pending'));
+  }
+  const page = client(data, '/settings', { nutriglance_recent_session: JSON.stringify({ uid: 'alice', verifiedAt: Date.now() }) });
+  assert(!page.classes.has('session-pending'));
+  page.events.storage({ key: 'nutriglance_session_uid', newValue: null });
+  assert(page.classes.has('session-pending'));
+  assert.equal(page.tabData.nutriglance_recent_session, undefined);
 });
 
 test('service worker never caches API responses, Firebase traffic or authenticated requests', async () => {

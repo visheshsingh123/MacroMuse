@@ -1,21 +1,34 @@
 (() => {
   const ownerKey = 'nutriglance_session_uid';
+  const hintKey = 'nutriglance_recent_session';
+  const tabStorage = window.sessionStorage;
+  const resumeWindow = 5 * 60 * 1000;
   const protectedPage = /^\/(dashboard|nutriglance|meals|progress|aichef|settings)(\.html)?\/?$/.test(location.pathname);
   let currentUid = null;
   const bootOwner = localStorage.getItem(ownerKey);
+  function canResume(owner) {
+    try {
+      const hint = JSON.parse(tabStorage?.getItem(hintKey) || 'null');
+      const age = Date.now() - hint?.verifiedAt;
+      return Boolean(owner && hint?.uid === owner && Number.isFinite(age) && age >= 0 && age < resumeWindow);
+    } catch { return false; }
+  }
   function hideAccount() {
     if (!protectedPage) return;
     document.documentElement.classList.add('session-pending');
     document.documentElement.dataset.sessionStatus = 'Loading your account…';
   }
   function clearAccount() {
+    tabStorage?.removeItem(hintKey);
     for (const key of Object.keys(localStorage)) {
       if (key.startsWith('nutriglance_') && !['nutriglance_darkmode', 'nutriglance_reminder_owner'].includes(key)) localStorage.removeItem(key);
     }
     currentUid = null;
   }
   if (!bootOwner) clearAccount(); // Retire legacy shared caches with unknown ownership.
-  hideAccount();
+  // A recent Firebase-verified identity can paint its own cache during navigation.
+  // This hint never authorizes API calls or Firestore access.
+  if (!canResume(bootOwner)) hideAccount();
 
   function bindSession(user) {
     if (!user) { clearAccount(); hideAccount(); return false; }
@@ -27,6 +40,7 @@
       if (protectedPage && bootOwner) { location.reload(); return false; }
     }
     currentUid = user.uid;
+    tabStorage?.setItem(hintKey, JSON.stringify({ uid: user.uid, verifiedAt: Date.now() }));
     document.documentElement.classList.remove('session-pending');
     return true;
   }
@@ -76,11 +90,16 @@
     isCurrent: uid => Boolean(uid && uid === currentUid && uid === localStorage.getItem(ownerKey) && uid === window.nutriGlanceReminderAuth?.currentUser?.uid),
   };
   window.addEventListener('storage', event => {
-    if (event.key === ownerKey && currentUid && event.newValue !== currentUid || event.key === null) {
+    if (event.key === ownerKey && event.newValue !== (currentUid || bootOwner) || event.key === null) {
+      tabStorage?.removeItem(hintKey);
       hideAccount();
       if (protectedPage) location.replace('/login');
     }
   });
-  window.addEventListener('pagehide', hideAccount);
-  window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) {
+      if (!canResume(localStorage.getItem(ownerKey))) hideAccount();
+      location.reload();
+    }
+  });
 })();
