@@ -3,12 +3,6 @@
 .landing-page .blob { display:none; }
 .landing-page .text-muted { color:#64748b; }
 .landing-page .text-brand { color:#047857; }
-.landing-page > nav:first-of-type { background:#10b981; border-bottom:1px solid #0f172a1a; box-shadow:none; }
-.landing-page > nav:first-of-type > div:first-child { max-width:1200px; }
-.landing-page > nav:first-of-type .h-14 { min-height:76px; }
-.landing-page > nav:first-of-type .text-white { color:var(--ink); }
-.landing-page > nav:first-of-type a.bg-charcoal { background:var(--ink); color:white; border-radius:99px; padding:12px 20px; }
-.landing-page > nav:first-of-type a > .text-charcoal\/70 { display:none; }
 .landing-page a:focus-visible,.landing-page button:focus-visible,.landing-page summary:focus-visible { outline:3px solid #059669; outline-offset:5px; }
 #landing-hero { max-width:1200px; padding-top:72px; padding-bottom:80px; gap:48px; }
 #landing-hero > div:first-child > span { background:#d1fae5; color:#047857; padding:9px 14px; border-radius:99px; font-size:10px; letter-spacing:.09em; }
@@ -51,17 +45,14 @@
 html.dark .landing-page { --ink:#e2e8f0; --paper:#0f172a; background:var(--paper)!important; }
 html.dark .landing-page .text-muted,html.dark .hero-benefits { color:#94a3b8; }
 html.dark .landing-page .text-brand { color:#34d399; }
-html.dark .landing-page > nav:first-of-type { background:#059669!important; }
-html.dark .landing-page > nav:first-of-type .text-charcoal\/80,html.dark .landing-page > nav:first-of-type .text-white { color:#e2e8f0; }
-html.dark .landing-page > nav:first-of-type a.bg-charcoal,html.dark #landing-hero a[href='/nutriglance'] { background:#6ee7b7; color:#0f172a; }
+html.dark #landing-hero a[href='/nutriglance'] { background:#6ee7b7; color:#0f172a; }
 html.dark .hero-highlight { color:#6ee7b7; }
 html.dark #how-it-works .grid > div,html.dark #features .grid > div { background:#1e293b!important; border-color:#334155; }
 html.dark #how-it-works .grid > div > p:first-child { color:#6ee7b7; }
 html.dark #ai-chef > div:last-child { background:#1e293b!important; border-color:#334155; box-shadow:8px 8px 0 #064e3b; }
 html.dark .landing-page main > section.bg-emerald-50 { background:#064e3b!important; }
 html.dark .flavor-strip { background:#064e3b; }
-@media(max-width:767px) { #landing-hero { padding-top:40px; padding-bottom:44px; gap:36px; } #landing-hero h1 { font-size:clamp(2.8rem,10vw,4rem); } .hero-visual { max-width:420px; } #how-it-works,#features,#ai-chef { padding-block:48px; } .landing-page > nav:first-of-type .h-14 { min-height:64px; } .flavor-strip { gap:12px; letter-spacing:.02em; } }
+@media(max-width:767px) { #landing-hero { padding-top:40px; padding-bottom:44px; gap:36px; } #landing-hero h1 { font-size:clamp(2.8rem,10vw,4rem); } .hero-visual { max-width:420px; } #how-it-works,#features,#ai-chef { padding-block:48px; }  .flavor-strip { gap:12px; letter-spacing:.02em; } }
 @media(prefers-reduced-motion:reduce) { .landing-page *, .landing-page *::before, .landing-page *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
-@media(min-width:768px) and (max-width:1050px) { .landing-page > nav:first-of-type .nav-link { padding-inline:9px; font-size:12px; } .landing-page > nav:first-of-type a.bg-charcoal { padding:10px 12px; font-size:12px; } .landing-page > nav:first-of-type .font-display { font-size:18px; } }
 html.dark .landing-page #ham-top,html.dark .landing-page #ham-mid,html.dark .landing-page #ham-bot { background:#e2e8f0; }
 html.dark .landing-page #mobile-menu a,html.dark .landing-page #mobile-menu > div > div { color:#e2e8f0; }

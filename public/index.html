@@ -349,6 +349,8 @@
     })();
   </script>
   <link rel="stylesheet" href="/landing.css" />
+  <link rel="stylesheet" href="/site-shell.css" />
+  <script src="/site-shell.js" defer></script>
 </head>
 
 <body class="landing-page bg-bg min-h-screen font-body text-charcoal">
@@ -360,7 +362,7 @@
   <!-- ════════════════════════════════════════════════════════════════
        NAVBAR — same visual language as the dashboard
   ════════════════════════════════════════════════════════════════ -->
-  <nav class="bg-brand shadow-sm sticky top-0 z-40">
+  <nav aria-label="Primary navigation" class="site-nav bg-brand shadow-sm sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between h-14">
 
@@ -781,7 +783,7 @@
   <!-- ════════════════════════════════════════════════════════════════
        FOOTER — same structure and copy as the dashboard
   ════════════════════════════════════════════════════════════════ -->
-  <footer class="bg-charcoal text-white">
+  <footer class="site-footer bg-charcoal text-white">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 
       <!-- Top row: brand + nav columns -->
@@ -813,9 +815,9 @@
           <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Product</h4>
           <ul class="flex flex-col gap-2">
             <li><a href="/nutriglance" class="footer-link text-sm text-white/70 transition-colors">Dashboard</a></li>
-            <li><a href="#features" class="footer-link text-sm text-white/70 transition-colors">Meal Scanner</a></li>
-            <li><a href="#ai-chef" class="footer-link text-sm text-white/70 transition-colors">AI Chef</a></li>
-            <li><a href="#features" class="footer-link text-sm text-white/70 transition-colors">Progress Tracker</a></li>
+            <li><a href="/nutriglance" class="footer-link text-sm text-white/70 transition-colors">Meal Scanner</a></li>
+            <li><a href="/aichef" class="footer-link text-sm text-white/70 transition-colors">AI Chef</a></li>
+            <li><a href="/progress" class="footer-link text-sm text-white/70 transition-colors">Progress Tracker</a></li>
             </ul>
         </div>
 

@@ -260,15 +260,17 @@
       }
     })();
   </script>
+  <link rel="stylesheet" href="/site-shell.css" />
+  <script src="/site-shell.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal">
-<nav class="bg-brand shadow-sm sticky top-0 z-40">
+<nav aria-label="Primary navigation" class="site-nav bg-brand shadow-sm sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between h-14">
 
          <!-- Logo -->
-      <a href="/nutriglance" class="flex items-center gap-2 flex-shrink-0">
+      <a href="/" class="flex items-center gap-2 flex-shrink-0">
         <span class="font-display text-xl font-extrabold tracking-tight">
           <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand"></span>
         </span>
@@ -277,9 +279,9 @@
 
         <!-- Desktop nav links -->
         <div class="hidden md:flex items-center gap-1">
-          <a href="#how-it-works" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">How it works</a>
-          <a href="#features" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">Features</a>
-          <a href="#ai-chef" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">AI Chef</a>
+          <a href="/#how-it-works" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">How it works</a>
+          <a href="/#features" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">Features</a>
+          <a href="/#ai-chef" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">AI Chef</a>
         </div>
 
         <!-- Desktop right: dark mode toggle + CTA into the app -->
@@ -319,9 +321,9 @@
     <!-- Mobile collapsible menu -->
     <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
       <div class="max-w-5xl mx-auto px-4 pb-4 flex flex-col gap-1">
-        <a href="#how-it-works" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">How it works</a>
-        <a href="#features" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">Features</a>
-        <a href="#ai-chef" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">AI Chef</a>
+        <a href="/#how-it-works" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">How it works</a>
+        <a href="/#features" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">Features</a>
+        <a href="/#ai-chef" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">AI Chef</a>
 
         <!-- Dark Mode toggle (mobile) -->
         <div class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80">
@@ -489,7 +491,7 @@
     Settings
   </a>
 </nav>
- <footer class="bg-charcoal text-white">
+ <footer class="site-footer bg-charcoal text-white">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
 
       <!-- Top row: brand + nav columns -->
@@ -521,9 +523,9 @@
           <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Product</h4>
           <ul class="flex flex-col gap-2">
             <li><a href="/nutriglance" class="footer-link text-sm text-white/70 transition-colors">Dashboard</a></li>
-            <li><a href="#features" class="footer-link text-sm text-white/70 transition-colors">Meal Scanner</a></li>
-            <li><a href="#ai-chef" class="footer-link text-sm text-white/70 transition-colors">AI Chef</a></li>
-            <li><a href="#features" class="footer-link text-sm text-white/70 transition-colors">Progress Tracker</a></li>
+            <li><a href="/nutriglance" class="footer-link text-sm text-white/70 transition-colors">Meal Scanner</a></li>
+            <li><a href="/aichef" class="footer-link text-sm text-white/70 transition-colors">AI Chef</a></li>
+            <li><a href="/progress" class="footer-link text-sm text-white/70 transition-colors">Progress Tracker</a></li>
             </ul>
         </div>
 
