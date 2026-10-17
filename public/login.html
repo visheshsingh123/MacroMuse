@@ -317,7 +317,7 @@
           </div>
 
           <!-- Password -->
-          <div class="mb-2">
+          <div class="mb-5">
             <label class="block text-xs font-semibold text-charcoal mb-1.5" for="signin-password">Password</label>
             <div class="pw-wrap">
               <input id="signin-password" type="password" placeholder="••••••••"
@@ -329,14 +329,6 @@
                 </svg>
               </button>
             </div>
-          </div>
-
-          <!-- Forgot password -->
-          <div class="text-right mb-5">
-            <button id="forgot-btn" onclick="showForgot()"
-              class="text-xs font-semibold text-brand hover:underline">
-              Forgot password?
-            </button>
           </div>
 
           <!-- Sign in button -->
@@ -448,32 +440,6 @@
           </p>
         </div>
 
-        <!-- ════ FORGOT PASSWORD PANEL ════ -->
-        <div id="panel-forgot" class="hidden">
-          <button onclick="showSignIn()"
-            class="flex items-center gap-1 text-xs font-semibold text-muted hover:text-charcoal mb-5 transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"/>
-            </svg>
-            Back to sign in
-          </button>
-
-
-          <div id="forgot-error" role="alert"   class="banner error   mb-4"></div>
-          <div id="forgot-success" role="status" class="banner success mb-4"></div>
-
-          <div class="mb-5">
-            <label class="block text-xs font-semibold text-charcoal mb-1.5" for="forgot-email">Email</label>
-            <input id="forgot-email" type="email" placeholder="you@example.com"
-                   class="field" autocomplete="email" />
-          </div>
-
-          <button id="forgot-submit-btn" class="btn-primary" onclick="handleForgot()">
-            Send Reset Link
-          </button>
-        </div>
-
       </div><!-- /card -->
 
       <!-- Footer note -->
@@ -493,7 +459,7 @@
     import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getAuth, createUserWithEmailAndPassword,
              signInWithEmailAndPassword, GoogleAuthProvider,
-             signInWithPopup, sendPasswordResetEmail,
+             signInWithPopup,
              updateProfile }                          from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
     const firebaseConfig = {
@@ -525,10 +491,6 @@
 
     window._signInGoogle = async () => {
       await signInWithPopup(auth, provider);
-    };
-
-    window._resetPassword = async (email) => {
-      await sendPasswordResetEmail(auth, email);
     };
 
     // After any successful sign-in, redirect to dashboard
@@ -563,30 +525,10 @@
       document.getElementById('tab-signup').setAttribute('aria-pressed', String(tab === 'signup'));
       document.getElementById('panel-signin').classList.toggle ('hidden', tab !== 'signin');
       document.getElementById('panel-signup').classList.toggle ('hidden', tab !== 'signup');
-      document.getElementById('panel-forgot').classList.add('hidden');
       document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
       document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
     }
     window.switchTab = switchTab;
-
-    function showForgot() {
-      document.getElementById('auth-title').textContent = 'Reset your password';
-      document.getElementById('auth-subtitle').textContent = "Enter your email and we'll send you a reset link.";
-      document.getElementById('tab-signin').setAttribute('aria-pressed', 'false');
-      document.getElementById('tab-signup').setAttribute('aria-pressed', 'false');
-      document.getElementById('panel-signin').classList.add('hidden');
-      document.getElementById('panel-signup').classList.add('hidden');
-      document.getElementById('panel-forgot').classList.remove('hidden');
-      document.getElementById('tab-signin').classList.remove('active');
-      document.getElementById('tab-signup').classList.remove('active');
-    }
-    window.showForgot = showForgot;
-
-    function showSignIn() {
-      switchTab('signin');
-      document.getElementById('tab-signin').classList.add('active');
-    }
-    window.showSignIn = showSignIn;
 
     // ── Password visibility toggle ────────────────────────────────────────
     function togglePw(inputId, iconEl) {
@@ -767,44 +709,12 @@
     document.getElementById('google-signin-btn').addEventListener('click', handleGoogle);
     document.getElementById('google-signup-btn').addEventListener('click', handleGoogle);
 
-    // ── Forgot password ───────────────────────────────────────────────────
-    async function handleForgot() {
-      hideBanner('forgot-error');
-      hideBanner('forgot-success');
-      const email = document.getElementById('forgot-email').value.trim();
-      const btn   = document.getElementById('forgot-submit-btn');
-
-      markError('forgot-email', !email);
-      if (!email) { showBanner('forgot-error', 'Please enter your email.'); return; }
-
-      btn.disabled = true;
-      btn.textContent = 'Sending…';
-
-      try {
-        if (window._resetPassword) {
-          await window._resetPassword(email);
-          showBanner('forgot-success', '✅ Reset link sent! Check your inbox (and spam folder).');
-          document.getElementById('forgot-email').value = '';
-        } else {
-          showBanner('forgot-error', '⚠️ Firebase not configured yet.');
-        }
-      } catch (err) {
-        showBanner('forgot-error', friendlyError(err.code));
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Send Reset Link';
-      }
-    }
-    window.handleForgot = handleForgot;
-
     // ── Enter key submits active form ─────────────────────────────────────
     document.addEventListener('keydown', e => {
       if (e.key !== 'Enter' || !(e.target instanceof HTMLInputElement)) return;
       e.preventDefault();
-      const forgot = !document.getElementById('panel-forgot').classList.contains('hidden');
       const signup = !document.getElementById('panel-signup').classList.contains('hidden');
-      if (forgot) handleForgot();
-      else if (signup) handleSignUp();
+      if (signup) handleSignUp();
       else handleSignIn();
     });
 
