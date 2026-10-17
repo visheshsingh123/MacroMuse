@@ -217,6 +217,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/progress-print.css" />
   <script src="/progress-export.js" defer></script>
   <link rel="stylesheet" href="/progress-layout.css" />
@@ -1247,6 +1248,8 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
 
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    window.nutriGlanceReminderAuth = auth;
+    window.dispatchEvent(new Event('nutriglance-auth-ready'));
     const db   = getFirestore(app);
 
     let _uid = null;

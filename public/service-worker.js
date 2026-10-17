@@ -1,5 +1,5 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v2';
+const CACHE_NAME = 'nutriglance-v3';
 const PRECACHE = [
   '/',
   '/dashboard',
@@ -8,6 +8,7 @@ const PRECACHE = [
   '/aichef',
   '/settings',
   '/login',
+  '/reminders.js',
 ];
 
 // Install: pre-cache core pages
@@ -40,4 +41,28 @@ self.addEventListener('fetch', event => {
       })
       .catch(() => caches.match(event.request))
   );
+});
+
+self.addEventListener('push', event => {
+  event.waitUntil((async () => {
+    let payload;
+    try { payload = event.data?.json(); } catch { return; }
+    if (!payload || typeof payload.body !== 'string') return;
+    await self.registration.showNotification('A little check-in from NutriGlance', {
+      body: payload.body.slice(0, 300), tag: String(payload.tag || 'nutriglance-reminder').slice(0, 100),
+      icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
+    });
+  })());
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  if (!event.notification.tag.startsWith('nutriglance-reminder-')) return;
+  event.waitUntil((async () => {
+    const url = new URL('/dashboard', self.location.origin).href;
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const dashboard = windows.find(client => new URL(client.url).pathname === '/dashboard');
+    if (dashboard) return dashboard.focus();
+    return self.clients.openWindow(url);
+  })());
 });

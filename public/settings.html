@@ -208,6 +208,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/workspace-pages.css" />
 </head>
 
@@ -457,15 +458,15 @@
                 </div>
                 <div>
                   <p class="text-sm font-semibold text-charcoal">Meal Reminders</p>
-                  <p class="text-xs text-muted">Daily log nudges</p>
+                  <p id="notif-status" role="status" class="text-xs text-muted">Off · Enable reminders for water and unlogged meals.</p>
                 </div>
               </div>
               <button id="notif-toggle"
-                      role="switch" aria-checked="true"
-                      class="relative inline-flex w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none bg-brand"
-                      aria-label="Toggle meal reminders">
+                      role="switch" aria-checked="false"
+                      class="relative inline-flex w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none bg-slate-200"
+                      aria-label="Toggle meal reminders" aria-describedby="notif-status">
                 <span id="notif-thumb"
-                      class="inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-200 translate-x-5 mt-0.5"></span>
+                      class="inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-200 translate-x-0.5 mt-0.5"></span>
               </button>
             </div>
           </div>
@@ -537,7 +538,6 @@
     // ── Constants ──
     const DARK_KEY    = 'nutriglance_darkmode';
     const PROFILE_KEY = 'nutriglance_profile';
-    const NOTIF_KEY   = 'nutriglance_notifications';
 
     // ── Profile helpers ──
     function loadProfile() {
@@ -664,28 +664,10 @@
       applyDark(!document.body.classList.contains('dark'));
     });
 
-    // ── Notifications toggle ──
-    const notifToggle = document.getElementById('notif-toggle');
-    const notifThumb  = document.getElementById('notif-thumb');
-
-    function applyNotif(on) {
-      notifToggle.setAttribute('aria-checked', String(on));
-      notifToggle.classList.toggle('bg-brand',    on);
-      notifToggle.classList.toggle('bg-slate-200', !on);
-      notifThumb.classList.toggle('translate-x-5',   on);
-      notifThumb.classList.toggle('translate-x-0.5', !on);
-      localStorage.setItem(NOTIF_KEY, on ? '1' : '0');
-    }
-    // Default on if not set
-    applyNotif(localStorage.getItem(NOTIF_KEY) !== '0');
-
-    notifToggle.addEventListener('click', () => {
-      applyNotif(notifToggle.getAttribute('aria-checked') !== 'true');
-    });
-
     // ── Reset app data ──
-    document.getElementById('reset-app-btn').addEventListener('click', () => {
+    document.getElementById('reset-app-btn').addEventListener('click', async () => {
       if (confirm('This will clear your profile, meals, and all saved data. Are you sure?')) {
+        try { await window.nutriGlanceDisableReminders?.(); } catch { alert('Couldn’t disable reminders. Please try again before resetting.'); return; }
         localStorage.clear();
         location.href = '/login';
       }
@@ -732,6 +714,8 @@
 
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    window.nutriGlanceReminderAuth = auth;
+    window.dispatchEvent(new Event('nutriglance-auth-ready'));
     const db   = getFirestore(app);
 
     let _uid = null;
@@ -782,6 +766,7 @@
     document.getElementById('signout-btn')?.addEventListener('click', async () => {
       if (!confirm('Are you sure you want to sign out?')) return;
       try {
+        await window.nutriGlanceDisableReminders?.();
         await signOut(auth);
         window.location.href = '/login';
       } catch (err) {

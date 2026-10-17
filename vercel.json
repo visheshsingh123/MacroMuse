@@ -1,10 +1,16 @@
 {
   "cleanUrls": true,
+  "crons": [
+    { "path": "/api/reminder-cron?slot=afternoon", "schedule": "30 7 * * *" },
+    { "path": "/api/reminder-cron?slot=evening", "schedule": "30 13 * * *" }
+  ],
   "redirects": [
     { "source": "/nutriglance", "destination": "/dashboard", "permanent": true },
     { "source": "/nutriglance.html", "destination": "/dashboard", "permanent": true }
   ],
   "rewrites": [
+    { "source": "/api/reminders", "destination": "/api/reminders" },
+    { "source": "/api/reminder-cron", "destination": "/api/reminder-cron" },
     { "source": "/api/groq", "destination": "/api/groq" },
     { "source": "/dashboard", "destination": "/public/dashboard.html" },
     { "source": "/meals", "destination": "/public/meals.html" },
