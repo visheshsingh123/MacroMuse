@@ -225,9 +225,10 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/login.css" />
 </head>
 
-<body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
+<body class="auth-page bg-bg min-h-screen font-body text-charcoal flex flex-col">
 
   <!-- Decorative background blobs -->
   <div class="blob w-96 h-96 bg-brand top-[-80px] right-[-80px]" style="position:fixed;"></div>
@@ -274,28 +275,41 @@
   </nav>
 
   <!-- ── Main ── -->
-  <main class="flex-1 flex items-center justify-center px-4 py-12 relative z-10">
-    <div class="w-full max-w-md card-animate">
+  <main id="login-page" class="flex-1 flex items-center justify-center px-4 py-12 relative z-10">
+    <div class="auth-layout card-animate">
+      <aside class="auth-intro" aria-labelledby="auth-intro-heading">
+        <div class="auth-brand-mark" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 64 64" fill="none"><path d="M17 44C17 24 33 14 49 15C50 33 39 47 21 47C18.8 47 17 45.2 17 43Z" fill="currentColor"/></svg></div>
+        <p class="auth-eyebrow">A FRESH START, EVERY DAY</p>
+        <h2 id="auth-intro-heading">Small habits.<br>Good things ahead.</h2>
+        <p>Make room for a healthier everyday with a little help from NutriGlance.</p>
+        <ul class="auth-features">
+          <li><span aria-hidden="true">01</span><div><h3>Snap your meals</h3><p>Get a nutrition estimate from a photo.</p></div></li>
+          <li><span aria-hidden="true">02</span><div><h3>See your progress</h3><p>Keep meals, macros, and daily habits together.</p></div></li>
+          <li><span aria-hidden="true">03</span><div><h3>Find your next favorite</h3><p>Get recipe ideas from the ingredients you have.</p></div></li>
+        </ul>
+        <a href="/" class="auth-home-link">Explore NutriGlance <span aria-hidden="true">→</span></a>
+      </aside>
+      <div class="auth-form-column">
 
       <!-- Card -->
-      <div class="bg-card rounded-2xl shadow-lg p-8">
+      <div class="auth-card bg-card rounded-2xl shadow-lg p-8">
 
         <!-- Logo mark + headline -->
-        <div class="text-center mb-7">
+        <div class="auth-card-heading text-center mb-7">
           <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand mb-4 shadow-md">
             <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
               <path d="M17 44 C17 24, 33 14, 49 15 C50 33, 39 47, 21 47 C18.8 47, 17 45.2, 17 43Z"
                     fill="white"/>
             </svg>
           </div>
-          <h1 class="font-display text-2xl font-extrabold text-charcoal">Welcome back</h1>
-          <p class="text-muted text-sm mt-1">Sign in to your NutriGlance account</p>
+          <h1 id="auth-title" class="font-display text-2xl font-extrabold text-charcoal">Welcome back</h1>
+          <p id="auth-subtitle" class="text-muted text-sm mt-1">Sign in to your NutriGlance account</p>
         </div>
 
         <!-- Tabs: Sign In / Sign Up -->
-        <div class="flex border-b border-slate-200 mb-6 gap-6">
-          <button id="tab-signin" class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
-          <button id="tab-signup" class="tab-btn"        onclick="switchTab('signup')">Create Account</button>
+        <div class="auth-tabs flex border-b border-slate-200 mb-6 gap-6" role="group" aria-label="Account access">
+          <button id="tab-signin" type="button" aria-pressed="true" class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+          <button id="tab-signup" type="button" aria-pressed="false" class="tab-btn"        onclick="switchTab('signup')">Create Account</button>
         </div>
 
         <!-- ════ SIGN IN PANEL ════ -->
@@ -320,7 +334,7 @@
           </div>
 
           <!-- Error banner -->
-          <div id="signin-error" class="banner error mb-4"></div>
+          <div id="signin-error" role="alert" class="banner error mb-4"></div>
 
           <!-- Email -->
           <div class="mb-4">
@@ -335,12 +349,12 @@
             <div class="pw-wrap">
               <input id="signin-password" type="password" placeholder="••••••••"
                      class="field" autocomplete="current-password" style="padding-right:42px;" />
-              <span class="toggle-pw" onclick="togglePw('signin-password', this)" aria-label="Show password">
+              <button type="button" aria-pressed="false" class="toggle-pw" onclick="togglePw('signin-password', this)" aria-label="Show password">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                 </svg>
-              </span>
+              </button>
             </div>
           </div>
 
@@ -386,8 +400,8 @@
           </div>
 
           <!-- Error / success banners -->
-          <div id="signup-error"   class="banner error   mb-4"></div>
-          <div id="signup-success" class="banner success mb-4"></div>
+          <div id="signup-error" role="alert"   class="banner error   mb-4"></div>
+          <div id="signup-success" role="status" class="banner success mb-4"></div>
 
           <!-- Name -->
           <div class="mb-4">
@@ -411,12 +425,12 @@
                      class="field" autocomplete="new-password"
                      style="padding-right:42px;"
                      oninput="updateStrength(this.value)" />
-              <span class="toggle-pw" onclick="togglePw('signup-password', this)" aria-label="Show password">
+              <button type="button" aria-pressed="false" class="toggle-pw" onclick="togglePw('signup-password', this)" aria-label="Show password">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                 </svg>
-              </span>
+              </button>
             </div>
           </div>
 
@@ -434,12 +448,12 @@
             <div class="pw-wrap">
               <input id="signup-confirm" type="password" placeholder="••••••••"
                      class="field" autocomplete="new-password" style="padding-right:42px;" />
-              <span class="toggle-pw" onclick="togglePw('signup-confirm', this)" aria-label="Show password">
+              <button type="button" aria-pressed="false" class="toggle-pw" onclick="togglePw('signup-confirm', this)" aria-label="Show password">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                 </svg>
-              </span>
+              </button>
             </div>
           </div>
 
@@ -472,11 +486,9 @@
             Back to sign in
           </button>
 
-          <h2 class="font-display text-lg font-extrabold text-charcoal mb-1">Reset Password</h2>
-          <p class="text-sm text-muted mb-5">Enter your email and we'll send you a reset link.</p>
 
-          <div id="forgot-error"   class="banner error   mb-4"></div>
-          <div id="forgot-success" class="banner success mb-4"></div>
+          <div id="forgot-error" role="alert"   class="banner error   mb-4"></div>
+          <div id="forgot-success" role="status" class="banner success mb-4"></div>
 
           <div class="mb-5">
             <label class="block text-xs font-semibold text-charcoal mb-1.5" for="forgot-email">Email</label>
@@ -493,10 +505,11 @@
 
       <!-- Footer note -->
       <p class="text-center text-xs text-muted mt-6">
-        © 2026 NutriGlance · <a href="/" class="hover:text-brand transition-colors">Back to home</a>
+        <a href="/" class="hover:text-brand transition-colors">Back to home</a>
       </p>
 
-    </div>
+      </div><!-- /auth-form-column -->
+    </div><!-- /auth-layout -->
   </main>
 
   <footer class="site-footer bg-charcoal text-white">
@@ -651,6 +664,10 @@
 
     // ── Tab switching ─────────────────────────────────────────────────────
     function switchTab(tab) {
+      document.getElementById('auth-title').textContent = tab === 'signup' ? 'Create your account' : 'Welcome back';
+      document.getElementById('auth-subtitle').textContent = tab === 'signup' ? 'Start your NutriGlance journey' : 'Sign in to your NutriGlance account';
+      document.getElementById('tab-signin').setAttribute('aria-pressed', String(tab === 'signin'));
+      document.getElementById('tab-signup').setAttribute('aria-pressed', String(tab === 'signup'));
       document.getElementById('panel-signin').classList.toggle ('hidden', tab !== 'signin');
       document.getElementById('panel-signup').classList.toggle ('hidden', tab !== 'signup');
       document.getElementById('panel-forgot').classList.add('hidden');
@@ -660,6 +677,10 @@
     window.switchTab = switchTab;
 
     function showForgot() {
+      document.getElementById('auth-title').textContent = 'Reset your password';
+      document.getElementById('auth-subtitle').textContent = "Enter your email and we'll send you a reset link.";
+      document.getElementById('tab-signin').setAttribute('aria-pressed', 'false');
+      document.getElementById('tab-signup').setAttribute('aria-pressed', 'false');
       document.getElementById('panel-signin').classList.add('hidden');
       document.getElementById('panel-signup').classList.add('hidden');
       document.getElementById('panel-forgot').classList.remove('hidden');
@@ -679,6 +700,8 @@
       const input = document.getElementById(inputId);
       const show  = input.type === 'password';
       input.type  = show ? 'text' : 'password';
+      iconEl.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      iconEl.setAttribute('aria-pressed', String(show));
       iconEl.innerHTML = show
         ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -732,6 +755,7 @@
     // ── Field validation helper ───────────────────────────────────────────
     function markError(id, hasError) {
       document.getElementById(id).classList.toggle('error', hasError);
+      document.getElementById(id).setAttribute('aria-invalid', String(hasError));
     }
 
     // ── Firebase error messages ───────────────────────────────────────────
@@ -882,7 +906,8 @@
 
     // ── Enter key submits active form ─────────────────────────────────────
     document.addEventListener('keydown', e => {
-      if (e.key !== 'Enter') return;
+      if (e.key !== 'Enter' || !(e.target instanceof HTMLInputElement)) return;
+      e.preventDefault();
       const forgot = !document.getElementById('panel-forgot').classList.contains('hidden');
       const signup = !document.getElementById('panel-signup').classList.contains('hidden');
       if (forgot) handleForgot();
