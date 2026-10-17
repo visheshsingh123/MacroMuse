@@ -227,6 +227,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/meals.css" />
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal overflow-x-hidden">
@@ -340,13 +341,14 @@
 <!-- ══════════════════════════════════════════════════════════════
      MAIN
 ══════════════════════════════════════════════════════════════ -->
-<main class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8 w-full">
+<main id="meals-page" class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8 w-full">
 
   <!-- Page header -->
   <div class="mb-7 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
     <div>
       <span class="inline-block text-brand text-xs font-bold uppercase tracking-wider mb-1">Meal Log</span>
       <h1 class="font-display text-3xl font-extrabold text-charcoal">Your Meals</h1>
+      <p class="meals-intro">Your meals, macros, and daily nutrition in one place.</p>
     </div>
     <a href="/nutriglance"
        class="flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl
@@ -356,14 +358,15 @@
     </a>
   </div>
 
+  <div class="meals-layout">
   <!-- ── TODAY'S SUMMARY ── -->
-  <section class="bg-card rounded-2xl p-5 sm:p-6 shadow-sm mb-6 fade-in">
+  <section class="meals-summary bg-card rounded-2xl p-5 sm:p-6 shadow-sm mb-6 fade-in" aria-labelledby="meals-today-heading">
     <div class="flex items-center justify-between mb-5">
-      <h2 class="font-display text-lg font-extrabold text-charcoal">Today</h2>
+      <div><p class="summary-eyebrow">YOUR DAILY BALANCE</p><h2 id="meals-today-heading" class="font-display text-lg font-extrabold text-charcoal">Today at a glance</h2></div>
       <span class="text-xs font-semibold text-muted" id="today-meal-count">0 meals logged</span>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="meals-summary-grid grid grid-cols-2 md:grid-cols-4 gap-4">
       <!-- Calories -->
       <div class="flex flex-col gap-1.5">
         <p class="text-xs font-semibold text-muted uppercase tracking-wider">Calories</p>
@@ -407,41 +410,45 @@
     </div>
   </section>
 
+  <div class="meals-library">
   <!-- ── SEARCH + FILTERS ── -->
-  <section class="bg-card rounded-2xl p-4 sm:p-5 shadow-sm mb-4 fade-in" style="animation-delay:0.05s">
-    <div class="flex flex-col sm:flex-row gap-3">
+  <section class="meals-filters bg-card rounded-2xl p-4 sm:p-5 shadow-sm mb-4 fade-in" aria-label="Filter meal history" style="animation-delay:0.05s">
+    <div class="meals-filter-grid flex flex-col sm:flex-row gap-3">
       <!-- Search -->
       <div class="relative flex-1">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
              class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input id="search-input" type="text" placeholder="Search meals by name…"
+        <input id="search-input" type="search" aria-label="Search meals by name" placeholder="Search meals by name…"
                class="w-full text-sm bg-slate-50 rounded-xl pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand" />
       </div>
       <!-- Date range -->
+      <div class="meals-filter-field"><label for="range-select">Date range</label>
       <select id="range-select"
               class="w-full sm:w-auto text-sm bg-slate-50 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand font-medium">
         <option value="all">All time</option>
         <option value="7">Last 7 days</option>
         <option value="30">Last 30 days</option>
         <option value="today">Today only</option>
-      </select>
+      </select></div>
       <!-- Sort -->
+      <div class="meals-filter-field"><label for="sort-select">Sort by</label>
       <select id="sort-select"
               class="w-full sm:w-auto text-sm bg-slate-50 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand font-medium">
         <option value="newest">Newest first</option>
         <option value="oldest">Oldest first</option>
         <option value="kcal-high">Highest calorie</option>
         <option value="kcal-low">Lowest calorie</option>
-      </select>
+      </select></div>
     </div>
+    <div class="meals-filter-status"><p id="meal-result-count" aria-live="polite" role="status"></p><button id="reset-meal-filters" type="button" hidden>Reset filters</button></div>
   </section>
 
   <!-- ── MEAL HISTORY LIST ── -->
-  <section class="bg-card rounded-2xl shadow-sm fade-in" style="animation-delay:0.1s">
+  <section class="meals-history bg-card rounded-2xl shadow-sm fade-in" aria-labelledby="meal-history-heading" style="animation-delay:0.1s">
     <div class="flex items-center justify-between px-5 sm:px-6 pt-5 pb-1">
-      <h2 class="font-display text-lg font-extrabold text-charcoal">History</h2>
+      <h2 id="meal-history-heading" class="font-display text-lg font-extrabold text-charcoal">Meal history</h2>
       <button id="clear-all-btn"
               class="hidden text-xs font-semibold text-red-400 hover:text-red-600
                      border border-red-200 hover:border-red-400 rounded-lg px-3 py-1
@@ -478,6 +485,8 @@
     </div>
   </section>
 
+  </div><!-- /meals-library -->
+  </div><!-- /meals-layout -->
 </main>
 
 <!-- ══════════════════════════════════════════════════════════════
@@ -639,7 +648,7 @@ function groupByDay(meals) {
 }
 
 function macroPill(label, value, colorClasses) {
-  return `<span class="macro-pill text-[11px] font-semibold px-2 py-0.5 rounded-full ${colorClasses}">${label} ${value}g</span>`;
+  return `<span class="macro-pill text-[11px] font-semibold px-2 py-0.5 rounded-full ${colorClasses}">${label} ${escapeHtml(value)}g</span>`;
 }
 
 function renderHistory() {
@@ -650,6 +659,9 @@ function renderHistory() {
   clearAllBtn.classList.toggle('hidden', allMeals.length === 0);
 
   const filtered = getFilteredSortedMeals(allMeals);
+  emptyState.querySelector('a').classList.toggle('hidden', allMeals.length > 0);
+  document.getElementById('meal-result-count').textContent = `${filtered.length} of ${allMeals.length} meal${allMeals.length === 1 ? '' : 's'}`;
+  document.getElementById('reset-meal-filters').hidden = !searchInput.value && rangeSelect.value === 'all' && sortSelect.value === 'newest';
 
   mealGroupsEl.innerHTML = '';
 
@@ -679,7 +691,7 @@ function renderHistory() {
     const dayTotalKcal = dayMeals.reduce((s, m) => s + (m.kcal || 0), 0);
 
     const groupWrap = document.createElement('div');
-    groupWrap.className = 'fade-in';
+    groupWrap.className = 'meal-day-group fade-in';
     groupWrap.style.animationDelay = `${Math.min(groupIdx, 6) * 40}ms`;
 
     const header = document.createElement('div');
@@ -692,20 +704,20 @@ function renderHistory() {
 
     dayMeals.forEach((meal) => {
       const row = document.createElement('div');
-      row.className = 'meal-row flex items-start gap-3 px-3 sm:px-3 py-3 rounded-xl';
+      row.className = 'meal-row';
       row.innerHTML = `
-        <div class="mt-1 flex-shrink-0 w-2.5 h-2.5 rounded-full bg-brand ring-2 ring-emerald-100"></div>
-        <div class="flex-1 min-w-0">
-          <p class="font-semibold text-sm text-charcoal truncate">${escapeHtml(meal.name || 'Untitled meal')}</p>
-          ${meal.description ? `<p class="text-xs text-muted mt-0.5 truncate">${escapeHtml(meal.description)}</p>` : ''}
-          <div class="flex flex-wrap gap-1.5 mt-1.5">
-            <span class="macro-pill text-[11px] font-semibold px-2 py-0.5 rounded-full bg-charcoal/10 text-charcoal">${meal.kcal || 0} kcal</span>
-            ${macroPill('P', meal.protein || 0, 'bg-emerald-100 text-emerald-700')}
-            ${macroPill('C', meal.carbs   || 0, 'bg-blue-100 text-blue-700')}
-            ${macroPill('F', meal.fat     || 0, 'bg-orange-100 text-orange-700')}
+        <div class="meal-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v5a3 3 0 0 0 6 0V3M7 3v18M10 6H4M20 3c-4 2-5 7-3 9h3M20 3v18"/></svg></div>
+        <div class="meal-details">
+          <p class="meal-name">${escapeHtml(meal.name || 'Untitled meal')}</p>
+          <p class="meal-time">${formatTime(meal.loggedAt)}</p>
+          ${meal.description ? `<p class="meal-description">${escapeHtml(meal.description)}</p>` : ''}
+          <div class="meal-macros">
+            ${macroPill('Protein', meal.protein || 0, 'meal-protein')}
+            ${macroPill('Carbs', meal.carbs || 0, 'meal-carbs')}
+            ${macroPill('Fat', meal.fat || 0, 'meal-fat')}
           </div>
         </div>
-        <span class="flex-shrink-0 text-xs text-muted whitespace-nowrap mt-0.5">${formatTime(meal.loggedAt)}</span>
+        <div class="meal-energy"><strong>${escapeHtml(meal.kcal || 0)}</strong><span>kcal</span></div>
       `;
       groupWrap.appendChild(row);
     });
@@ -724,6 +736,13 @@ function refreshAll() {
 searchInput.addEventListener('input', renderHistory);
 rangeSelect.addEventListener('change', renderHistory);
 sortSelect.addEventListener('change', renderHistory);
+document.getElementById('reset-meal-filters').addEventListener('click', () => {
+  searchInput.value = '';
+  rangeSelect.value = 'all';
+  sortSelect.value = 'newest';
+  renderHistory();
+  searchInput.focus();
+});
 
 clearAllBtn.addEventListener('click', () => {
   if (!confirm('Delete all logged meals? This cannot be undone.')) return;

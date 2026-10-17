@@ -1,0 +1,87 @@
+/* Meal library: compact daily overview beside a searchable history. */
+#meals-page { --meal-ink:#0f172a; --meal-muted:#64748b; --meal-surface:#fff; --meal-soft:#f8fafc; --meal-line:#e2e8f0; max-width:1200px; padding:36px 24px 96px; }
+#meals-page h1 { font-size:36px; letter-spacing:-.045em; line-height:1.15; }
+.meals-intro { color:var(--meal-muted); font-size:14px; line-height:1.7; max-width:470px; margin-top:10px; }
+.meals-layout { display:grid; grid-template-columns:300px minmax(0,1fr); align-items:start; gap:24px; }
+.meals-library { min-width:0; }
+#meals-page .meals-summary { position:sticky; top:100px; margin-bottom:0; border:1px solid #a7f3d0; background:#ecfdf5; padding:24px; box-shadow:none; border-radius:24px; }
+.meals-summary > div:first-child { flex-direction:column; align-items:flex-start; gap:12px; margin-bottom:24px; }
+.summary-eyebrow { font-size:10px; color:#047857; font-weight:700; letter-spacing:.1em; margin-bottom:6px; }
+#meals-page .meals-summary h2 { font-size:22px; letter-spacing:-.035em; }
+#today-meal-count { display:inline-flex; background:#d1fae5; color:#047857; padding:5px 10px; border-radius:99px; }
+#meals-page .meals-summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px 12px; }
+.meals-summary-grid > div:first-child { grid-column:1/-1; padding-bottom:20px; border-bottom:1px solid #a7f3d0; }
+.meals-summary-grid > div:first-child > p:nth-child(2) { font-size:36px; letter-spacing:-.04em; margin-block:4px; }
+.meals-summary-grid > div:not(:first-child) > p:first-child { font-size:10px; letter-spacing:.04em; }
+.meals-summary-grid > div:not(:first-child) > p:nth-child(2) { display:flex; flex-wrap:wrap; align-items:baseline; font-size:20px; gap:2px; }
+.meals-summary-grid > div:not(:first-child) > p:nth-child(2) > span:last-child { font-size:11px; }
+#today-bar-kcal { background:#059669; }
+#meals-page .meals-filters,#meals-page .meals-history { border:1px solid var(--meal-line); box-shadow:none; border-radius:24px; background:var(--meal-surface); }
+#meals-page .meals-filters { padding:20px; margin-bottom:18px; }
+#meals-page .meals-filter-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(130px,.6fr) minmax(140px,.6fr); gap:12px; align-items:end; }
+.meals-filter-grid > div:first-child { align-self:end; }
+.meals-filter-field label { display:block; margin-bottom:6px; color:var(--meal-muted); font-size:11px; font-weight:600; }
+#meals-page .meals-filter-grid input,#meals-page .meals-filter-grid select { width:100%; min-height:44px; border:1px solid var(--meal-line); background:var(--meal-soft); color:var(--meal-ink); border-radius:12px; font-size:13px; }
+#meals-page .meals-filter-grid select { padding-right:28px; }
+.meals-filter-status { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:18px; margin-top:12px; font-size:11px; color:var(--meal-muted); }
+#reset-meal-filters { color:#047857; font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+#meals-page #history-container { padding:0 20px 20px; }
+.meals-history > div:first-child { padding:22px 20px 12px; }
+#meals-page .day-divider { margin:0; padding:14px 0; background:transparent; gap:10px; border-bottom:1px solid var(--meal-line); }
+.meal-day-group + .meal-day-group { margin-top:12px; }
+#meals-page .meal-row { display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:14px; padding:20px 0; border-bottom:1px solid var(--meal-line); border-radius:0; align-items:start; }
+#meals-page .meal-row:last-child { border-bottom:0; }
+#meals-page .meal-row:hover { background:transparent; }
+.meal-icon { width:44px; height:44px; display:flex; align-items:center; justify-content:center; border-radius:14px; background:#ecfdf5; color:#059669; border:1px solid #d1fae5; }
+.meal-name { color:var(--meal-ink); font-size:15px; font-weight:600; line-height:1.5; overflow-wrap:anywhere; }
+.meal-time { font-size:11px; color:var(--meal-muted); margin-top:2px; }
+.meal-description { font-size:12px; line-height:1.6; color:var(--meal-muted); margin-top:7px; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.meal-energy { display:flex; flex-direction:column; align-items:flex-end; min-width:48px; color:var(--meal-ink); }
+.meal-energy strong { font-family:'Space Grotesk',sans-serif; font-size:22px; letter-spacing:-.04em; line-height:1.4; }
+.meal-energy > span { color:var(--meal-muted); font-size:10px; }
+.meal-macros { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+#meals-page .macro-pill { padding:4px 8px; border-radius:7px; font-size:11px; line-height:1.4; font-weight:600; }
+.meal-protein { color:#047857; background:#ecfdf5; }
+.meal-carbs,.meal-fat { color:#475569; background:#f1f5f9; }
+#meals-page #empty-state { padding:48px 12px; }
+#meals-page a:focus-visible,#meals-page button:focus-visible { outline:3px solid #059669; outline-offset:4px; }
+html.dark #meals-page,body.dark #meals-page { --meal-ink:#e2e8f0; --meal-muted:#94a3b8; --meal-surface:#1e293b; --meal-soft:#0f172a; --meal-line:#334155; }
+html.dark #meals-page .meals-summary,body.dark #meals-page .meals-summary { background:#12382e!important; border-color:#245b49; }
+html.dark .summary-eyebrow,body.dark .summary-eyebrow { color:#6ee7b7; }
+html.dark #today-meal-count,body.dark #today-meal-count { background:#064e3b; color:#a7f3d0; }
+html.dark .meals-summary-grid > div:first-child,body.dark .meals-summary-grid > div:first-child { border-color:#245b49; }
+html.dark .meal-icon,body.dark .meal-icon { color:#6ee7b7; background:#064e3b; border-color:#245b49; }
+html.dark .meal-protein,body.dark .meal-protein { color:#a7f3d0; background:#064e3b; }
+html.dark .meal-carbs,html.dark .meal-fat,body.dark .meal-carbs,body.dark .meal-fat { color:#cbd5e1; background:#334155; }
+html.dark #reset-meal-filters,body.dark #reset-meal-filters { color:#6ee7b7; }
+@media(max-width:1000px) {
+  .meals-layout { grid-template-columns:250px minmax(0,1fr); gap:20px; }
+  #meals-page .meals-filter-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .meals-filter-grid > div:first-child { grid-column:1/-1; }
+  #meals-page .meals-summary { padding:20px; }
+}
+@media(max-width:767px) {
+  #meals-page { padding:28px 16px 90px; }
+  #meals-page h1 { font-size:32px; }
+  .meals-layout { grid-template-columns:minmax(0,1fr); gap:20px; }
+  #meals-page .meals-summary { position:static; padding:20px; }
+  .meals-summary > div:first-child { flex-direction:row; align-items:center; gap:8px; margin-bottom:20px; }
+  #meals-page .meals-summary h2 { font-size:20px; }
+  #today-meal-count { font-size:10px; white-space:nowrap; }
+  #meals-page .meals-summary-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .meals-summary-grid > div:first-child > p:nth-child(2) { font-size:34px; }
+  .meals-intro { font-size:13px; }
+  #meals-page .meals-filters { padding:16px; }
+  #meals-page #history-container { padding:0 16px 16px; }
+  .meals-history > div:first-child { padding-inline:16px; }
+  #meals-page .meal-row { grid-template-columns:36px minmax(0,1fr) auto; gap:10px; padding-block:18px; }
+  .meal-icon { width:36px; height:36px; border-radius:11px; }
+  .meal-name { font-size:14px; }
+  .meal-energy strong { font-size:20px; }
+  #meals-page .day-divider > span { font-size:10px; }
+}
+
+#meals-page .text-muted { color:var(--meal-muted); }
+#meals-page #today-meal-count { color:#047857; }
+html.dark #meals-page #today-meal-count,body.dark #meals-page #today-meal-count { color:#a7f3d0!important; }
+html.dark #meals-page .day-divider,body.dark #meals-page .day-divider { background:transparent!important; }
