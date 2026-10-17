@@ -680,30 +680,21 @@
                     transition-colors duration-200 overflow-hidden relative"
              id="upload-outer">
 
-          <!-- Default drop zone (shown when idle) -->
-          <div id="upload-zone"
-               role="button" tabindex="0" aria-label="Upload a meal photo"
-               class="flex flex-col items-center justify-center gap-2 py-5 cursor-pointer select-none">
-
-            <!-- Cloud icon -->
-            <svg width="42" height="34" viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M30 32V18M30 18L24 24M30 18L36 24" stroke="#94A3B8" stroke-width="2.5"
-                    stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M44 38H16C11.582 38 8 34.418 8 30C8 26.19 10.598 22.988 14.148 22.152
-                       C14.052 21.608 14 21.048 14 20.476C14 15.248 18.248 11 23.476 11
-                       C26.02 11 28.32 12.018 30 13.68C31.68 12.018 33.98 11 36.524 11
-                       C41.752 11 46 15.248 46 20.476C46 21.048 45.948 21.608 45.852 22.152
-                       C49.402 22.988 52 26.19 52 30C52 34.418 48.418 38 44 38Z"
-                    stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <p id="upload-label" class="text-muted font-semibold text-xs sm:text-sm text-center px-4">
-              Upload your meals here
-            </p>
-            <p class="text-slate-400 text-[11px]">Click to browse or drag &amp; drop anywhere · AI will analyse nutrition instantly</p>
+          <!-- Photo upload: keyboard-accessible target with separate actions. -->
+          <div id="upload-zone" role="group" aria-label="Add a meal photo" class="flex">
+            <div id="upload-drop-target" role="button" tabindex="0" aria-label="Choose a meal photo" class="upload-drop-target">
+              <div class="upload-photo-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V3h4m10 0h4v4M3 17v4h4m10 0h4v-4"/><circle cx="12" cy="12" r="4"/><path d="M10 12h4m-2-2v4"/></svg></div>
+              <div><h2 id="upload-label">Drop a meal photo here</h2><p>See what's on your plate, one photo at a time.</p></div>
+            </div>
+            <div class="upload-photo-actions">
+              <button id="upload-browse-btn" type="button" class="upload-browse-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M4 16v5h16v-5"/></svg>Choose photo</button>
+              <button id="upload-camera-btn" type="button" class="upload-camera-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h4l2-3h6l2 3h4v14H3Z"/><circle cx="12" cy="13" r="4"/></svg>Use camera</button>
+            </div>
+            <p class="upload-photo-hint">JPG, PNG or WebP · For best results, show the whole plate.</p>
           </div>
 
           <!-- Analysing state (hidden by default) -->
-          <div id="upload-analysing" class="hidden flex-col items-center justify-center gap-3 py-6 px-6">
+          <div id="upload-analysing" role="status" aria-live="polite" class="hidden flex-col items-center justify-center gap-3 py-6 px-6">
             <!-- Preview thumbnail -->
             <img id="upload-preview" src="" alt="Meal preview"
                  class="w-20 h-20 object-cover rounded-xl shadow-md" />
@@ -719,7 +710,8 @@
           </div>
 
           <!-- Result state (hidden by default) -->
-          <div id="upload-result" class="hidden flex-col gap-3 p-4">
+          <div id="upload-result" role="region" aria-label="Meal nutrition estimate" class="hidden flex-col gap-3 p-4">
+            <p class="upload-result-label">NUTRITION ESTIMATE</p>
             <div class="flex gap-3 items-start">
               <img id="result-thumb" src="" alt="Meal"
                    class="w-16 h-16 object-cover rounded-xl shadow flex-shrink-0" />
@@ -739,7 +731,7 @@
               <button id="result-log-btn"
                 class="flex-1 bg-brand text-white text-xs font-semibold rounded-xl py-2
                        hover:bg-emerald-600 active:scale-95 transition-all duration-150">
-                ✅ Log this meal
+                Log this meal
               </button>
               <button id="result-retry-btn"
                 class="px-3 text-xs font-semibold text-muted border border-slate-200 rounded-xl
@@ -1486,6 +1478,7 @@ All numeric values must be integers. Be realistic and accurate.`;
     const uploadResult    = document.getElementById('upload-result');
 
     function showUploadState(state) { // 'idle' | 'analysing' | 'result'
+      document.getElementById('upload-outer').setAttribute('aria-busy', String(state === 'analysing'));
       uploadZone.classList.toggle     ('hidden', state !== 'idle');
       uploadZone.classList.toggle     ('flex',   state === 'idle');
       uploadAnalysing.classList.toggle('hidden', state !== 'analysing');
@@ -1574,7 +1567,14 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     // ── 1. Upload zone — click triggers file picker ──────────────────────────
     uploadZone.addEventListener('click', () => fileInput.click());
     uploadZone.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+      if (e.target.id === 'upload-drop-target' && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault(); fileInput.click();
+      }
+    });
+
+    document.getElementById('upload-camera-btn').addEventListener('click', event => {
+      event.stopPropagation();
+      cameraInput.click();
     });
 
     // ── Shared handler: takes a File (from picker or camera) and runs it

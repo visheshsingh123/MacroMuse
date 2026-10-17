@@ -88,3 +88,31 @@ html.dark #dashboard-page .dashboard-empty-icon,body.dark #dashboard-page .dashb
 .dashboard-recent-footer a { display:inline-flex; align-items:center; gap:8px; color:#047857; }
 .dashboard-recent-footer a:hover { text-decoration:underline; }
 html.dark .dashboard-recent-footer a,body.dark .dashboard-recent-footer a { color:#6ee7b7; }
+/* Photo drop area stays compact so the three recent meals keep their space. */
+#dashboard-page #upload-zone { flex-direction:row; flex-wrap:wrap; align-items:center; justify-content:center; align-content:center; gap:14px 20px; padding:22px; cursor:default; }
+.upload-drop-target { display:flex; align-items:center; gap:14px; flex:1 1 250px; min-width:0; cursor:pointer; border-radius:12px; }
+.upload-photo-icon { display:flex; align-items:center; justify-content:center; width:50px; height:50px; flex-shrink:0; border-radius:16px; background:#ecfdf5; color:#047857; border:1px solid #d1fae5; }
+#dashboard-page #upload-label { padding:0; font-family:'Space Grotesk',sans-serif; font-size:19px; font-weight:700; line-height:1.3; letter-spacing:-.025em; text-align:left; }
+.upload-drop-target p { font-size:12px; line-height:1.7; color:var(--dash-muted); margin-top:6px; }
+.upload-photo-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.upload-photo-actions button { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:40px; padding:10px 13px; border-radius:11px; font-size:12px; font-weight:600; cursor:pointer; }
+.upload-browse-btn { background:#047857; color:#fff; border:1px solid #047857; }
+.upload-browse-btn:hover { background:#065f46; }
+.upload-camera-btn { background:var(--dash-card); color:var(--dash-ink); border:1px solid var(--dash-line); }
+.upload-camera-btn:hover { background:var(--dash-soft); }
+#dashboard-page #upload-zone > p.upload-photo-hint { flex-basis:100%; max-width:none; text-align:left; padding-top:12px; border-top:1px solid var(--dash-line); font-size:10px; line-height:1.7; color:var(--dash-muted); }
+#dashboard-page .upload-drop-target:focus-visible { outline:3px solid #059669; outline-offset:5px; }
+#dashboard-page #upload-analysing { flex-direction:row; align-items:center; min-height:190px; gap:20px; padding:24px; }
+#dashboard-page #upload-preview { width:88px; height:88px; border-radius:18px; box-shadow:none; border:1px solid var(--dash-line); }
+#dashboard-page #upload-analysing > div { align-items:flex-start; }
+#dashboard-page #upload-analysing > div > svg { width:20px; height:20px; margin-bottom:4px; }
+#dashboard-page #upload-result { gap:12px; padding:18px; }
+.upload-result-label { font-size:9px; font-weight:700; color:#047857; letter-spacing:.1em; }
+#dashboard-page #result-thumb { border-radius:14px; box-shadow:none; }
+#dashboard-page #result-name { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
+#dashboard-page #result-desc { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; font-size:11px; }
+#dashboard-page #result-log-btn { background:#047857; font-size:12px; }
+#dashboard-page #result-retry-btn { color:var(--dash-muted); border-color:var(--dash-line); }
+html.dark .upload-photo-icon,body.dark .upload-photo-icon { background:#064e3b; color:#6ee7b7; border-color:#245b49; }
+html.dark .upload-result-label,body.dark .upload-result-label { color:#6ee7b7; }
+@media(max-width:767px) { #dashboard-page #upload-zone { padding:20px; gap:14px; } .upload-drop-target { flex-basis:100%; } .upload-photo-actions { width:100%; } .upload-photo-actions > button { flex:1; } #dashboard-page #upload-label { font-size:18px; } #dashboard-page #upload-analysing { padding:20px; gap:14px; } }
