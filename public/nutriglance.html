@@ -778,6 +778,7 @@
               <span>Upload a photo above or describe what you ate to start your day.</span>
             </div>
           </div>
+          <div class="dashboard-recent-footer"><a href="/meals">View all meals <span aria-hidden="true">→</span></a></div>
         </div>
 
       </div><!-- /col 2 -->
@@ -1090,19 +1091,17 @@
     /**
      * Rebuild the Recent Meals list from stored data.
      */
-    // Max meals visible before "Show more" appears
-    const MEALS_VISIBLE_DEFAULT = 4;
-    let mealsExpanded = false;
+    // The dashboard is a preview; the full history lives on the Meals page.
+    const RECENT_MEALS_LIMIT = 3;
 
     function renderMeals(meals) {
       // Remove any previously rendered meal items (but keep skeleton as reference)
-      mealsContainer.querySelectorAll('.meal-item, #show-more-row').forEach(el => el.remove());
+      mealsContainer.querySelectorAll('.meal-item').forEach(el => el.remove());
 
       if (meals.length === 0) {
-        // Show skeleton placeholders
+        // Show the empty state
         skeletonPlaceholder.classList.remove('hidden');
         clearBtn.classList.add('hidden');
-        mealsExpanded = false;
         return;
       }
 
@@ -1110,11 +1109,10 @@
       skeletonPlaceholder.classList.add('hidden');
       clearBtn.classList.remove('hidden');
 
-      // Most-recent first
-      const reversed = [...meals].reverse();
-      const limit     = mealsExpanded ? reversed.length : MEALS_VISIBLE_DEFAULT;
-      const visible   = reversed.slice(0, limit);
-      const overflow  = reversed.length - limit;
+      // Sort by time rather than relying on storage order; latest additions win ties.
+      const visible = [...meals].reverse()
+        .sort((a, b) => new Date(b.loggedAt) - new Date(a.loggedAt))
+        .slice(0, RECENT_MEALS_LIMIT);
 
       visible.forEach((meal, idx) => {
         const item = document.createElement('div');
@@ -1124,7 +1122,7 @@
         item.innerHTML = `
           <div class="mt-1 flex-shrink-0 w-2.5 h-2.5 rounded-full bg-brand ring-2 ring-emerald-100"></div>
           <div class="flex-1 min-w-0">
-            <p class="font-semibold text-sm text-charcoal truncate">${escapeHtml(meal.name)}</p>
+            <p class="font-semibold text-sm text-charcoal truncate" title="${escapeHtml(meal.name)}">${escapeHtml(meal.name)}</p>
             <p class="text-xs text-muted mt-0.5">
               ${meal.kcal} kcal &nbsp;·&nbsp;
               P ${meal.protein}g &nbsp;·&nbsp;
@@ -1139,39 +1137,6 @@
         mealsContainer.appendChild(item);
       });
 
-      // "Show more / Show less" toggle row — only when there's overflow or expanded
-      if (reversed.length > MEALS_VISIBLE_DEFAULT) {
-        const row = document.createElement('div');
-        row.id = 'show-more-row';
-        row.className = 'pt-3 flex items-center justify-between';
-
-        if (!mealsExpanded) {
-          row.innerHTML = `
-            <span class="text-xs text-muted">${overflow} more meal${overflow !== 1 ? 's' : ''} today</span>
-            <button id="show-more-btn"
-              class="text-xs font-semibold text-brand border border-brand rounded-lg px-3 py-1
-                     hover:bg-emerald-50 transition-colors duration-150">
-              Show all ${reversed.length}
-            </button>
-          `;
-        } else {
-          row.innerHTML = `
-            <span class="text-xs text-muted">${reversed.length} meals logged</span>
-            <button id="show-more-btn"
-              class="text-xs font-semibold text-muted border border-slate-200 rounded-lg px-3 py-1
-                     hover:bg-slate-50 transition-colors duration-150">
-              Show less
-            </button>
-          `;
-        }
-
-        mealsContainer.appendChild(row);
-
-        document.getElementById('show-more-btn').addEventListener('click', () => {
-          mealsExpanded = !mealsExpanded;
-          renderMeals(meals);
-        });
-      }
     }
 
     /** Tiny XSS guard for user-supplied strings */
