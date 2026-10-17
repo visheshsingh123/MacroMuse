@@ -188,7 +188,7 @@
     @media (prefers-reduced-motion: reduce) {
       .chat-msg, .typing-dot { animation: none !important; }
     }
-  
+
     /* ── Scrollbar — matches body background in day / night mode ── */
     html {
       scrollbar-color: #CBD5E1 #EFF7F4;
@@ -250,6 +250,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/workspace-pages.css" />
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -373,17 +374,24 @@
   <!-- ════════════════════════════════════════════════════════════════
        MAIN — chat interface
   ════════════════════════════════════════════════════════════════ -->
-  <main class="max-w-5xl w-full mx-auto px-4 py-8 sm:py-10 pb-24 md:pb-8 flex-1 flex flex-col">
-
-    <div class="mb-7">
-      <span class="inline-block text-brand text-xs font-bold uppercase tracking-wider mb-1">AI Chef</span>
-      <h1 class="font-display text-3xl font-extrabold text-charcoal">What's in your kitchen?</h1><br>
-
+  <main id="chef-page" class="workspace-page">
+    <header class="workspace-page-heading"><p class="workspace-eyebrow">YOUR KITCHEN COMPANION</p><h1>What's in your kitchen?</h1><p>Turn the ingredients you have into your next favorite meal.</p></header>
+    <div class="chef-layout">
+      <aside class="workspace-sidebar chef-sidebar">
+        <div class="chef-sidebar-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5 5 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6Z"/><path d="M6 17h12"/></svg></div>
+        <p class="workspace-eyebrow">A LITTLE INSPIRATION</p><h2>Good food starts here.</h2><p>Tell me what's in your fridge. We'll take it from there.</p>
+        <h3>Try these ingredients</h3><div class="chef-prompts">
+        <button class="suggestion-chip text-xs font-semibold text-brand bg-emerald-50 hover:bg-emerald-100 rounded-full px-3 py-1.5 transition-colors">Chicken, rice, broccoli</button>
+        <button class="suggestion-chip text-xs font-semibold text-brand bg-emerald-50 hover:bg-emerald-100 rounded-full px-3 py-1.5 transition-colors">Eggs, spinach, cheese</button>
+        <button class="suggestion-chip text-xs font-semibold text-brand bg-emerald-50 hover:bg-emerald-100 rounded-full px-3 py-1.5 transition-colors">Pasta, tomatoes, basil</button>
+      </div>
+        <div class="chef-sidebar-tip"><h3>Make it your own</h3><p>Add how many people you're cooking for, your dietary preferences, or how much time you have.</p></div>
+      </aside>
     <!-- Chat card -->
-    <div class="bg-card rounded-2xl shadow-sm border border-slate-100 flex flex-col flex-1 min-h-[480px] overflow-hidden">
+    <div class="chef-chat-card bg-card rounded-2xl shadow-sm border border-slate-100 flex flex-col flex-1 min-h-[480px] overflow-hidden">
 
       <!-- Card header -->
-      <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100">
+      <div class="chef-chat-header flex items-center justify-between px-5 py-3 border-b border-slate-100">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -393,7 +401,7 @@
           </div>
           <div>
             <p class="text-sm font-bold text-charcoal leading-tight">AI Chef</p>
-            <p class="text-xs text-muted leading-tight">Usually replies in a few seconds</p>
+            <p class="text-xs text-muted leading-tight">Recipes from your ingredients</p>
           </div>
         </div>
         <div class="flex items-center gap-3">
@@ -402,7 +410,7 @@
       </div>
 
       <!-- Message log -->
-      <div id="chat-log" class="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
+      <div id="chat-log" role="log" aria-label="AI Chef conversation" aria-live="polite" class="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
         <!-- Initial greeting -->
         <div class="chat-msg flex items-start gap-2.5">
           <div class="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -418,16 +426,12 @@
       </div>
 
       <!-- Quick suggestion chips -->
-      <div class="px-5 pb-3 flex flex-wrap gap-2">
-        <button class="suggestion-chip text-xs font-semibold text-brand bg-emerald-50 hover:bg-emerald-100 rounded-full px-3 py-1.5 transition-colors">Chicken, rice, broccoli</button>
-        <button class="suggestion-chip text-xs font-semibold text-brand bg-emerald-50 hover:bg-emerald-100 rounded-full px-3 py-1.5 transition-colors">Eggs, spinach, cheese</button>
-        <button class="suggestion-chip text-xs font-semibold text-brand bg-emerald-50 hover:bg-emerald-100 rounded-full px-3 py-1.5 transition-colors">Pasta, tomatoes, basil</button>
-      </div>
+
 
       <!-- Input row -->
       <form id="chat-form" class="flex items-center gap-2 border-t border-slate-100 px-4 py-3">
         <input
-          id="chat-input"
+          id="chat-input" aria-label="Your ingredients or cooking question"
           type="text"
           autocomplete="off"
           placeholder="e.g. chicken, spinach, garlic, lemon…"
@@ -446,6 +450,7 @@
         </button>
       </form>
 
+    </div>
     </div>
   </main>
 
