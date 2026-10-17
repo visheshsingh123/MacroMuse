@@ -261,17 +261,8 @@
     }
     .reveal-visible { opacity: 1; transform: translateY(0); }
 
-    /* ── Hero live-demo card states ── */
-    #hero-demo-zone, #hero-demo-analysing, #hero-demo-result { animation: fadeSlideIn 0.35s ease both; }
-
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.35; }
-    }
-    .pulse-dot { animation: pulseDot 1.6s ease-in-out infinite; }
-
     @media (prefers-reduced-motion: reduce) {
-      .reveal, .meal-item, #hero-demo-zone, #hero-demo-analysing, #hero-demo-result, .pulse-dot {
+      .reveal, .meal-item {
         animation: none !important;
         transition: none !important;
         opacity: 1 !important;
@@ -476,8 +467,7 @@
 </nav>
 
   <!-- ════════════════════════════════════════════════════════════════
-       HERO — the live meal-scan demo is the thesis: this is the one
-       interaction NutriGlance is built around.
+       HERO — meal scanning illustrated alongside the main introduction.
   ════════════════════════════════════════════════════════════════ -->
   <header id="landing-hero" class="max-w-5xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-16 grid md:grid-cols-2 gap-12 items-center">
 
@@ -532,60 +522,14 @@
       </div>
     </div>
 
-    <!-- Right: live cycling demo card, mirrors the dashboard's upload card -->
-    <div class="hero-visual relative max-w-sm w-full mx-auto">
-      <div class="plate-art" aria-hidden="true">
-        <span class="plate-spark">✳</span>
-        <div class="plate"><span class="food greens">🥬</span><span class="food avocado">🥑</span><span class="food salmon">🍣</span><span class="food tomato">🍅</span></div>
-        <span class="plate-caption">GOOD FOOD. GOOD ENERGY.</span>
-      </div>
-      <div class="absolute -top-3 left-5 flex items-center gap-1.5 bg-charcoal text-white text-[11px] font-semibold px-2.5 py-1 rounded-full z-10 shadow-sm">
-        <span class="w-1.5 h-1.5 rounded-full bg-brand pulse-dot"></span>
-        Sample meal scan
-      </div>
-      <div class="scan-card bg-card rounded-2xl shadow-lg border border-slate-100 overflow-hidden min-h-[230px] flex items-center justify-center p-5">
-
-        <!-- State 1: upload zone -->
-        <div id="hero-demo-zone" class="flex flex-col items-center justify-center gap-3 py-6 text-center">
-          <svg width="52" height="44" viewBox="0 0 60 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M30 32V18M30 18L24 24M30 18L36 24" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M44 38H16C11.582 38 8 34.418 8 30C8 26.19 10.598 22.988 14.148 22.152C14.052 21.608 14 21.048 14 20.476C14 15.248 18.248 11 23.476 11C26.02 11 28.32 12.018 30 13.68C31.68 12.018 33.98 11 36.524 11C41.752 11 46 15.248 46 20.476C46 21.048 45.948 21.608 45.852 22.152C49.402 22.988 52 26.19 52 30C52 34.418 48.418 38 44 38Z" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <p class="text-muted font-semibold text-sm">Upload your meal photo</p>
-          <p class="text-slate-400 text-xs px-4">AI will analyse nutrition instantly</p>
-        </div>
-
-        <!-- State 2: analysing -->
-        <div id="hero-demo-analysing" class="hidden flex-col items-center justify-center gap-3 py-6">
-          <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-3xl">🥗</div>
-          <svg class="animate-spin text-brand" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="#E2E8F0" stroke-width="3"/>
-            <path d="M12 2a10 10 0 0 1 10 10" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
-          </svg>
-          <p class="text-sm font-semibold text-charcoal">Analysing nutrition…</p>
-        </div>
-
-        <!-- State 3: result -->
-        <div id="hero-demo-result" class="hidden flex-col gap-4 w-full">
-          <div class="flex gap-4 items-start">
-            <div class="w-16 h-16 rounded-xl bg-emerald-50 flex items-center justify-center text-3xl flex-shrink-0">🥗</div>
-            <div class="flex-1 min-w-0">
-              <p class="font-display font-extrabold text-base text-charcoal">Grilled Salmon Bowl</p>
-              <p class="text-xs text-muted mt-0.5">Salmon, quinoa, greens, avocado</p>
-              <div class="flex flex-wrap gap-1.5 mt-2">
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-charcoal/10 text-charcoal">410 kcal</span>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">P 34g</span>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">C 29g</span>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">F 9g</span>
-              </div>
-            </div>
-          </div>
-          <div class="bg-brand text-white text-sm font-semibold rounded-xl py-2 text-center">
-            ✅ Logged automatically
-          </div>
-        </div>
-
-      </div>
+    <!-- Nutrition illustration: responsive, transparent artwork for both themes. -->
+    <div class="hero-visual">
+      <img class="hero-illustration"
+           src="/hero-nutrition.webp"
+           srcset="/hero-nutrition-small.webp 500w, /hero-nutrition.webp 1000w"
+           sizes="(max-width: 767px) min(100vw - 32px, 420px), (max-width: 1199px) calc(50vw - 48px), 500px"
+           width="1000" height="1000" fetchpriority="high" decoding="async"
+           alt="Illustration of a fresh salmon and avocado bowl beside a phone scanning its nutrition." />
     </div>
 
   </header>
@@ -918,34 +862,6 @@
     applyDark(localStorage.getItem(DARK_KEY) === '1');
     dmToggleDesktop.addEventListener('click', () => applyDark(!document.body.classList.contains('dark')));
     dmToggleMobile.addEventListener('click', () => applyDark(!document.body.classList.contains('dark')));
-
-    // ── Hero live demo: cycles upload → analysing → result ───────────────
-    const heroStates = [
-      document.getElementById('hero-demo-zone'),
-      document.getElementById('hero-demo-analysing'),
-      document.getElementById('hero-demo-result'),
-    ];
-    let heroIndex = 2;
-
-    function showHeroState(i) {
-      heroStates.forEach((el, idx) => {
-        if (idx === i) {
-          el.classList.remove('hidden');
-          el.classList.add(el.id === 'hero-demo-result' ? 'flex' : 'flex');
-          el.style.animation = 'none';
-          void el.offsetWidth; // restart entrance animation
-          el.style.animation = '';
-        } else {
-          el.classList.add('hidden');
-        }
-      });
-    }
-
-    showHeroState(heroIndex);
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => {
-      heroIndex = (heroIndex + 1) % heroStates.length;
-      showHeroState(heroIndex);
-    }, 2400);
 
     // ── Daily tip — same rotating list as the dashboard ───────────────────
     const TIPS = [
