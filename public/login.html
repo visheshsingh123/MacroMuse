@@ -2,6 +2,8 @@
 <!-- Originally developed by Vishesh Singh — June 2026 -->
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="/security.css" />
+  <script src="/security.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance – Sign In</title>
@@ -10,30 +12,12 @@
   <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/app.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand:    '#10B981',
-            charcoal: '#0F172A',
-            bg:       '#EFF7F4',
-            card:     '#FFFFFF',
-            muted:    '#94A3B8',
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['"Inter"',         'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+
 
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -163,7 +147,7 @@
       pointer-events: none;
       z-index: 0;
     }
-  
+
     /* ── Scrollbar — matches body background in day / night mode ── */
     html {
       scrollbar-color: #CBD5E1 #EFF7F4;
@@ -225,6 +209,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <link rel="stylesheet" href="/login.css" />
+  <script src="/login-events.js" defer></script>
 </head>
 
 <body class="auth-page bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -281,8 +266,8 @@
 
         <!-- Tabs: Sign In / Sign Up -->
         <div class="auth-tabs flex border-b border-slate-200 mb-6 gap-6" role="group" aria-label="Account access">
-          <button id="tab-signin" type="button" aria-pressed="true" class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
-          <button id="tab-signup" type="button" aria-pressed="false" class="tab-btn"        onclick="switchTab('signup')">Create Account</button>
+          <button id="tab-signin" type="button" aria-pressed="true" class="tab-btn active" data-auth-tab="signin">Sign In</button>
+          <button id="tab-signup" type="button" aria-pressed="false" class="tab-btn"        data-auth-tab="signup">Create Account</button>
         </div>
 
         <!-- ════ SIGN IN PANEL ════ -->
@@ -322,7 +307,7 @@
             <div class="pw-wrap">
               <input id="signin-password" type="password" placeholder="••••••••"
                      class="field" autocomplete="current-password" style="padding-right:42px;" />
-              <button type="button" aria-pressed="false" class="toggle-pw" onclick="togglePw('signin-password', this)" aria-label="Show password">
+              <button type="button" aria-pressed="false" class="toggle-pw" data-password-input="signin-password" aria-label="Show password">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
@@ -332,14 +317,14 @@
           </div>
 
           <!-- Sign in button -->
-          <button id="signin-btn" class="btn-primary" onclick="handleSignIn()">
+          <button id="signin-btn" class="btn-primary">
             Sign In
           </button>
 
           <!-- Sign up nudge -->
           <p class="text-center text-xs text-muted mt-5">
             Don't have an account?
-            <button onclick="switchTab('signup')" class="text-brand font-semibold hover:underline">Create one free</button>
+            <button data-auth-tab="signup" class="text-brand font-semibold hover:underline">Create one free</button>
           </p>
         </div>
 
@@ -389,8 +374,8 @@
               <input id="signup-password" type="password" placeholder="Min. 8 characters"
                      class="field" autocomplete="new-password"
                      style="padding-right:42px;"
-                     oninput="updateStrength(this.value)" />
-              <button type="button" aria-pressed="false" class="toggle-pw" onclick="togglePw('signup-password', this)" aria-label="Show password">
+                     />
+              <button type="button" aria-pressed="false" class="toggle-pw" data-password-input="signup-password" aria-label="Show password">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
@@ -413,7 +398,7 @@
             <div class="pw-wrap">
               <input id="signup-confirm" type="password" placeholder="••••••••"
                      class="field" autocomplete="new-password" style="padding-right:42px;" />
-              <button type="button" aria-pressed="false" class="toggle-pw" onclick="togglePw('signup-confirm', this)" aria-label="Show password">
+              <button type="button" aria-pressed="false" class="toggle-pw" data-password-input="signup-confirm" aria-label="Show password">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
@@ -423,7 +408,7 @@
           </div>
 
           <!-- Create account button -->
-          <button id="signup-btn" class="btn-primary" onclick="handleSignUp()">
+          <button id="signup-btn" class="btn-primary">
             Create Account
           </button>
 
@@ -436,7 +421,7 @@
           <!-- Sign in nudge -->
           <p class="text-center text-xs text-muted mt-3">
             Already have an account?
-            <button onclick="switchTab('signin')" class="text-brand font-semibold hover:underline">Sign in</button>
+            <button data-auth-tab="signin" class="text-brand font-semibold hover:underline">Sign in</button>
           </p>
         </div>
 
@@ -496,8 +481,9 @@
     // After any successful sign-in, redirect to dashboard
     auth.onAuthStateChanged(user => {
       if (user) {
+        window.NutriSecurity.bindSession(user);
         window.location.href = '/dashboard';
-      }
+      } else { window.NutriSecurity.bindSession(null); }
     });
   </script>
 

@@ -1,4 +1,14 @@
 node_modules/
-.env.local
-.env.*.local
+.env
+.env.*
+!.env.example
+*service-account*.json
+*firebase-adminsdk*.json
+*.jks
+*.keystore
 .vercel/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.firebase/
+.cache/

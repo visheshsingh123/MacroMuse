@@ -11,31 +11,12 @@
   <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/app.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand:    '#10B981',
-            charcoal: '#0F172A',
-            bg:       '#EFF7F4',
-            card:     '#FFFFFF',
-            muted:    '#94A3B8',
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['"Inter"',         'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+
 
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -494,8 +475,8 @@
         <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-charcoal flex items-center justify-center mx-auto mb-3 shadow-md">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
         </div>
-        <h3 class="font-display text-2xl font-extrabold text-charcoal">Upgrade to NutriGlance Pro</h3>
-        <p class="text-xs text-muted mt-1">Unlock unlimited AI scanning & deep insights for $5/month.</p>
+        <h3 class="font-display text-2xl font-extrabold text-charcoal">Pro upgrades are coming soon</h3>
+        <p class="text-xs text-muted mt-1">Paid upgrades are not available yet. You can keep using the free app.</p>
       </div>
 
       <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 mb-6 border border-slate-200 dark:border-slate-700">
@@ -512,7 +493,7 @@
       <!-- Action buttons -->
       <div class="flex flex-col gap-3">
         <button id="confirm-upgrade-btn" class="w-full py-3.5 px-4 rounded-xl text-sm font-bold bg-brand text-white hover:bg-emerald-600 active:scale-95 transition-all shadow-md flex items-center justify-center gap-2">
-          <span>Activate Pro Tier ($5/mo)</span>
+          <span>Got it</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
 
@@ -522,7 +503,7 @@
       </div>
 
       <p class="text-[11px] text-muted text-center mt-4">
-        Supports all major international credit/debit cards, Apple Pay, Google Pay, and UPI.
+        No payment will be taken.
       </p>
     </div>
   </div>
@@ -625,66 +606,14 @@
       });
     }
 
-    // Modal & Premium status logic
-    const PREMIUM_KEY = 'nutriglance_is_premium';
+    // Paid upgrades remain unavailable until a verified billing backend exists.
+    localStorage.removeItem('nutriglance_is_premium');
+    document.getElementById('pro-active-banner')?.classList.add('hidden');
     const checkoutModal = document.getElementById('checkout-modal');
-    const upgradeBtn = document.getElementById('upgrade-pro-btn');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const confirmUpgradeBtn = document.getElementById('confirm-upgrade-btn');
-    const proActiveBanner = document.getElementById('pro-active-banner');
-    const resetProBtn = document.getElementById('reset-pro-btn');
-
-    function updateSubscriptionUI() {
-      const isPro = localStorage.getItem(PREMIUM_KEY) === '1';
-      if (proActiveBanner) {
-        proActiveBanner.classList.toggle('hidden', !isPro);
-      }
-      if (upgradeBtn) {
-        if (isPro) {
-          upgradeBtn.textContent = 'Current Plan (Active)';
-          upgradeBtn.classList.remove('bg-brand', 'hover:bg-emerald-600');
-          upgradeBtn.classList.add('bg-slate-400', 'cursor-default');
-        } else {
-          upgradeBtn.textContent = 'Upgrade to Pro — $5/month';
-          upgradeBtn.classList.add('bg-brand', 'hover:bg-emerald-600');
-          upgradeBtn.classList.remove('bg-slate-400', 'cursor-default');
-        }
-      }
-    }
-
-    updateSubscriptionUI();
-
-    if (upgradeBtn) {
-      upgradeBtn.addEventListener('click', () => {
-        if (localStorage.getItem(PREMIUM_KEY) === '1') return;
-        checkoutModal.classList.remove('hidden');
-      });
-    }
-
-    if (closeModalBtn) {
-      closeModalBtn.addEventListener('click', () => {
-        checkoutModal.classList.add('hidden');
-      });
-    }
-
-    if (confirmUpgradeBtn) {
-      confirmUpgradeBtn.addEventListener('click', () => {
-        localStorage.setItem(PREMIUM_KEY, '1');
-        checkoutModal.classList.add('hidden');
-        updateSubscriptionUI();
-        alert('🎉 Congratulations! Your NutriGlance Pro plan is now active ($5/month). All limits unlocked!');
-        window.location.href = '/dashboard';
-      });
-    }
-
-    if (resetProBtn) {
-      resetProBtn.addEventListener('click', () => {
-        if (confirm('Reset your subscription back to the Free Starter tier?')) {
-          localStorage.removeItem(PREMIUM_KEY);
-          updateSubscriptionUI();
-        }
-      });
-    }
+    document.getElementById('upgrade-pro-btn')?.addEventListener('click', () => checkoutModal.classList.remove('hidden'));
+    document.getElementById('close-modal-btn')?.addEventListener('click', () => checkoutModal.classList.add('hidden'));
+    document.getElementById('confirm-upgrade-btn')?.addEventListener('click', () => checkoutModal.classList.add('hidden'));
+    document.getElementById('reset-pro-btn')?.classList.add('hidden');
   </script>
 
 </body>

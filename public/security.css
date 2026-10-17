@@ -1,0 +1,3 @@
+html.session-pending body { visibility:hidden; }
+html.session-pending::after { content:attr(data-session-status); position:fixed; inset:0; display:grid; place-items:center; font:500 16px Inter,sans-serif; color:#047857; background:#eff7f4; }
+html.dark.session-pending::after { color:#6ee7b7; background:#0f172a; }

@@ -1,5 +1,5 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v3';
+const CACHE_NAME = 'nutriglance-v4';
 const PRECACHE = [
   '/',
   '/dashboard',
@@ -9,6 +9,9 @@ const PRECACHE = [
   '/settings',
   '/login',
   '/reminders.js',
+  '/security.js',
+  '/security.css',
+  '/app.css',
 ];
 
 // Install: pre-cache core pages
@@ -32,11 +35,16 @@ self.addEventListener('activate', event => {
 // Fetch: network-first, fall back to cache
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  // Never cache API responses, authenticated requests, or Firebase traffic.
+  if (url.origin !== self.location.origin || url.pathname.startsWith('/api/') || event.request.headers.has('Authorization')) return;
   event.respondWith(
     fetch(event.request)
       .then(res => {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        if (res.ok && !/no-store|private/i.test(res.headers.get('Cache-Control') || '')) {
+          const clone = res.clone();
+          event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone)).catch(() => {}));
+        }
         return res;
       })
       .catch(() => caches.match(event.request))

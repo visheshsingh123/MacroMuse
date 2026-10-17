@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@config "../tailwind.config.cjs";
+@source "../public";
+
+@layer base {
+  *, ::before, ::after { border-color: #e5e7eb; }
+  button:not(:disabled), [role="button"] { cursor: pointer; }
+}

@@ -108,33 +108,14 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
 
   <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/app.css" />
 
   <!-- Google Fonts: Inter for UI clarity, Space Grotesk for bold headings -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    // ─── Tailwind custom config — identical token system to the dashboard ────
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand:    '#10B981',   // emerald/mint — header & accents
-            charcoal: '#0F172A',   // deep charcoal — primary text
-            bg:       '#EFF7F4',   // soft off-white tint — page background
-            card:     '#FFFFFF',   // card surface
-            muted:    '#94A3B8',   // placeholder / secondary text
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['"Inter"',         'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+
 
   <style>
     /* ── Dark Mode ── */
@@ -269,7 +250,7 @@
         transform: none !important;
       }
     }
-  
+
     /* ── Scrollbar — matches body background in day / night mode ── */
     html {
       scrollbar-color: #CBD5E1 #EFF7F4;

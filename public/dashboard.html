@@ -2,6 +2,8 @@
 <!-- Originally developed by Vishesh Singh — June 2026 -->
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="/security.css" />
+  <script src="/security.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -11,33 +13,14 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
 
   <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/app.css" />
 
   <!-- Google Fonts: Inter for UI clarity, Space Grotesk for bold headings -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    // ─── Tailwind custom config ───────────────────────────────────────────────
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand:    '#10B981',   // emerald/mint — header & accents
-            charcoal: '#0F172A',   // deep charcoal — primary text
-            bg:       '#EFF7F4',   // soft off-white tint — page background
-            card:     '#FFFFFF',   // card surface
-            muted:    '#94A3B8',   // placeholder / secondary text
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['"Inter"',         'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+
 
   <style>
     /* ── Dark Mode ── */
@@ -984,7 +967,7 @@
     function loadMeals() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        const all = raw ? JSON.parse(raw) : [];
+        const all = window.NutriSecurity.readMeals(raw ? JSON.parse(raw) : []);
         // Dashboard only shows today's meals; meals.html / progress.html show all history
         const todayStr = new Date().toDateString();
         return all.filter(m => {
@@ -999,7 +982,7 @@
     function loadAllMeals() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
+        return window.NutriSecurity.readMeals(raw ? JSON.parse(raw) : []);
       } catch {
         return [];
       }
@@ -1130,10 +1113,10 @@
           <div class="flex-1 min-w-0">
             <p class="font-semibold text-sm text-charcoal truncate" title="${escapeHtml(meal.name)}">${escapeHtml(meal.name)}</p>
             <p class="text-xs text-muted mt-0.5">
-              ${meal.kcal} kcal &nbsp;·&nbsp;
-              P ${meal.protein}g &nbsp;·&nbsp;
-              C ${meal.carbs}g &nbsp;·&nbsp;
-              F ${meal.fat}g
+              ${escapeHtml(meal.kcal)} kcal &nbsp;·&nbsp;
+              P ${escapeHtml(meal.protein)}g &nbsp;·&nbsp;
+              C ${escapeHtml(meal.carbs)}g &nbsp;·&nbsp;
+              F ${escapeHtml(meal.fat)}g
             </p>
           </div>
           <span class="flex-shrink-0 text-xs text-muted whitespace-nowrap mt-0.5">
@@ -1284,25 +1267,6 @@
         window._syncProfileToFirestore(window._currentUID, profileData);
       }
 
-      // ── Submit onboarding data to Google Sheets via Google Forms ──
-      (function submitToGoogleForms() {
-        const FORM_ACTION = 'https://docs.google.com/forms/u/0/d/1MHcRF_d0No3cRrnsCbDhDasTDgi4_2tUIACZSVrSp6A/formResponse';
-        const body = new URLSearchParams({
-          'entry.1056588031': name,
-          'entry.984376950':  age,
-          'entry.1100935122': height,
-          'entry.2122201216': weight,
-          'entry.2137676541': gender.charAt(0).toUpperCase() + gender.slice(1), // "male" → "Male"
-          'submissionTimestamp': Date.now(),
-        });
-        fetch(FORM_ACTION, {
-          method: 'POST',
-          mode: 'no-cors', // Google Forms blocks CORS responses but still records the data
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: body.toString(),
-        }).catch(() => {}); // Silently fail — never block the user experience
-      })();
-
       // Apply the new targets to the live dashboard immediately
       GOALS.kcal    = targets.targetKcal;
       GOALS.protein = targets.targetProtein;
@@ -1403,7 +1367,7 @@ All numeric values must be integers. Be realistic and accurate.`;
           if (model.includes('qwen')) {
             bodyPayload.reasoning_effort = 'none';
           }
-          const response = await fetch(GROQ_ENDPOINT, {
+          const response = await window.NutriSecurity.apiFetch(GROQ_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bodyPayload),
@@ -1420,7 +1384,7 @@ All numeric values must be integers. Be realistic and accurate.`;
           raw = raw.replace(/```json|```/gi, '').trim();
           const match = raw.match(/\{[\s\S]*\}/);
           if (match) raw = match[0];
-          return JSON.parse(raw);
+          return window.NutriSecurity.normalizeMeal(JSON.parse(raw));
         } catch (err) {
           lastError = err;
           console.warn(`Text analysis attempt with ${model} failed:`, err.message);
@@ -1430,6 +1394,7 @@ All numeric values must be integers. Be realistic and accurate.`;
     }
 
     async function handleTextMeal() {
+      const requestUid = window.nutriGlanceReminderAuth?.currentUser?.uid;
       const desc = textMealInput.value.trim();
       if (!desc) return;
 
@@ -1445,6 +1410,7 @@ All numeric values must be integers. Be realistic and accurate.`;
 
       try {
         const result = await analyseTextMeal(desc);
+        if (!window.NutriSecurity.isCurrent(requestUid)) return;
 
         if (result.notFood) {
           textMealStatus.innerHTML = `<span class="text-red-400">⚠️ ${escapeHtml(result.reason || 'Not recognised as food.')}</span>`;
@@ -1469,7 +1435,7 @@ All numeric values must be integers. Be realistic and accurate.`;
         refresh();
 
         // Show quick confirmation then clear
-        textMealStatus.innerHTML = `<span class="text-brand font-semibold">✅ Logged: ${escapeHtml(result.name)} — ${result.kcal} kcal · P ${result.protein}g · C ${result.carbs}g · F ${result.fat}g</span>`;
+        textMealStatus.innerHTML = `<span class="text-brand font-semibold">✅ Logged: ${escapeHtml(result.name)} — ${escapeHtml(result.kcal)} kcal · P ${escapeHtml(result.protein)}g · C ${escapeHtml(result.carbs)}g · F ${escapeHtml(result.fat)}g</span>`;
         textMealInput.value = '';
         showToast(`✅ ${result.name} logged!`);
 
@@ -1548,7 +1514,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
             bodyPayload.reasoning_effort = 'none';
           }
 
-          const response = await fetch(GROQ_ENDPOINT, {
+          const response = await window.NutriSecurity.apiFetch(GROQ_ENDPOINT, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -1567,7 +1533,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
           clean = clean.replace(/```json|```/gi, '').trim();
           const match = clean.match(/\{[\s\S]*\}/);
           if (match) clean = match[0];
-          return JSON.parse(clean);
+          return window.NutriSecurity.normalizeMeal(JSON.parse(clean));
         } catch (err) {
           lastError = err;
           console.warn(`Vision analysis attempt with ${model} failed:`, err.message);
@@ -1588,7 +1554,12 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     // ── Shared handler: takes a File (from picker or camera) and runs it
     //    through AI analysis, updating the upload card UI. ───────────────────
     async function processImageFile(file) {
+      const requestUid = window.nutriGlanceReminderAuth?.currentUser?.uid;
       if (!file) return;
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 1800000) {
+        showToast('Please use a JPG, PNG or WebP photo smaller than 1.8 MB.');
+        return;
+      }
 
       // Convert to base64
       const base64 = await new Promise((res, rej) => {
@@ -1606,6 +1577,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
       try {
         const meal = await analyseWithAI(base64, file.type || 'image/jpeg');
+        if (!window.NutriSecurity.isCurrent(requestUid)) return;
 
         // Reject non-food images
         if (meal.notFood) {
@@ -1630,10 +1602,10 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
         const pillsEl = document.getElementById('result-pills');
         pillsEl.innerHTML = '';
         const pillData = [
-          { label: `${meal.kcal} kcal`, color: 'bg-charcoal/10 text-charcoal' },
-          { label: `P ${meal.protein}g`, color: 'bg-emerald-100 text-emerald-700' },
-          { label: `C ${meal.carbs}g`,   color: 'bg-blue-100 text-blue-700'    },
-          { label: `F ${meal.fat}g`,   color: 'bg-orange-100 text-orange-700' },
+          { label: `${escapeHtml(meal.kcal)} kcal`, color: 'bg-charcoal/10 text-charcoal' },
+          { label: `P ${escapeHtml(meal.protein)}g`, color: 'bg-emerald-100 text-emerald-700' },
+          { label: `C ${escapeHtml(meal.carbs)}g`,   color: 'bg-blue-100 text-blue-700'    },
+          { label: `F ${escapeHtml(meal.fat)}g`,   color: 'bg-orange-100 text-orange-700' },
         ];
         pillData.forEach(({ label, color }) => {
           const span = document.createElement('span');
@@ -1795,16 +1767,9 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
           }
         }
 
-        try {
-          const res = await fetch(rawUrl);
-          const blob = await res.blob();
-          if (blob && blob.type.startsWith('image/')) {
-            processImageFile(blob);
-            return;
-          }
-        } catch (err) {
-          console.warn('Could not fetch dropped image URL:', err);
-        }
+        // Avoid making requests to arbitrary dragged URLs or local-network hosts.
+        showToast('Please save the image, then drop the image file here.');
+        return;
       }
 
       showToast('⚠️ No image detected. Please drop a meal image file.');
@@ -2061,6 +2026,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     async function loadProfileFromFirestore(uid) {
       try {
         const snap = await getDoc(doc(db, 'users', uid));
+        if (!window.NutriSecurity.isCurrent(uid)) return;
         if (snap.exists() && snap.data().profile) {
           const p = snap.data().profile;
           localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
@@ -2086,6 +2052,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     async function loadMealsFromFirestore(uid) {
       try {
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
+        if (!window.NutriSecurity.isCurrent(uid)) return;
         const meals = [];
         snap.forEach(d => meals.push({ _id: d.id, ...d.data() }));
         // Sort ascending by loggedAt
@@ -2100,6 +2067,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       try {
         const todayStr = new Date().toDateString();
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
+        if (!window.NutriSecurity.isCurrent(uid)) return;
         const batch = writeBatch(db);
         snap.forEach(d => {
           const data = d.data();
@@ -2133,6 +2101,8 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // ── Auth state listener ───────────────────────────────────────────────────
     auth.onAuthStateChanged(async user => {
+      if (user && !window.NutriSecurity.bindSession(user)) return;
+      if (!user) window.NutriSecurity.bindSession(null);
       if (!user) {
         window.location.href = '/login';
         return;
@@ -2143,6 +2113,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
       // 1. Load profile from Firestore (source of truth for first-time check)
       let profile = await loadProfileFromFirestore(uid);
+      if (!window.NutriSecurity.isCurrent(uid)) return;
 
       if (!profile || !profile.name) {
         // ── NEW USER — show onboarding modal with personalised greeting ──────
@@ -2179,10 +2150,12 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
       // 2. Load meals from Firestore and refresh dashboard
       await loadMealsFromFirestore(uid);
+      if (!window.NutriSecurity.isCurrent(uid)) return;
       if (typeof window.refresh === 'function') window.refresh();
 
       // 3. Load today's water count from Firestore
       const waterCount = await loadWaterFromFirestore(uid);
+      if (!window.NutriSecurity.isCurrent(uid)) return;
       if (waterCount !== null) {
         const today = new Date().toDateString();
         localStorage.setItem(WATER_KEY, JSON.stringify({ count: waterCount, date: today }));

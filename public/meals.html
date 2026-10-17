@@ -2,6 +2,8 @@
 <!-- Originally developed by Vishesh Singh — June 2026 -->
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="/security.css" />
+  <script src="/security.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -11,32 +13,14 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
 
   <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/app.css" />
 
   <!-- Google Fonts: Inter for UI clarity, Space Grotesk for bold headings -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand:    '#10B981',
-            charcoal: '#0F172A',
-            bg:       '#EFF7F4',
-            card:     '#FFFFFF',
-            muted:    '#94A3B8',
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['"Inter"',         'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+
 
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -165,7 +149,7 @@
     @media (prefers-reduced-motion: reduce) {
       .fade-in, .skeleton { animation: none !important; }
     }
-  
+
     /* ── Scrollbar — matches body background in day / night mode ── */
     html {
       scrollbar-color: #CBD5E1 #EFF7F4;
@@ -523,7 +507,7 @@ if (profile) {
 }
 
 function loadMeals() {
-  try { return JSON.parse(localStorage.getItem(MEALS_KEY) || '[]'); } catch { return []; }
+  try { return window.NutriSecurity.readMeals(JSON.parse(localStorage.getItem(MEALS_KEY) || '[]')); } catch { return []; }
 }
 function saveMeals(meals) { localStorage.setItem(MEALS_KEY, JSON.stringify(meals)); }
 
@@ -699,7 +683,7 @@ function renderHistory() {
     header.className = 'day-divider flex items-center justify-between px-3 sm:px-3 py-2 mt-2 first:mt-0';
     header.innerHTML = `
       <span class="text-xs font-bold text-charcoal uppercase tracking-wider">${escapeHtml(formatDayLabel(dateKey))}</span>
-      <span class="text-xs font-semibold text-muted">${dayMeals.length} meal${dayMeals.length !== 1 ? 's' : ''} · ${dayTotalKcal} kcal</span>
+      <span class="text-xs font-semibold text-muted">${dayMeals.length} meal${dayMeals.length !== 1 ? 's' : ''} · ${escapeHtml(dayTotalKcal)} kcal</span>
     `;
     groupWrap.appendChild(header);
 
@@ -832,6 +816,7 @@ refreshAll();
     async function loadMealsFromFirestore(uid) {
       try {
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
+        if (!window.NutriSecurity.isCurrent(uid)) return;
         const meals = [];
         snap.forEach(d => meals.push({ _id: d.id, ...d.data() }));
         meals.sort((a, b) => new Date(a.loggedAt) - new Date(b.loggedAt));
@@ -844,6 +829,7 @@ refreshAll();
     async function clearAllMealsFromFirestore(uid) {
       try {
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
+        if (!window.NutriSecurity.isCurrent(uid)) return;
         const batch = writeBatch(db);
         snap.forEach(d => batch.delete(d.ref));
         await batch.commit();
@@ -854,6 +840,7 @@ refreshAll();
     async function loadProfileFromFirestore(uid) {
       try {
         const snap = await getDoc(doc(db, 'users', uid));
+        if (!window.NutriSecurity.isCurrent(uid)) return;
         if (snap.exists() && snap.data().profile) {
           const p = snap.data().profile;
           localStorage.setItem('nutriglance_profile', JSON.stringify(p));
@@ -864,6 +851,8 @@ refreshAll();
     }
 
     auth.onAuthStateChanged(async user => {
+      if (user && !window.NutriSecurity.bindSession(user)) return;
+      if (!user) window.NutriSecurity.bindSession(null);
       if (!user) { window.location.href = '/login'; return; }
       _uid = user.uid;
 

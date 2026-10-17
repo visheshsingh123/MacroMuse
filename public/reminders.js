@@ -13,6 +13,7 @@
   let busy = false;
   let serviceAvailable = false;
   let errorMessage = '';
+  let generation = 0;
   const registration = () => navigator.serviceWorker.register('/service-worker.js').then(() => navigator.serviceWorker.ready);
   const enabled = () => supported && Notification.permission === 'granted' && subscription &&
     localStorage.getItem(preferenceKey) === '1' && localStorage.getItem(ownerKey) === user?.uid;
@@ -51,6 +52,7 @@
   }
 
   async function disable() {
+    generation++;
     const reg = supported ? await navigator.serviceWorker.getRegistration() : null;
     const sub = subscription || (reg ? await reg.pushManager.getSubscription() : null);
     let removed = !sub;
@@ -70,6 +72,8 @@
   toggle?.addEventListener('click', async () => {
     if (busy || !user || !supported) return;
     busy = true;
+    const requestGeneration = generation;
+    const requestUser = user;
     errorMessage = '';
     render();
     try {
@@ -86,6 +90,10 @@
           const bytes = Uint8Array.from(atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
           const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: bytes });
           try { await save(true, sub); } catch (error) { await sub.unsubscribe(); throw error; }
+          if (generation !== requestGeneration || user?.uid !== requestUser.uid) {
+            await sub.unsubscribe();
+            throw new Error('The account or notification preference changed.');
+          }
           subscription = sub;
           localStorage.setItem(ownerKey, user.uid);
           localStorage.setItem(preferenceKey, '1');

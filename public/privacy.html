@@ -11,31 +11,12 @@
   <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/app.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand:    '#10B981',
-            charcoal: '#0F172A',
-            bg:       '#EFF7F4',
-            card:     '#FFFFFF',
-            muted:    '#94A3B8',
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['"Inter"',         'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+
 
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -232,7 +213,7 @@
         <p class="text-charcoal/80">
           To provide nutritional insights, macro calculations, and personalized meal recommendations, we collect the following types of information:
         </p>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
           <div class="p-4 rounded-xl info-card">
             <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
@@ -240,7 +221,7 @@
               Profile & Biometric Targets
             </h3>
             <p class="text-xs info-desc leading-relaxed">
-              Optional user profile details such as age, gender, height, current weight, daily target calories, and macro breakdown (protein, carbs, fat) used solely to calibrate your nutrition goals.
+              Optional user profile details such as age, gender, height, current weight, daily target calories, and macro breakdown (protein, carbs, fat) used to calibrate your nutrition goals. These profile details are not automatically submitted to Google Forms.
             </p>
           </div>
 
@@ -310,7 +291,7 @@
           <div class="p-3.5 rounded-xl info-card">
             <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">AI Inference (Groq & Vision APIs)</span>
             <p class="text-xs info-desc">
-              When you scan a meal or ask the AI Chef for recipes, visual or textual prompts are securely processed by high-speed inference endpoints. Image payloads are ephemeral: they are analyzed to extract food composition and nutritional data, not repurposed to train public models without your explicit consent.
+              When you scan a meal or ask the AI Chef for recipes, visual or textual prompts are securely processed by high-speed inference endpoints. Your photo or meal description is sent to Groq for analysis. NutriGlance does not save the uploaded photo in your meal history; processing and retention by the AI provider follow its policies.
             </p>
           </div>
 
@@ -321,6 +302,10 @@
             </p>
           </div>
 
+          <div class="p-3.5 rounded-xl info-card">
+            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">Optional notifications &amp; feedback</span>
+            <p class="text-xs info-desc">If you enable reminders, your browser’s push service receives the reminder text and our server stores the device subscription and encryption keys. Turning reminders off removes that device’s subscription. Reviews submitted from the feedback page are sent to Google Forms only when you press Submit.</p>
+          </div>
           <div class="p-3.5 rounded-xl info-card">
             <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">Hosting & Deployment (Vercel)</span>
             <p class="text-xs info-desc">
@@ -389,7 +374,8 @@
         <ul class="list-disc list-inside space-y-1 text-charcoal/80 pl-2">
           <li>Remember your light / dark mode color scheme preference.</li>
           <li>Store offline session tokens so you remain signed in.</li>
-          <li>Cache nutritional meal history for rapid dashboard rendering.</li>
+          <li>Cache your own nutritional history while you are signed in. Signing out or switching accounts clears this account data from the browser.</li>
+          <li>Store device notification preferences and, if you enable reminders, a push subscription so reminders can arrive with the app closed.</li>
         </ul>
       </section>
 

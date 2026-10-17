@@ -2,6 +2,8 @@
 <!-- Originally developed by Vishesh Singh — June 2026 -->
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="/security.css" />
+  <script src="/security.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -10,30 +12,12 @@
   <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/app.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand:    '#10B981',
-            charcoal: '#0F172A',
-            bg:       '#EFF7F4',
-            card:     '#FFFFFF',
-            muted:    '#94A3B8',
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'sans-serif'],
-            body:    ['"Inter"',         'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
+
 
   <style>
     /* ── Dark Mode ── */
@@ -144,7 +128,7 @@
     .danger-btn {
       transition: background 0.15s ease, color 0.15s ease;
     }
-  
+
     /* ── Scrollbar — matches body background in day / night mode ── */
     html {
       scrollbar-color: #CBD5E1 #EFF7F4;
@@ -511,7 +495,7 @@
             </div>
           </div>
         </section><section id="settings-account" aria-labelledby="settings-account-heading" class="bg-card rounded-2xl shadow-sm overflow-hidden border border-red-100 section-card">
-          
+
           <div class="px-5 py-4"><h2 id="settings-account-heading" class="settings-section-heading">Account &amp; data</h2>
             <div class="flex items-start gap-3">
               <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -724,6 +708,7 @@
     async function loadAndApplyProfile(uid) {
       try {
         const snap = await getDoc(doc(db, 'users', uid));
+        if (!window.NutriSecurity.isCurrent(uid)) return;
         if (snap.exists() && snap.data().profile) {
           const p = snap.data().profile;
           localStorage.setItem('nutriglance_profile', JSON.stringify(p));
@@ -746,6 +731,8 @@
     }
 
     auth.onAuthStateChanged(async user => {
+      if (user && !window.NutriSecurity.bindSession(user)) return;
+      if (!user) window.NutriSecurity.bindSession(null);
       if (!user) {
         window.location.href = '/login';
         return;
@@ -766,9 +753,10 @@
     document.getElementById('signout-btn')?.addEventListener('click', async () => {
       if (!confirm('Are you sure you want to sign out?')) return;
       try {
-        await window.nutriGlanceDisableReminders?.();
+        try { await window.nutriGlanceDisableReminders?.(); } catch { console.warn('Could not remove the push subscription.'); }
         await signOut(auth);
-        window.location.href = '/login';
+        window.NutriSecurity.clearAccount();
+        // The auth-state callback performs the redirect once.
       } catch (err) {
         console.error('Sign out error:', err);
       }

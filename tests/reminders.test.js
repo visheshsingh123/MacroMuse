@@ -43,7 +43,7 @@ function fakeServices(initial = {}) {
   const services = {
     auth: { verifyIdToken: async token => { if (token !== 'valid-token') throw new Error('invalid'); return { uid: 'user-1' }; } },
     db: { collection, runTransaction: fn => {
-      const result = queue.then(() => fn({ get: ref => ref.get(), delete: ref => records.delete(ref.path), update: (ref, data) => records.set(ref.path, { ...records.get(ref.path), ...data }) }));
+      const result = queue.then(() => fn({ get: ref => ref.get(), delete: ref => records.delete(ref.path), set: (ref, data) => records.set(ref.path, { ...records.get(ref.path), ...data }), update: (ref, data) => records.set(ref.path, { ...records.get(ref.path), ...data }) }));
       queue = result.catch(() => {});
       return result;
     } },
@@ -80,7 +80,7 @@ test('subscription API handles unavailable config, auth, validation and ownershi
   await createReminderHandler({ isConfigured: () => false })({ method: 'GET' }, res);
   assert.equal(res.code, 503);
   const fixture = fakeServices();
-  const handler = createReminderHandler({ isConfigured: () => true, getServices: () => fixture.services });
+  const handler = createReminderHandler({ isConfigured: () => true, getServices: () => fixture.services, quota: async () => {} });
   process.env.VAPID_PUBLIC_KEY = 'test-public-key';
   res = response(); await handler({ method: 'GET' }, res);
   assert.deepEqual(res.body, { publicKey: 'test-public-key' });
@@ -96,6 +96,7 @@ test('subscription API handles unavailable config, auth, validation and ownershi
   await handler(post({ enabled: true, subscription }), response());
   assert.equal(fixture.records.get(key).lastDelivery, 'already-sent');
   fixture.records.get(key).uid = 'other-user';
+  res = response(); await handler(post({ enabled: true, subscription }), res); assert.equal(res.code, 403);
   await handler(post({ enabled: false, endpoint: subscription.endpoint }), response());
   assert(fixture.records.has(key));
   fixture.records.get(key).uid = 'user-1';

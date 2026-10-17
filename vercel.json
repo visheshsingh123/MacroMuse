@@ -1,31 +1,140 @@
 {
+  "buildCommand": "npm run build",
   "cleanUrls": true,
   "crons": [
-    { "path": "/api/reminder-cron?slot=afternoon", "schedule": "30 7 * * *" },
-    { "path": "/api/reminder-cron?slot=evening", "schedule": "30 13 * * *" }
+    {
+      "path": "/api/reminder-cron?slot=afternoon",
+      "schedule": "30 7 * * *"
+    },
+    {
+      "path": "/api/reminder-cron?slot=evening",
+      "schedule": "30 13 * * *"
+    }
   ],
   "redirects": [
-    { "source": "/nutriglance", "destination": "/dashboard", "permanent": true },
-    { "source": "/nutriglance.html", "destination": "/dashboard", "permanent": true }
+    {
+      "source": "/nutriglance",
+      "destination": "/dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/nutriglance.html",
+      "destination": "/dashboard",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/api/reminders", "destination": "/api/reminders" },
-    { "source": "/api/reminder-cron", "destination": "/api/reminder-cron" },
-    { "source": "/api/groq", "destination": "/api/groq" },
-    { "source": "/dashboard", "destination": "/public/dashboard.html" },
-    { "source": "/meals", "destination": "/public/meals.html" },
-    { "source": "/progress", "destination": "/public/progress.html" },
-    { "source": "/aichef", "destination": "/public/aichef.html" },
-    { "source": "/settings", "destination": "/public/settings.html" },
-    { "source": "/login", "destination": "/public/login.html" },
-    { "source": "/download", "destination": "/public/download.html" },
-    { "source": "/qr", "destination": "/public/qr.html" },
-    { "source": "/about", "destination": "/public/about.html" },
-    { "source": "/privacy", "destination": "/public/privacy.html" },
-    { "source": "/privacy-policy", "destination": "/public/privacy.html" },
-    { "source": "/premium", "destination": "/public/premium.html" },
-    { "source": "/index", "destination": "/public/index.html" },
-    { "source": "/", "destination": "/public/index.html" },
-    { "source": "/(.*)", "destination": "/public/$1" }
+    {
+      "source": "/api/reminders",
+      "destination": "/api/reminders"
+    },
+    {
+      "source": "/api/reminder-cron",
+      "destination": "/api/reminder-cron"
+    },
+    {
+      "source": "/api/groq",
+      "destination": "/api/groq"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/public/dashboard.html"
+    },
+    {
+      "source": "/meals",
+      "destination": "/public/meals.html"
+    },
+    {
+      "source": "/progress",
+      "destination": "/public/progress.html"
+    },
+    {
+      "source": "/aichef",
+      "destination": "/public/aichef.html"
+    },
+    {
+      "source": "/settings",
+      "destination": "/public/settings.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/public/login.html"
+    },
+    {
+      "source": "/download",
+      "destination": "/public/download.html"
+    },
+    {
+      "source": "/qr",
+      "destination": "/public/qr.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/public/about.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/public/privacy.html"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/public/privacy.html"
+    },
+    {
+      "source": "/premium",
+      "destination": "/public/premium.html"
+    },
+    {
+      "source": "/index",
+      "destination": "/public/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/public/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' https://www.gstatic.com/firebasejs/ https://apis.google.com https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js 'sha256-0Cdb9N62JtnrV9Hr8hLgqw+Je8NQkC5Z5PZR+jnARoc=' 'sha256-2wx92eA6f6Xio2wBPzbuSK7uVLy8/xQRKXL5Uq+iETE=' 'sha256-3d9FZBdlsoOJ6OXrjpBvpqih0Orld1g39Z/rBbCtqEQ=' 'sha256-3kRffVxhwbEeEkB0tccW/JSlEFTsk9iVgO3OnXbawvw=' 'sha256-6JpsOKOiDYxxePRMwmyNvWJYlErRID0UNb/A0aINoJY=' 'sha256-DOND/KSxTzpypCs+Ong4Jb9iF1Sf96f/MmexsjX5RZc=' 'sha256-FCQp/IS4PseAQGTBWYSon02C6Bl/h3iOeMQ5JWwfdY0=' 'sha256-M3rmdJovb2zuQmBzdXqb1PWh7dqSMKaYhG9XnyqM8OE=' 'sha256-NZ0W/0wMbXKIE8iyk0NZ2XL83AGkcq5BAI0vjV8PteI=' 'sha256-NlSNHUd7xCAb8/MMFumXBCrwgC76FoR7QAvCDmA+zwE=' 'sha256-OdeFv6jCyzUgtae4J7aJENX8vI+HIg/+zZVDNmDggzQ=' 'sha256-UA12V+q+N3ylqVUja/HabE8sfIVlluFuYztLcIbhIgU=' 'sha256-WEDkPOw/ygdtms75tQpm1tBOwdoa9dnT7cPDdmjiqXc=' 'sha256-WchQmVys7bVp2AR2yH99ByqUUoHATxgoT2EwiHCWAAo=' 'sha256-ZeuOiuOxG1QPb7SZq4mWaRWvlgZI3KrRzDMmgGj8xvI=' 'sha256-bDJas8SdOnh9a7Esu8DvtvuvwHT6Y45sr+R/oz4JwzU=' 'sha256-bQB9zhHrVL4xKZAxGSbo59edfBRQ3fKDC+U1g/kzWyA=' 'sha256-cxYnqCLfmiLOhP8+m38LswvK3jDMvdNEiUbXwbDFetE=' 'sha256-fM0l3vpwa3tF0OYKoTea7LX8HPGsz8wOIi+RQMYeu/A=' 'sha256-fMGSqflgXKIEsoBvo5O97KeO06/u14DtpqwYRDQwAT4=' 'sha256-hOB4C0xAgPMIv2Hgcyn3nXv7yIcXoumYU8yducCQXw8=' 'sha256-kf6PuCr/6Jc5WNVRUMSdz+gvtlHJkvhqF0Z6Z8fSyls=' 'sha256-r+6rBuqaCCRocQ+x6nJgmje8Y9wZq3xyUpZsAfxmssQ=' 'sha256-sd56Fjz8dhpIRASNCicLbVXPw2+ogk/xYWRn8ARrz0Y=' 'sha256-wIOzvXCFVaROZiSc3SFsOs5hDq0Jbck/JkgnkybHMho=' 'sha256-x+qqpE4hAKfBjEIN/IQlVeNOUEbwIOvIUqAn5Pkr2SI=' 'sha256-x06X5qh4fyC3kvfJdynhQsMm7RCu4IOWFNWwRuO3XVY=' 'sha256-xhhHPdZX0pvs2WyATx7fURg2V+22NWYDKLBpqZJU4JQ='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://lh3.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://nutriglance.firebaseapp.com https://docs.google.com; frame-src https://nutriglance.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
   ]
 }

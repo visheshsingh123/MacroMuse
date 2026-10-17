@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    function numberField(data, key, maximum) {
+      return !(key in data) || (data[key] is number && data[key] >= 0 && data[key] <= maximum);
+    }
+    function textField(data, key, maximum) {
+      return !(key in data) || (data[key] is string && data[key].size() <= maximum);
+    }
+    function nutrition(data) {
+      return numberField(data, 'kcal', 100000) && numberField(data, 'protein', 100000)
+        && numberField(data, 'carbs', 100000) && numberField(data, 'fat', 100000)
+        && numberField(data, 'fibre', 100000) && numberField(data, 'fiber', 100000)
+        && numberField(data, 'water', 100);
+    }
+    function profile(data) {
+      return data is map && data.keys().hasOnly(['name','gender','age','weight','height','targetKcal','targetProtein','targetCarbs','targetFat','targetFiber','targetFibre'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 160
+        && (!('gender' in data) || data.gender in ['male','female'])
+        && numberField(data, 'age', 120) && numberField(data, 'weight', 500)
+        && numberField(data, 'height', 300) && numberField(data, 'targetKcal', 20000)
+        && numberField(data, 'targetProtein', 20000) && numberField(data, 'targetCarbs', 20000)
+        && numberField(data, 'targetFat', 20000) && numberField(data, 'targetFiber', 20000)
+        && numberField(data, 'targetFibre', 20000);
+    }
+    match /users/{uid} {
+      allow read, delete: if owner(uid);
+      allow create, update: if owner(uid) && request.resource.data.keys().hasOnly(['profile'])
+        && profile(request.resource.data.profile);
+      match /meals/{mealId} {
+        allow read, delete: if owner(uid);
+        allow create, update: if owner(uid)
+          && request.resource.data.keys().hasOnly(['name','kcal','protein','carbs','fat','fibre','fiber','description','portionSize','loggedAt','source','createdAt','_id'])
+          && request.resource.data.keys().hasAll(['name','kcal','protein','carbs','fat','loggedAt'])
+          && request.resource.data.name is string && request.resource.data.name.size() <= 160
+          && request.resource.data.loggedAt is string && request.resource.data.loggedAt.size() <= 40
+          && nutrition(request.resource.data) && textField(request.resource.data, 'description', 1000)
+          && textField(request.resource.data, 'portionSize', 200) && textField(request.resource.data, 'source', 20)
+          && textField(request.resource.data, '_id', 200)
+          && (!('createdAt' in request.resource.data) || request.resource.data.createdAt is timestamp);
+      }
+      match /progress/{day} {
+        allow read, delete: if owner(uid);
+        allow create, update: if owner(uid) && day.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && request.resource.data.keys().hasOnly(['kcal','protein','carbs','fat','fibre','fiber','water','notes','source'])
+          && nutrition(request.resource.data) && textField(request.resource.data, 'notes', 4000)
+          && textField(request.resource.data, 'source', 20);
+      }
+    }
+    // Only the server Admin SDK may access quotas and push encryption keys.
+    match /reminderSubscriptions/{id} { allow read, write: if false; }
+    match /serverQuotas/{id} { allow read, write: if false; }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
