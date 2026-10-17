@@ -92,6 +92,12 @@ html.dark .dashboard-recent-footer a,body.dark .dashboard-recent-footer a { colo
 /* Full-page overlay shown while dragging an image into the dashboard. */
 #page-drag-overlay { --drop-card:#fff; --drop-text:#0f172a; --drop-muted:#64748b; --drop-line:#a7f3d0; --drop-soft:#ecfdf5; --drop-accent:#047857; background:rgba(15,23,42,.65); backdrop-filter:blur(8px); padding:24px; }
 .drag-drop-panel { width:100%; max-width:480px; padding:14px; border:1px solid var(--drop-line); border-radius:28px; background:var(--drop-card); box-shadow:0 24px 80px #02061740; animation:dragDropIn .18s ease-out both; }
+.drag-drop-screen-frame { position:absolute; inset:clamp(8px,2vw,24px); pointer-events:none; }
+.drag-drop-corner { position:absolute; width:clamp(40px,9vmin,96px); height:clamp(40px,9vmin,96px); border:solid #6ee7b7; border-width:0; }
+.drag-drop-corner-tl { top:0; left:0; border-top-width:3px; border-left-width:3px; border-top-left-radius:28px; }
+.drag-drop-corner-tr { top:0; right:0; border-top-width:3px; border-right-width:3px; border-top-right-radius:28px; }
+.drag-drop-corner-bl { bottom:0; left:0; border-bottom-width:3px; border-left-width:3px; border-bottom-left-radius:28px; }
+.drag-drop-corner-br { bottom:0; right:0; border-bottom-width:3px; border-right-width:3px; border-bottom-right-radius:28px; }
 .drag-drop-stage { display:flex; flex-direction:column; align-items:center; text-align:center; border:1.5px dashed var(--drop-line); border-radius:20px; padding:30px 24px 28px; background:linear-gradient(180deg,var(--drop-soft),var(--drop-card)); }
 .drag-drop-badge { display:inline-flex; align-items:center; gap:8px; font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--drop-accent); }
 .drag-drop-badge > span { width:6px; height:6px; border-radius:50%; background:#10b981; }
