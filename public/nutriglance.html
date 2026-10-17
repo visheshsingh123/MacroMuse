@@ -199,7 +199,7 @@
     body.menu-open #ham-top    { transform: translateY(6px) rotate(45deg); }
     body.menu-open #ham-mid    { opacity: 0; transform: scaleX(0); }
     body.menu-open #ham-bot    { transform: translateY(-6px) rotate(-45deg); }
-  
+
     /* ── Scrollbar — matches body background in day / night mode ── */
     html {
       scrollbar-color: #CBD5E1 #EFF7F4;
@@ -261,6 +261,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/dashboard.css" />
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal">
@@ -519,25 +520,14 @@
   <!-- ════════════════════════════════════════════════════════════════
        MAIN DASHBOARD GRID
   ════════════════════════════════════════════════════════════════ -->
-  <main class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8">
-
-    <!--
-      Desktop layout (md+):  3 columns
-        Col 1 – Calories & Macros card (narrow)
-        Col 2 – Upload + Recent Meals (wide)
-        Col 3 – Quick actions (Scan / AI Chef)
-      Mobile: single column, stacked
-    -->
-    <div class="grid grid-cols-1 md:grid-cols-[260px_1fr_200px] gap-5">
-
-      <!-- ────────────────────────────────────────────────────────────
-           COLUMN 1 — CALORIES & MACROS CARD
-      ──────────────────────────────────────────────────────────────── -->
-      <section class="bg-card rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+  <main id="dashboard-page">
+    <header class="dashboard-heading"><div><p class="dashboard-eyebrow">YOUR DAILY OVERVIEW</p><h1>Your day at a glance</h1><p>Good habits start with one meal. Let's make today count.</p></div><time id="dashboard-date"></time></header>
+    <div class="dashboard-workspace">
+      <aside class="dashboard-sidebar"><section class="dashboard-card dashboard-nutrition bg-card rounded-2xl p-5 shadow-sm flex flex-col gap-4">
 
         <!-- Section heading -->
         <h2 class="font-display text-xl font-extrabold leading-tight text-charcoal">
-          Calories<br/>consumed
+          Today’s nutrition
         </h2>
 
         <!-- SVG circular progress ring -->
@@ -621,56 +611,40 @@
           </div>
         </div>
 
-        <!-- ── Tell AI what you ate ── -->
-        <div class="mt-auto pt-2 border-t border-slate-100">
-          <p class="text-[11px] font-semibold text-muted uppercase tracking-wide mb-1.5">Tell AI what you ate</p>
-
-          <!-- Input row -->
-          <div class="flex gap-2">
-            <input
-              id="text-meal-input"
-              type="text"
-              placeholder="e.g. 2 rotis with dal…"
-              class="flex-1 min-w-0 text-sm rounded-xl border border-slate-200 bg-slate-50
-                     px-3 py-2 text-charcoal placeholder-muted
-                     focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent
-                     transition-all duration-150"
-              autocomplete="off"
-            />
-            <button
-              id="text-meal-btn"
-              aria-label="Analyse meal text"
-              class="flex-shrink-0 w-9 h-9 rounded-xl bg-brand text-white
-              flex items-center justify-center
-                     hover:bg-emerald-600 active:scale-95 transition-all duration-150
-                     disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <!-- send arrow -->
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2.5"
-                   stroke-linecap="round" stroke-linejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"/>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-              </svg>
-            </button>
+</section>        <!-- Hydration tracker -->
+        <div class="dashboard-card dashboard-water bg-card rounded-2xl px-5 py-4 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs font-semibold text-charcoal uppercase tracking-wide">Hydration</p>
+            <span class="text-xs text-muted"><span id="water-count">0</span>/8 glasses</span>
           </div>
+          <div id="water-drops" class="flex gap-1.5 flex-wrap"></div>
+          <button id="water-reset"
+                  class="mt-3 text-xs text-muted hover:text-red-400 transition-colors duration-150">
+            Reset
+          </button>
+        </div>
 
-          <!-- Status / mini result area -->
-          <div id="text-meal-status" class="hidden mt-2 text-xs text-muted flex items-center gap-1.5">
-            <!-- filled by JS -->
+        <!-- Daily goal progress pill -->
+        <div class="dashboard-card dashboard-goal bg-emerald-50 rounded-2xl px-5 py-4 shadow-sm">
+          <p class="text-xs font-semibold text-brand uppercase tracking-wide mb-1">
+            Daily Goal
+          </p>
+          <p id="goal-pct-label" class="font-display text-3xl font-extrabold text-charcoal">
+            0%
+          </p>
+          <p class="text-xs text-muted mt-0.5">of calorie target met</p>
+          <!-- Mini progress bar inside the pill -->
+          <div class="w-full bg-emerald-100 rounded-full h-1.5 mt-3">
+            <div id="goal-bar"
+                 class="h-1.5 rounded-full bg-brand transition-all duration-500"
+                 style="width: 0%"></div>
           </div>
         </div>
 
-      </section><!-- /col 1 -->
-
-
-      <!-- ────────────────────────────────────────────────────────────
-           COLUMN 2 — UPLOAD ZONE + RECENT MEALS
-      ──────────────────────────────────────────────────────────────── -->
-      <div class="flex flex-col gap-4">
-
-        <!-- Upload box -->
-        <!-- Hidden file input — lives outside the zone so clicks don't bubble weirdly -->
+</aside>
+      <div class="dashboard-content">
+        <section class="dashboard-card dashboard-scan" aria-labelledby="dashboard-scan-heading">
+          <header><p class="dashboard-eyebrow">SNAP. UNDERSTAND. LOG.</p><h2 id="dashboard-scan-heading">Scan a meal</h2><p>A photo is all you need to get started.</p></header>
         <input id="file-input" type="file" accept="image/*" class="hidden" aria-hidden="true" />
         <input id="camera-input" type="file" accept="image/*" capture="environment" class="hidden" aria-hidden="true" />
 
@@ -696,9 +670,9 @@
                     stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <p id="upload-label" class="text-muted font-semibold text-xs sm:text-sm text-center px-4">
-              Upload your meals here
+              Choose a meal photo
             </p>
-            <p class="text-slate-400 text-[11px]">Click to browse or drag &amp; drop anywhere · AI will analyse nutrition instantly</p>
+            <p class="text-slate-400 text-[11px]">Click to browse or drag &amp; drop a photo. Get a nutrition estimate before you log it.</p>
           </div>
 
           <!-- Analysing state (hidden by default) -->
@@ -748,47 +722,7 @@
             </div>
           </div>
 
-        </div><!-- /upload-outer -->
-
-        <!-- Recent Meals card -->
-        <div class="bg-card rounded-2xl p-5 shadow-sm flex-1">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="font-display text-lg font-extrabold">
-              Recent Meals <span class="text-muted font-body font-normal text-xs">(Today)</span>
-            </h2>
-            <!-- Clear button — only visible when there are meals -->
-            <button
-              id="clear-btn"
-              class="hidden text-xs font-semibold text-red-400 hover:text-red-600
-                     border border-red-200 hover:border-red-400 rounded-lg px-2.5 py-0.5
-                     transition-colors duration-150"
-              aria-label="Clear all logged meals"
-            >
-              Clear all
-            </button>
-          </div>
-
-          <!-- Meal list / skeleton placeholder -->
-          <div id="meals-container" class="flex flex-col gap-2.5">
-            <!-- Skeleton lines shown when no meals are logged — replaced by JS -->
-            <div id="skeleton-placeholder" class="flex flex-col gap-2.5">
-              <div class="skeleton h-3.5 w-3/4"></div>
-              <div class="skeleton h-3.5 w-1/2"></div>
-              <div class="skeleton h-3.5 w-5/6"></div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /col 2 -->
-
-
-      <!-- ────────────────────────────────────────────────────────────
-           COLUMN 3 — QUICK ACTIONS
-      ──────────────────────────────────────────────────────────────── -->
-      <div class="flex flex-col gap-4">
-
-        <!-- Scan a Meal -->
-        <button
+        </div><!-- /upload-outer --><div class="dashboard-camera-row"><button
           id="scan-btn"
           class="bg-card rounded-2xl shadow-sm px-5 py-5 text-left font-display text-lg
                  font-extrabold text-charcoal hover:shadow-md hover:bg-emerald-50
@@ -809,15 +743,84 @@
                 <line x1="7" y1="12" x2="17" y2="12"/>
               </svg>
             </span>
-            Scan a Meal
+            Use camera
           </div>
           <p class="text-xs font-body font-normal text-muted mt-0.5">
-            Auto-detect food & log macros
+            Take a photo of your meal
           </p>
-        </button>
+        </button><p>Prefer typing? Describe your meal below.</p></div>        <!-- ── Or describe what you ate ── -->
+        <div class="dashboard-text-entry">
+          <label for="text-meal-input" class="text-[11px] font-semibold text-muted uppercase tracking-wide mb-1.5">Or describe what you ate</label>
 
-        <!-- AI Chef -->
-        <a
+          <!-- Input row -->
+          <div class="flex gap-2">
+            <input
+              id="text-meal-input" aria-label="Describe your meal for nutrition analysis"
+              type="text"
+              placeholder="e.g. 2 rotis with dal…"
+              class="flex-1 min-w-0 text-sm rounded-xl border border-slate-200 bg-slate-50
+                     px-3 py-2 text-charcoal placeholder-muted
+                     focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent
+                     transition-all duration-150"
+              autocomplete="off"
+            />
+            <button
+              id="text-meal-btn"
+              aria-label="Analyse meal text"
+              class="flex-shrink-0 w-9 h-9 rounded-xl bg-brand text-white
+              flex items-center justify-center
+                     hover:bg-emerald-600 active:scale-95 transition-all duration-150
+                     disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <!-- send arrow -->
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Status / mini result area -->
+          <div id="text-meal-status" class="hidden mt-2 text-xs text-muted flex items-center gap-1.5">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+
+        </section>
+        <!-- Recent Meals card -->
+        <div class="dashboard-card dashboard-recent bg-card rounded-2xl p-5 shadow-sm flex-1">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-display text-lg font-extrabold">
+              Recent Meals <span class="text-muted font-body font-normal text-xs">(Today)</span>
+            </h2>
+            <!-- Clear button — only visible when there are meals -->
+            <button
+              id="clear-btn"
+              class="hidden text-xs font-semibold text-red-400 hover:text-red-600
+                     border border-red-200 hover:border-red-400 rounded-lg px-2.5 py-0.5
+                     transition-colors duration-150"
+              aria-label="Clear all logged meals"
+            >
+              Clear all
+            </button>
+          </div>
+
+          <a href="/meals" class="dashboard-history-link">View meal history <span aria-hidden="true">→</span></a>
+          <!-- Meal list / empty state -->
+          <div id="meals-container" class="flex flex-col gap-2.5">
+            <!-- Empty state toggled by the existing meal renderer -->
+            <div id="skeleton-placeholder" class="dashboard-empty">
+              <div class="dashboard-empty-icon" aria-hidden="true">✦</div>
+              <p>Your first meal starts here</p>
+              <span>Scan a photo or describe a meal to start today's log.</span>
+            </div>
+          </div>
+        </div>
+
+<div class="dashboard-chef-shortcut"><a
           id="ai-chef-btn"
           href="/aichef"
           class="bg-card rounded-2xl shadow-sm px-5 py-5 text-left font-display text-lg
@@ -836,46 +839,14 @@
                 <line x1="6" y1="17" x2="18" y2="17"/>
               </svg>
             </span>
-            AI Chef
+            What’s cooking next?
           </div>
           <p class="text-xs font-body font-normal text-muted mt-0.5">
-            Get personalised recipe ideas
+            Turn the ingredients you have into a meal. Ask AI Chef →
           </p>
-        </a>
-
-        <!-- Daily goal progress pill -->
-        <div class="bg-emerald-50 rounded-2xl px-5 py-4 shadow-sm">
-          <p class="text-xs font-semibold text-brand uppercase tracking-wide mb-1">
-            Daily Goal
-          </p>
-          <p id="goal-pct-label" class="font-display text-3xl font-extrabold text-charcoal">
-            0%
-          </p>
-          <p class="text-xs text-muted mt-0.5">of calorie target met</p>
-          <!-- Mini progress bar inside the pill -->
-          <div class="w-full bg-emerald-100 rounded-full h-1.5 mt-3">
-            <div id="goal-bar"
-                 class="h-1.5 rounded-full bg-brand transition-all duration-500"
-                 style="width: 0%"></div>
-          </div>
-        </div>
-
-        <!-- Hydration tracker -->
-        <div class="bg-card rounded-2xl px-5 py-4 shadow-sm">
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-xs font-semibold text-charcoal uppercase tracking-wide">Hydration</p>
-            <span class="text-xs text-muted"><span id="water-count">0</span>/8 glasses</span>
-          </div>
-          <div id="water-drops" class="flex gap-1.5 flex-wrap"></div>
-          <button id="water-reset"
-                  class="mt-3 text-xs text-muted hover:text-red-400 transition-colors duration-150">
-            Reset
-          </button>
-        </div>
-
-      </div><!-- /col 3 -->
-
-    </div><!-- /grid -->
+        </a></div>
+      </div>
+    </div>
   </main><!-- /main -->
 
 
@@ -1971,6 +1942,10 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     // ──────────────────────────────────────────────────────────────────
     // INITIAL RENDER on page load
     // ──────────────────────────────────────────────────────────────────
+    const dashboardDate = document.getElementById('dashboard-date');
+    const now = new Date();
+    dashboardDate.dateTime = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    dashboardDate.textContent = now.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
     refresh();
     renderWater();
     renderTip();
