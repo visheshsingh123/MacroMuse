@@ -21,6 +21,10 @@
 #onboarding-title:focus { outline:none; }
 .onboarding-heading > p:last-child { color:var(--onb-muted); font-size:12px; line-height:1.8; margin-top:9px; }
 #onboarding-form { display:flex; flex-direction:column; gap:24px; }
+#onboarding-form.hidden { display:none; }
+#onboarding-load-error { color:var(--onb-muted); font-size:13px; line-height:1.8; }
+#onboarding-retry { margin-top:16px; padding:10px 18px; border-radius:10px; background:#047857; color:#fff; font-weight:600; }
+#onboarding-retry:focus-visible { outline:3px solid #10b981; outline-offset:4px; }
 .onboarding-section-title { display:flex; align-items:center; gap:9px; margin-bottom:16px; }
 .onboarding-section-title > span { display:grid; place-items:center; width:23px; height:23px; border-radius:7px; background:var(--onb-soft); color:var(--onb-accent); font-size:9px; font-weight:700; }
 .onboarding-section-title h3 { font-size:12px; font-weight:700; letter-spacing:-.01em; }

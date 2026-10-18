@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -205,6 +206,8 @@
   <link rel="stylesheet" href="/progress-print.css" />
   <script src="/progress-export.js" defer></script>
   <link rel="stylesheet" href="/progress-layout.css" />
+  <link rel="stylesheet" href="/onboarding.css" />
+  <script src="/onboarding.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -1245,20 +1248,6 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
 
     let _uid = null;
 
-    // Load profile from Firestore and cache locally
-    async function loadProfileFromFirestore(uid) {
-      try {
-        const snap = await getDoc(doc(db, 'users', uid));
-        if (!window.NutriSecurity.isCurrent(uid)) return;
-        if (snap.exists() && snap.data().profile) {
-          const p = snap.data().profile;
-          localStorage.setItem('nutriglance_profile', JSON.stringify(p));
-          return p;
-        }
-      } catch (e) { console.warn('Profile load error:', e); }
-      return null;
-    }
-
     // Load all meals from Firestore and cache to localStorage
     async function loadMealsFromFirestore(uid) {
       try {
@@ -1302,8 +1291,8 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
       if (!user) { window.location.href = '/login'; return; }
       _uid = user.uid;
 
-      // Load profile
-      await loadProfileFromFirestore(_uid);
+      const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
+      if (!profile || !window.NutriSecurity.isCurrent(_uid)) return;
       if (typeof window.updateAvatar === 'function') window.updateAvatar();
 
       // Load meals and manual progress from Firestore

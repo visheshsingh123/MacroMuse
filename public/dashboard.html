@@ -286,82 +286,6 @@
     </div>
   </div>
 
-  <!-- First-time profile setup, shown by the Firebase auth listener. -->
-  <div id="onboarding-overlay" class="hidden fixed inset-0 z-[100]"
-       role="dialog" aria-modal="true" aria-labelledby="onboarding-title" aria-describedby="onboarding-description">
-    <div class="onboarding-card">
-      <aside class="onboarding-intro">
-        <div class="onboarding-brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 4C9 2 3 8 5 15s15 5 15-11Z"/><path d="M4 21 15 10"/></svg>NutriGlance</div>
-        <div class="onboarding-intro-copy">
-          <p class="onboarding-eyebrow">LET’S MAKE IT PERSONAL</p>
-          <h2>Your goals.<br> Your pace.</h2>
-          <p>A few details to build a daily nutrition target around you.</p>
-        </div>
-        <div class="onboarding-art" aria-hidden="true">
-          <svg viewBox="0 0 240 220" fill="none">
-            <circle cx="120" cy="96" r="76" stroke="currentColor" stroke-opacity=".13" stroke-dasharray="3 7"/>
-            <circle cx="120" cy="96" r="54" stroke="currentColor" stroke-opacity=".12" stroke-width="13"/>
-            <path d="M120 42a54 54 0 1 1-51 72" stroke="currentColor" stroke-width="13" stroke-linecap="round"/>
-            <path d="M140 76c-27-4-43 10-37 27s37 12 37-27Z" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="2"/>
-            <path d="m99 116 28-29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M32 52h12m-6-6v12m157 62h12m-6-6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <div class="onboarding-goal-preview"><span>Your daily goals</span><i></i><i></i><i></i></div>
-        </div>
-        <p class="onboarding-intro-note">One quick setup.<br>Room to adjust as you go.</p>
-      </aside>
-
-      <div class="onboarding-content">
-        <header class="onboarding-heading">
-          <p class="onboarding-eyebrow">YOUR STARTING POINT</p>
-          <h2 id="onboarding-title" tabindex="-1">Hello, <span id="onb-greeting-name">there</span>!</h2>
-          <p id="onboarding-description">Let’s find the daily goals that fit you.</p>
-        </header>
-        <form id="onboarding-form" novalidate>
-          <div class="onboarding-form-section">
-            <div class="onboarding-section-title"><span>01</span><h3>A little about you</h3></div>
-            <div class="onboarding-name-field">
-              <label for="onb-name">Your name</label>
-              <input id="onb-name" class="onboarding-input" type="text" placeholder="What should we call you?" autocomplete="given-name" maxlength="160" required />
-            </div>
-            <fieldset class="onboarding-gender">
-              <legend>Gender</legend>
-              <p id="onb-gender-help">Used to estimate your daily energy needs.</p>
-              <div class="onboarding-choices">
-                <label class="onboarding-choice"><input type="radio" name="onb-gender" value="male" class="sr-only" checked aria-describedby="onb-gender-help" /><span>Male<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span></label>
-                <label class="onboarding-choice"><input type="radio" name="onb-gender" value="female" class="sr-only" aria-describedby="onb-gender-help" /><span>Female<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span></label>
-              </div>
-            </fieldset>
-          </div>
-          <div class="onboarding-form-section">
-            <div class="onboarding-section-title"><span>02</span><h3>Your measurements</h3></div>
-            <div class="onboarding-measurements">
-              <div><label for="onb-age">Age</label><div class="onboarding-field"><input id="onb-age" type="number" inputmode="numeric" min="10" max="100" step="1" placeholder="28" required /><span aria-hidden="true">yrs</span></div></div>
-              <div><label for="onb-weight">Weight <span class="sr-only">in kilograms</span></label><div class="onboarding-field"><input id="onb-weight" type="number" inputmode="decimal" min="20" max="300" step="0.1" placeholder="68" required /><span aria-hidden="true">kg</span></div></div>
-              <div><label for="onb-height">Height <span class="sr-only">in centimeters</span></label><div class="onboarding-field"><input id="onb-height" type="number" inputmode="numeric" min="100" max="250" step="1" placeholder="172" required /><span aria-hidden="true">cm</span></div></div>
-            </div>
-          </div>
-          <div class="onboarding-form-section">
-            <div class="onboarding-section-title"><span>03</span><h3>Your lifestyle</h3></div>
-            <label for="onb-activity">Activity level</label>
-            <select id="onb-activity" class="onboarding-input" aria-describedby="onb-activity-help" required>
-              <option value="" disabled selected>Choose your activity level</option>
-              <option value="sedentary">Sedentary</option>
-              <option value="lightly_active">Lightly active</option>
-              <option value="moderately_active">Moderately active</option>
-              <option value="very_active">Very active</option>
-            </select>
-            <p id="onb-activity-help" class="onboarding-activity-help">Include your work, walking, and exercise in a typical week.</p>
-          </div>
-          <p id="onboarding-error" role="alert" class="hidden"></p>
-          <div class="onboarding-submit">
-            <button type="submit">Create my daily goals<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-            <p>You can adjust these later in Settings.</p>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 
   <script>
     // ── Apply dark mode immediately to avoid flash ──
@@ -905,9 +829,6 @@
       }
     }
 
-    function saveProfile(profile) {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-    }
 
     // If a profile already exists, override the hardcoded defaults above
     // with the user's personalised targets before anything renders.
@@ -1136,94 +1057,14 @@
       renderMeals(meals);
     }
 
-    // ──────────────────────────────────────────────────────────────────
-    // ONBOARDING — BMR / TDEE / macro calculation
-    // ──────────────────────────────────────────────────────────────────
-    const onboardingOverlay = document.getElementById('onboarding-overlay');
-    const onboardingForm    = document.getElementById('onboarding-form');
-    const onboardingError   = document.getElementById('onboarding-error');
-
-    function closeOnboardingModal() {
-      onboardingOverlay.style.transition = 'opacity 0.25s ease';
-      onboardingOverlay.style.opacity = '0';
-      setTimeout(() => {
-        onboardingOverlay.classList.add('hidden');
-        onboardingOverlay.style.opacity = '';
-        onboardingOverlay.style.transition = '';
-        document.body.classList.remove('overflow-hidden');
-      }, 250);
-    }
-
-    onboardingForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const name     = document.getElementById('onb-name').value.trim();
-      const gender   = onboardingForm.querySelector('input[name="onb-gender"]:checked')?.value || 'male';
-      const age      = parseFloat(document.getElementById('onb-age').value);
-      const weight   = parseFloat(document.getElementById('onb-weight').value);
-      const height   = parseFloat(document.getElementById('onb-height').value);
-
-      const activityLevel = document.getElementById('onb-activity').value;
-
-      const validations = [
-        ['onb-name', !name || name.length > 160, 'Please enter your name (up to 160 characters).'],
-        ['onb-age', !Number.isInteger(age) || age < 10 || age > 100, 'Enter an age between 10 and 100 years.'],
-        ['onb-weight', !Number.isFinite(weight) || weight < 20 || weight > 300 || !document.getElementById('onb-weight').checkValidity(), 'Enter a weight between 20 and 300 kg.'],
-        ['onb-height', !Number.isInteger(height) || height < 100 || height > 250, 'Enter a height between 100 and 250 cm.'],
-        ['onb-activity', !window.NutriGoals.hasActivityLevel(activityLevel), 'Please choose your activity level.'],
-      ];
-      for (const [id] of validations) {
-        const field = document.getElementById(id);
-        field.removeAttribute('aria-invalid');
-        if (id === 'onb-activity') field.setAttribute('aria-describedby', 'onb-activity-help');
-        else field.removeAttribute('aria-describedby');
-      }
-      const invalid = validations.find(([, failed]) => failed);
-      if (invalid) {
-        const [id, , message] = invalid;
-        onboardingError.textContent = message;
-        onboardingError.classList.remove('hidden');
-        const field = document.getElementById(id);
-        field.setAttribute('aria-invalid', 'true');
-        field.setAttribute('aria-describedby', id === 'onb-activity' ? 'onb-activity-help onboarding-error' : 'onboarding-error');
-        field.focus();
-        return;
-      }
-      onboardingError.classList.add('hidden');
-
-      const targets = window.NutriGoals.calculateTargets({ gender, age, weight, height, activityLevel });
-      const profileData = { name, gender, age, weight, height, activityLevel, ...targets };
-      const submit = onboardingForm.querySelector('button[type="submit"]');
-      const label = submit.innerHTML;
-      submit.disabled = true;
-      submit.textContent = 'Saving your goals…';
-      const profileUid = window._currentUID;
-      try {
-        if (!profileUid || typeof window._syncProfileToFirestore !== 'function') throw new Error('Account is still loading');
-        await window._syncProfileToFirestore(profileUid, profileData);
-        if (!window.NutriSecurity.isCurrent(profileUid)) return;
-        saveProfile(profileData);
-      } catch {
-        onboardingError.textContent = 'Couldn’t save your profile. Please try again.';
-        onboardingError.classList.remove('hidden');
-        return;
-      } finally {
-        submit.disabled = false;
-        submit.innerHTML = label;
-      }
-
-      // Apply the new targets to the live dashboard immediately
-      GOALS.kcal    = targets.targetKcal;
-      GOALS.protein = targets.targetProtein;
-      GOALS.carbs   = targets.targetCarbs;
-      GOALS.fat     = targets.targetFat;
+    window.applyProfileGoals = function(profile) {
+      GOALS.kcal = profile.targetKcal;
+      GOALS.protein = profile.targetProtein ?? GOALS.protein;
+      GOALS.carbs = profile.targetCarbs ?? GOALS.carbs;
+      GOALS.fat = profile.targetFat ?? GOALS.fat;
       syncGoalLabels();
       refresh();
-      updateAvatars();
-
-      closeOnboardingModal();
-      showToast(`🎯 Goals set! Welcome, ${name}!`);
-    });
+    };
 
     // ──────────────────────────────────────────────────────────────────
     // AVATAR HELPERS — update initials in navbar from profile name
@@ -1957,28 +1798,6 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     const STORAGE_KEY = 'nutriglance_meals';
     const WATER_KEY   = 'nutriglance_water';
 
-    // Save profile both to Firestore and localStorage cache
-    async function syncProfileToFirestore(uid, profile) {
-      await setDoc(doc(db, 'users', uid), { profile }, { merge: true });
-    }
-
-    // Expose so the onboarding submit handler (non-module script) can call it
-    window._syncProfileToFirestore = syncProfileToFirestore;
-
-    // Load profile from Firestore and cache locally
-    async function loadProfileFromFirestore(uid) {
-      try {
-        const snap = await getDoc(doc(db, 'users', uid));
-        if (!window.NutriSecurity.isCurrent(uid)) return;
-        if (snap.exists() && snap.data().profile) {
-          const p = snap.data().profile;
-          localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
-          return p;
-        }
-      } catch (e) { console.warn('Profile load error:', e); }
-      return null;
-    }
-
     // Add a single meal to Firestore subcollection
     window._addMealToFirestore = async function(uid, meal) {
       try {
@@ -2054,42 +1873,10 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       const uid = user.uid;
       window._currentUID = uid; // expose UID for other functions to use
 
-      // 1. Load profile from Firestore (source of truth for first-time check)
-      let profile = await loadProfileFromFirestore(uid);
-      if (!window.NutriSecurity.isCurrent(uid)) return;
-
-      if (!profile || !profile.name) {
-        // ── NEW USER — show onboarding modal with personalised greeting ──────
-        // Derive a friendly first name: use Firebase displayName, or the part
-        // of the email address before the @ sign.
-        const authName = user.displayName
-          ? user.displayName.split(' ')[0]          // first name only
-          : user.email.split('@')[0];
-
-        // Populate the greeting span ("Hello, Alex!")
-        const greetingSpan = document.getElementById('onb-greeting-name');
-        if (greetingSpan) greetingSpan.textContent = authName;
-
-        // Pre-fill the Name field so the user doesn't have to retype it
-        const nameInput = document.getElementById('onb-name');
-        if (nameInput && !nameInput.value) nameInput.value = authName;
-
-        // Show the onboarding overlay
-        const overlay = document.getElementById('onboarding-overlay');
-        overlay.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-
-      } else {
-        // ── RETURNING USER — apply saved profile goals to dashboard ──────────
-        if (profile.targetKcal) {
-          window.GOALS && (window.GOALS.kcal    = profile.targetKcal);
-          window.GOALS && (window.GOALS.protein = profile.targetProtein);
-          window.GOALS && (window.GOALS.carbs   = profile.targetCarbs);
-          window.GOALS && (window.GOALS.fat     = profile.targetFat);
-        }
-        if (typeof window.syncGoalLabels === 'function') window.syncGoalLabels();
-        if (typeof window.updateAvatars  === 'function') window.updateAvatars();
-      }
+      const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
+      if (!profile || !window.NutriSecurity.isCurrent(uid)) return;
+      window.applyProfileGoals(profile);
+      window.updateAvatars();
 
       // 2. Load meals from Firestore and refresh dashboard
       await loadMealsFromFirestore(uid);

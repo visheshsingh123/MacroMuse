@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -235,6 +236,8 @@
   <script src="/site-shell.js" defer></script>
   <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/workspace-pages.css" />
+  <link rel="stylesheet" href="/onboarding.css" />
+  <script src="/onboarding.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -818,7 +821,7 @@
   <script type="module">
     import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getAuth }         from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-    import { getFirestore, doc, getDoc }
+    import { getFirestore, doc, getDoc, setDoc }
       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -842,24 +845,8 @@
       if (!user) window.NutriSecurity.bindSession(null);
       if (!user) { window.location.href = '/login'; return; }
 
-      // Load profile from Firestore and cache locally
-      try {
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        if (!window.NutriSecurity.isCurrent(user.uid)) return;
-        if (snap.exists() && snap.data().profile) {
-          const p = snap.data().profile;
-          localStorage.setItem('nutriglance_profile', JSON.stringify(p));
-        }
-      } catch (e) { console.warn('Profile load error:', e); }
-
-      // Ensure default profile if still none
-      let p = null;
-      try { p = JSON.parse(localStorage.getItem('nutriglance_profile')); } catch (e) {}
-      if (!p || !p.name) {
-        const name = user.displayName || user.email.split('@')[0];
-        const newProfile = { name, gender: 'male', age: 28, weight: 68, height: 172, targetKcal: 2100, targetProtein: 90, targetFat: 70, targetCarbs: 200 };
-        localStorage.setItem('nutriglance_profile', JSON.stringify(newProfile));
-      }
+      const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
+      if (!profile || !window.NutriSecurity.isCurrent(user.uid)) return;
       if (typeof window.updateAvatars === 'function') window.updateAvatars();
     });
   </script>

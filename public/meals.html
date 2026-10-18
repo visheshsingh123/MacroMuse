@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -213,6 +214,8 @@
   <script src="/site-shell.js" defer></script>
   <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/meals.css" />
+  <link rel="stylesheet" href="/onboarding.css" />
+  <script src="/onboarding.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal overflow-x-hidden">
@@ -505,6 +508,13 @@ if (profile) {
   GOALS.carbs   = profile.targetCarbs   ?? GOALS.carbs;
   GOALS.fat     = profile.targetFat     ?? GOALS.fat;
 }
+
+window.applyProfileGoals = p => {
+  GOALS.kcal = p.targetKcal;
+  GOALS.protein = p.targetProtein ?? GOALS.protein;
+  GOALS.carbs = p.targetCarbs ?? GOALS.carbs;
+  GOALS.fat = p.targetFat ?? GOALS.fat;
+};
 
 function loadMeals() {
   try { return window.NutriSecurity.readMeals(JSON.parse(localStorage.getItem(MEALS_KEY) || '[]')); } catch { return []; }
@@ -836,28 +846,15 @@ refreshAll();
       } catch (e) { console.warn('Clear all meals error:', e); }
     }
 
-    // Load profile from Firestore and cache locally
-    async function loadProfileFromFirestore(uid) {
-      try {
-        const snap = await getDoc(doc(db, 'users', uid));
-        if (!window.NutriSecurity.isCurrent(uid)) return;
-        if (snap.exists() && snap.data().profile) {
-          const p = snap.data().profile;
-          localStorage.setItem('nutriglance_profile', JSON.stringify(p));
-          return p;
-        }
-      } catch (e) { console.warn('Profile load error:', e); }
-      return null;
-    }
-
     auth.onAuthStateChanged(async user => {
       if (user && !window.NutriSecurity.bindSession(user)) return;
       if (!user) window.NutriSecurity.bindSession(null);
       if (!user) { window.location.href = '/login'; return; }
       _uid = user.uid;
 
-      // Load profile
-      await loadProfileFromFirestore(_uid);
+      const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
+      if (!profile || !window.NutriSecurity.isCurrent(_uid)) return;
+      window.applyProfileGoals(profile);
       if (typeof window.updateAvatars === 'function') window.updateAvatars();
 
       // Load meals from Firestore then re-render

@@ -195,6 +195,8 @@
   <script src="/site-shell.js" defer></script>
   <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/workspace-pages.css" />
+  <link rel="stylesheet" href="/onboarding.css" />
+  <script src="/onboarding.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen pb-24 md:pb-8">
@@ -706,24 +708,6 @@
 
     let _uid = null;
 
-    // Load profile from Firestore, cache in localStorage, render the form
-    async function loadAndApplyProfile(uid) {
-      try {
-        const snap = await getDoc(doc(db, 'users', uid));
-        if (!window.NutriSecurity.isCurrent(uid)) return;
-        if (snap.exists() && snap.data().profile) {
-          const p = snap.data().profile;
-          localStorage.setItem('nutriglance_profile', JSON.stringify(p));
-          if (typeof window.updateAvatars      === 'function') window.updateAvatars();
-          if (typeof window.prefillProfileForm === 'function') window.prefillProfileForm();
-          return;
-        }
-      } catch (e) { console.warn('Profile load error:', e); }
-      // Fallback: use whatever is already in localStorage
-      if (typeof window.updateAvatars      === 'function') window.updateAvatars();
-      if (typeof window.prefillProfileForm === 'function') window.prefillProfileForm();
-    }
-
     // Save profile to Firestore AND localStorage
     async function saveProfileEverywhere(uid, profile) {
       if (!window.NutriSecurity.isCurrent(uid)) throw new Error('Account changed');
@@ -741,8 +725,10 @@
       }
       _uid = user.uid;
 
-      // Load & render profile from Firestore
-      await loadAndApplyProfile(_uid);
+      const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
+      if (!profile || !window.NutriSecurity.isCurrent(_uid)) return;
+      window.updateAvatars();
+      window.prefillProfileForm();
 
       // Patch the existing saveProfile function to also write to Firestore
       window.saveProfile = profile => saveProfileEverywhere(_uid, profile);
