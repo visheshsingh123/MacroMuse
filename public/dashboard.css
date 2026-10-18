@@ -115,11 +115,3 @@ html.dark #page-drag-overlay,body.dark #page-drag-overlay { --drop-card:#1e293b;
 @media(max-width:480px) { #page-drag-overlay { padding:16px; } .drag-drop-panel { padding:10px; border-radius:24px; } .drag-drop-stage { padding:26px 16px; } .drag-drop-stage h2 { font-size:25px; } .drag-drop-footer { padding:14px 6px 4px; } }
 @media(max-height:600px) { .drag-drop-stage { padding-block:18px; } .drag-drop-illustration { width:64px; height:64px; margin:10px 0; border-radius:18px; } .drag-drop-illustration svg { width:48px; height:48px; } .drag-drop-stage h2 { font-size:26px; } .drag-drop-stage > p { margin-top:8px; } .drag-drop-formats { margin-top:12px; } }
 @media(prefers-reduced-motion:reduce) { .drag-drop-panel { animation:none; } }
-
-/* Guidance stays compact above the original dashboard columns. */
-.dashboard-guidance-message { max-width:680px; color:var(--dash-muted); font-size:13px; line-height:1.7; margin-top:8px; }
-.dashboard-guidance-metrics { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:14px; }
-.dashboard-guidance-metrics > span { padding:6px 10px; border:1px solid var(--dash-line); border-radius:99px; color:var(--dash-ink); background:var(--dash-card); font-size:11px; }
-.dashboard-guidance-metrics > a { display:inline-flex; align-items:center; gap:6px; padding:6px 4px; margin-left:4px; color:#047857; font-size:11px; font-weight:600; }
-html.dark .dashboard-guidance-metrics > a { color:#6ee7b7; }
-@media(max-width:767px) { .dashboard-guidance-message { font-size:12px; } .dashboard-guidance-metrics { gap:6px; } .dashboard-guidance-metrics > span { font-size:10px; padding:6px 9px; } }

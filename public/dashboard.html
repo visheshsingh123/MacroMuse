@@ -426,11 +426,6 @@
   <main id="dashboard-page" class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8">
     <header class="dashboard-greeting">
       <h1 id="dashboard-greeting">Welcome!</h1>
-      <p id="dashboard-guidance" class="dashboard-guidance-message" aria-live="polite"></p>
-      <div class="dashboard-guidance-metrics" aria-label="Today at a glance">
-        <span id="guidance-protein"></span><span id="guidance-calories"></span><span id="guidance-water"></span>
-        <a href="/aichef">Find a recipe <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l6-6M3 3h6v6"/></svg></a>
-      </div>
     </header>
 
     <!--
@@ -1074,18 +1069,14 @@
       const totals = computeTotals(meals);
       updateStats(totals);
       renderMeals(meals);
-      updateDashboardGuidance();
+      updateDashboardGreeting();
     }
 
-    function updateDashboardGuidance() {
+    function updateDashboardGreeting() {
       const now = new Date();
       const profile = loadProfile();
       const name = typeof profile?.name === 'string' ? profile.name : '';
       document.getElementById('dashboard-greeting').textContent = window.NutriGuidance.greeting(now, name);
-      const meals = loadMeals();
-      const insight = window.NutriGuidance.guidance({ totals: computeTotals(meals), goals: GOALS, mealCount: meals.length, waterCount: loadWater().count, hour: now.getHours() });
-      document.getElementById('dashboard-guidance').textContent = insight.message;
-      for (const key of ['protein', 'calories', 'water']) document.getElementById(`guidance-${key}`).textContent = insight[key];
     }
 
     window.applyProfileGoals = function(profile) {
@@ -1704,7 +1695,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
         });
         container.appendChild(btn);
       }
-      updateDashboardGuidance();
+      updateDashboardGreeting();
     }
 
     function describeMeal() {
@@ -1763,7 +1754,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       if (document.hidden) return;
       const day = new Date().toDateString();
       if (day !== dashboardDay) { dashboardDay = day; refresh(); renderWater(); }
-      else updateDashboardGuidance();
+      else updateDashboardGreeting();
     }
     setInterval(refreshForTime, 60000);
     document.addEventListener('visibilitychange', refreshForTime);
