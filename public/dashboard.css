@@ -115,3 +115,7 @@ html.dark #page-drag-overlay,body.dark #page-drag-overlay { --drop-card:#1e293b;
 @media(max-width:480px) { #page-drag-overlay { padding:16px; } .drag-drop-panel { padding:10px; border-radius:24px; } .drag-drop-stage { padding:26px 16px; } .drag-drop-stage h2 { font-size:25px; } .drag-drop-footer { padding:14px 6px 4px; } }
 @media(max-height:600px) { .drag-drop-stage { padding-block:18px; } .drag-drop-illustration { width:64px; height:64px; margin:10px 0; border-radius:18px; } .drag-drop-illustration svg { width:48px; height:48px; } .drag-drop-stage h2 { font-size:26px; } .drag-drop-stage > p { margin-top:8px; } .drag-drop-formats { margin-top:12px; } }
 @media(prefers-reduced-motion:reduce) { .drag-drop-panel { animation:none; } }
+
+.dashboard-guidance-metrics { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; }
+.dashboard-guidance-metrics > span { padding:6px 10px; border:1px solid var(--dash-line); border-radius:99px; color:var(--dash-ink); background:var(--dash-card); font-size:11px; }
+@media(max-width:767px) { .dashboard-guidance-metrics { gap:6px; } .dashboard-guidance-metrics > span { font-size:10px; padding:6px 9px; } }

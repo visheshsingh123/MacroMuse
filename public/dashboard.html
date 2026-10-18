@@ -426,6 +426,11 @@
   <main id="dashboard-page" class="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8">
     <header class="dashboard-greeting">
       <h1 id="dashboard-greeting">Welcome!</h1>
+      <div class="dashboard-guidance-metrics" aria-label="Today at a glance">
+        <span id="guidance-protein"></span>
+        <span id="guidance-calories"></span>
+        <span id="guidance-water"></span>
+      </div>
     </header>
 
     <!--
@@ -1077,6 +1082,9 @@
       const profile = loadProfile();
       const name = typeof profile?.name === 'string' ? profile.name : '';
       document.getElementById('dashboard-greeting').textContent = window.NutriGuidance.greeting(now, name);
+      const meals = loadMeals();
+      const insight = window.NutriGuidance.guidance({ totals: computeTotals(meals), goals: GOALS, mealCount: meals.length, waterCount: loadWater().count });
+      for (const key of ['protein', 'calories', 'water']) document.getElementById(`guidance-${key}`).textContent = insight[key];
     }
 
     window.applyProfileGoals = function(profile) {
