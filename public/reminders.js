@@ -15,7 +15,14 @@
   let serviceAvailable = false;
   let errorMessage = '';
   let generation = 0;
-  const registration = () => navigator.serviceWorker.register('/service-worker.js').then(() => navigator.serviceWorker.ready);
+  function withTimeout(promise) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new ReminderError('Reminder setup timed out. Please try again.')), 15000);
+    });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+  }
+  const registration = () => withTimeout(navigator.serviceWorker.register('/service-worker.js').then(() => navigator.serviceWorker.ready));
   const enabled = () => supported && Notification.permission === 'granted' && subscription &&
     localStorage.getItem(preferenceKey) === '1' && localStorage.getItem(ownerKey) === user?.uid;
 
@@ -23,7 +30,8 @@
     if (!toggle) return;
     const on = Boolean(enabled());
     toggle.setAttribute('aria-checked', String(on));
-    toggle.disabled = busy || !supported || !user || (!serviceAvailable && !on);
+    toggle.disabled = busy;
+    toggle.setAttribute('aria-busy', String(busy));
     toggle.classList.toggle('bg-brand', on);
     toggle.classList.toggle('bg-slate-200', !on);
     thumb.classList.toggle('translate-x-5', on);
@@ -32,7 +40,7 @@
       retry.classList.toggle('hidden', !supported || !user || (!message && serviceAvailable));
       retry.disabled = busy;
     }
-    status.textContent = message || (!supported
+    status.textContent = busy ? 'Checking reminders…' : message || (!supported
       ? 'Reminders aren’t supported in this browser. On iPhone, add NutriGlance to your Home Screen first.'
       : !user ? 'Sign in to manage reminders.'
         : Notification.permission === 'denied'
@@ -54,7 +62,7 @@
   async function save(enabled, sub) {
     const owner = user;
     if (!owner) throw new ReminderError('Please sign in to manage reminders.');
-    const token = await owner.getIdToken();
+    const token = await withTimeout(owner.getIdToken());
     if (user?.uid !== owner.uid) throw new ReminderError('Your account changed. Please try again.');
     const response = await fetch('/api/reminders', {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -88,7 +96,16 @@
   window.nutriGlanceDisableReminders = disable;
 
   toggle?.addEventListener('click', async () => {
-    if (busy || !user || !supported) return;
+    if (busy) return;
+    if (!user || !supported) { render(); return; }
+    if (!serviceAvailable && !enabled()) {
+      await refresh();
+      if (serviceAvailable) {
+        errorMessage = 'Reminders are ready. Turn on the switch to allow notifications.';
+        render();
+      }
+      return;
+    }
     busy = true;
     const requestGeneration = generation;
     const requestUser = user;
@@ -129,9 +146,10 @@
   async function refresh() {
     if (!supported || !user || busy) { render(); return; }
     busy = true;
+    render();
     try {
       const reg = await registration();
-      subscription = await reg.pushManager.getSubscription();
+      subscription = await withTimeout(reg.pushManager.getSubscription());
       // A browser subscription must never follow another user's saved preference.
       if (subscription && localStorage.getItem(ownerKey) !== user.uid) {
         if (!await subscription.unsubscribe()) throw new Error('Could not remove previous subscription');

@@ -32,7 +32,7 @@ Check that all five variable names above exist in Vercel's **Production** enviro
 
 Open Settings and inspect the failed `/api/reminders` request in Vercel Logs. Missing configuration logs list variable names only. Invalid Firebase credentials and invalid VAPID settings have separate messages; server initialization failures return 503 instead of incorrectly asking the user to sign in again. Never share secret values or the service-account JSON in chat or logs.
 
-After fixing the deployment, use **Retry reminders** in Settings, then enable the switch. Retry checks availability without requesting notification permission. If notifications are blocked, allow them in the browser's site settings first. A successful subscription should remain on after reload; confirm actual delivery with a real device at the next scheduled time.
+After fixing the deployment, click the switch or **Retry reminders** in Settings to check availability, then enable the switch. Availability checks do not request notification permission. The switch remains clickable during an outage and shows the error; it is disabled only while a request is running. Service-worker readiness has a 15-second timeout so a stalled worker cannot permanently disable the controls. If notifications are blocked, allow them in the browser's site settings first. A successful subscription should remain on after reload; confirm actual delivery with a real device at the next scheduled time.
 
 ## Operational details
 
