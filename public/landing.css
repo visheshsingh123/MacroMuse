@@ -1,7 +1,7 @@
 /* Landing page palette and layout; application pages retain their own styles. */
-.landing-page { --ink:#0f172a; --paper:#eff7f4; --gradient-mint:#a7f3d080; --gradient-green:#6ee7b750; --gradient-soft:#d1fae5b3; position:relative; isolation:isolate; background:var(--paper); color:var(--ink); }
+.landing-page { --ink:#0f172a; --paper:#f1f5f9; --gradient-navy:#0f172a1a; --gradient-slate:#3341551a; --gradient-soft:#cbd5e180; position:relative; isolation:isolate; background:var(--paper); color:var(--ink); }
 .landing-gradient { position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
-.landing-gradient::before { content:""; position:absolute; inset:-25%; background:radial-gradient(ellipse at 20% 25%,var(--gradient-mint),transparent 55%),radial-gradient(ellipse at 80% 35%,var(--gradient-green),transparent 50%),radial-gradient(ellipse at 45% 85%,var(--gradient-soft),transparent 55%); animation:landing-gradient-drift 24s ease-in-out infinite alternate; }
+.landing-gradient::before { content:""; position:absolute; inset:-25%; background:radial-gradient(ellipse at 20% 25%,var(--gradient-navy),transparent 55%),radial-gradient(ellipse at 80% 35%,var(--gradient-slate),transparent 50%),radial-gradient(ellipse at 45% 85%,var(--gradient-soft),transparent 55%); animation:landing-gradient-drift 24s ease-in-out infinite alternate; }
 @keyframes landing-gradient-drift {
   0% { transform:translate(-5%,-3%) rotate(-5deg) scale(1); }
   50% { transform:translate(5%,4%) rotate(5deg) scale(1.06); }
@@ -41,7 +41,7 @@
 #ai-chef > div:last-child { background:#ecfdf5; border:1px solid #a7f3d0; border-radius:24px; box-shadow:8px 8px 0 #d1fae5; }
 #ai-chef a { background:#047857; border-radius:99px; padding:14px; }
 .landing-page #bottom-nav .bottom-nav-link { color:#64748b; }
-html.dark .landing-page { --ink:#e2e8f0; --paper:#0f172a; --gradient-mint:#065f4666; --gradient-green:#05966933; --gradient-soft:#064e3b80; background:var(--paper)!important; }
+html.dark .landing-page { --ink:#e2e8f0; --paper:#0f172a; --gradient-navy:#1e293bcc; --gradient-slate:#33415580; --gradient-soft:#0b122480; background:var(--paper)!important; }
 html.dark .landing-page .text-muted,html.dark .hero-benefits { color:#94a3b8; }
 html.dark .landing-page .text-brand { color:#34d399; }
 html.dark #landing-hero a[href='/dashboard'] { background:#6ee7b7; color:#0f172a; }
