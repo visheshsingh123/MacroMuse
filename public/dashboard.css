@@ -118,4 +118,7 @@ html.dark #page-drag-overlay,body.dark #page-drag-overlay { --drop-card:#1e293b;
 
 .dashboard-guidance-metrics { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; }
 .dashboard-guidance-metrics > span { padding:6px 10px; border:1px solid var(--dash-line); border-radius:99px; color:var(--dash-ink); background:var(--dash-card); font-size:11px; }
+.dashboard-guidance-metrics > a { display:inline-flex; align-items:center; gap:6px; min-height:36px; padding:6px 4px; color:#047857; font-size:11px; font-weight:600; text-decoration:none; }
+.dashboard-guidance-metrics > a:hover { text-decoration:underline; text-underline-offset:3px; }
+html.dark .dashboard-guidance-metrics > a { color:#6ee7b7; }
 @media(max-width:767px) { .dashboard-guidance-metrics { gap:6px; } .dashboard-guidance-metrics > span { font-size:10px; padding:6px 9px; } }
