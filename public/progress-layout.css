@@ -25,10 +25,14 @@
 #progress-page .range-btn.bg-brand { background:#047857; }
 #progress-page .progress-calories > .relative { height:260px; }
 #progress-page .progress-macros > .relative { height:220px; }
+#progress-page canvas { max-width:100%; }
 #progress-page .progress-tip { min-height:0; background:#f8fafc; }
 #progress-page #tip-category { display:inline-block; margin:6px 0 0; }
 #progress-page #progress-daily-tip { color:var(--pg-muted); font-size:13px; line-height:1.8; }
-#progress-page .progress-history { margin-top:0; }
+#progress-page .progress-history { grid-column:1/-1; margin-top:0; }
+#history-empty:not(.hidden) { display:flex; align-items:center; gap:16px; padding:12px 0 8px; color:var(--pg-muted); font-size:12px; line-height:1.8; }
+.progress-empty-icon { display:grid; place-items:center; flex-shrink:0; width:52px; height:52px; border-radius:16px; background:#ecfdf5; color:#047857; }
+#history-empty .progress-empty-title { margin-bottom:3px; color:var(--pg-ink); font-size:14px; font-weight:600; }
 #history-table > div:first-child,#progress-page .progress-history-row { grid-template-columns:minmax(180px,2fr) repeat(4,minmax(58px,1fr)); }
 #progress-page .progress-history-row { padding-block:16px; align-items:center; font-size:13px; gap:8px; }
 .progress-history-date { grid-column:auto!important; display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
@@ -39,6 +43,7 @@ html.dark #progress-page .progress-today,body.dark #progress-page .progress-toda
 html.dark #progress-page #today-ring-kcal,body.dark #progress-page #today-ring-kcal { fill:#e2e8f0; }
 html.dark #progress-page .progress-today svg > text:last-child,body.dark #progress-page .progress-today svg > text:last-child { fill:#94a3b8; }
 html.dark #progress-page .progress-tip,body.dark #progress-page .progress-tip { background:#172333!important; }
+html.dark .progress-empty-icon,body.dark .progress-empty-icon { background:#12382e; color:#6ee7b7; }
 @media(max-width:1000px) {
   .progress-workspace { grid-template-columns:260px minmax(0,1fr); gap:20px; }
   #progress-page .progress-card { padding:20px; }
