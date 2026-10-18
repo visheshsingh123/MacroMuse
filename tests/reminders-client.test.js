@@ -5,21 +5,22 @@ import vm from 'node:vm';
 
 const script = readFileSync(new URL('../public/reminders.js', import.meta.url), 'utf8');
 const flush = () => new Promise(resolve => setImmediate(resolve));
-function fixture({ workerPending = false, supported = true } = {}) {
+function fixture({ workerPending = false, supported = true, preference = '0', permission = 'default', available = false } = {}) {
   const timers = new Map(), storage = new Map(), events = {};
+  if (preference !== null) storage.set('nutriglance_notifications', preference);
   const elements = Object.fromEntries(['notif-toggle', 'notif-thumb', 'notif-status', 'notif-retry'].map(id => [id, {
     disabled: false, textContent: '', attrs: {}, classes: new Set(),
     setAttribute(key, value) { this.attrs[key] = value; },
     addEventListener(name, fn) { this[name] = fn; },
     classList: { toggle() {} },
   }]));
-  const state = { available: false, permissions: 0, posts: 0, unsubscribed: 0, subscribed: false, tokenPending: false };
+  const state = { available, permissions: 0, posts: 0, unsubscribed: 0, subscribed: false, tokenPending: false };
   const sub = { endpoint: 'https://fcm.googleapis.com/fcm/send/test', toJSON() { return { endpoint: this.endpoint }; }, async unsubscribe() { state.unsubscribed++; state.subscribed = false; return true; } };
   const reg = { getNotifications: async () => [], pushManager: {
     getSubscription: async () => state.subscribed ? sub : null,
     subscribe: async () => { state.subscribed = true; return sub; },
   } };
-  const notification = { permission: 'default', async requestPermission() { state.permissions++; this.permission = 'granted'; return 'granted'; } };
+  const notification = { permission, async requestPermission() { state.permissions++; this.permission = 'granted'; return 'granted'; } };
   const context = {
     document: { getElementById: id => elements[id] },
     navigator: { serviceWorker: { register: async () => reg, ready: workerPending ? new Promise(() => {}) : Promise.resolve(reg), getRegistration: async () => reg } },
@@ -37,8 +38,56 @@ function fixture({ workerPending = false, supported = true } = {}) {
     },
   };
   vm.runInNewContext(script, context);
-  return { state, elements, storage, timers, click: () => elements['notif-toggle'].click(), expire: () => [...timers.values()].forEach(fn => fn()) };
+  return { state, elements, storage, timers, events, click: () => elements['notif-toggle'].click(), allow: () => elements['notif-retry'].click(), expire: () => [...timers.values()].forEach(fn => fn()) };
 }
+
+test('new users default to on and approve browser permission through an explicit action', async () => {
+  const f = fixture({ preference: null, available: true }); await flush();
+  assert.equal(f.storage.get('nutriglance_notifications'), '1');
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.match(f.elements['notif-status'].textContent, /Allow browser notifications/);
+  assert.equal(f.elements['notif-retry'].textContent, 'Allow notifications');
+  assert.equal(f.state.permissions, 0);
+  assert.equal(f.state.posts, 0);
+  await f.allow();
+  assert.equal(f.state.permissions, 1);
+  assert.equal(f.state.posts, 1);
+  assert.match(f.elements['notif-status'].textContent, /1 PM and 7 PM IST/);
+});
+
+test('new users with existing browser permission subscribe automatically', async () => {
+  const f = fixture({ preference: null, permission: 'granted', available: true }); await flush();
+  assert.equal(f.state.permissions, 0);
+  assert.equal(f.state.posts, 1);
+  assert.equal(f.state.subscribed, true);
+  assert.equal(f.storage.get('nutriglance_reminder_owner'), 'alice');
+  assert.match(f.elements['notif-status'].textContent, /1 PM and 7 PM IST/);
+});
+
+test('existing opt-outs stay off even with granted permission and repeated refreshes', async () => {
+  const f = fixture({ permission: 'granted', available: true }); await flush();
+  await f.events.focus();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+  assert.equal(f.state.subscribed, false);
+  assert.equal(f.state.posts, 0);
+});
+
+test('a default-on preference can be turned off before allowing notifications', async () => {
+  const f = fixture({ preference: null, available: true }); await flush();
+  await f.click();
+  await f.events.focus();
+  assert.equal(f.storage.get('nutriglance_notifications'), '0');
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+  assert.equal(f.state.permissions, 0);
+  assert.equal(f.state.posts, 0);
+});
+
+test('blocked notification permission is explained without prompting or creating a subscription', async () => {
+  const f = fixture({ preference: null, available: true, permission: 'denied' }); await flush();
+  assert.match(f.elements['notif-status'].textContent, /Notifications are blocked/);
+  assert.equal(f.state.permissions, 0);
+  assert.equal(f.state.posts, 0);
+});
 
 test('an unavailable reminder switch remains clickable and retries without prompting for permission', async () => {
   const f = fixture(); await flush();

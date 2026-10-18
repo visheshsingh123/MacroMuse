@@ -23,12 +23,13 @@
     return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
   }
   const registration = () => withTimeout(navigator.serviceWorker.register('/service-worker.js').then(() => navigator.serviceWorker.ready));
+  const preferred = () => Boolean(user && localStorage.getItem(preferenceKey) === '1');
   const enabled = () => supported && Notification.permission === 'granted' && subscription &&
     localStorage.getItem(preferenceKey) === '1' && localStorage.getItem(ownerKey) === user?.uid;
 
   function render(message = errorMessage) {
     if (!toggle) return;
-    const on = Boolean(enabled());
+    const on = preferred();
     toggle.setAttribute('aria-checked', String(on));
     toggle.disabled = busy;
     toggle.setAttribute('aria-busy', String(busy));
@@ -37,7 +38,9 @@
     thumb.classList.toggle('translate-x-5', on);
     thumb.classList.toggle('translate-x-0.5', !on);
     if (retry) {
-      retry.classList.toggle('hidden', !supported || !user || (!message && serviceAvailable));
+      const needsPermission = supported && on && Notification.permission === 'default' && serviceAvailable;
+      retry.textContent = needsPermission ? 'Allow notifications' : 'Retry reminders';
+      retry.classList.toggle('hidden', !supported || !user || (!message && serviceAvailable && !needsPermission));
       retry.disabled = busy;
     }
     status.textContent = busy ? 'Checking reminders…' : message || (!supported
@@ -46,7 +49,9 @@
         : Notification.permission === 'denied'
           ? 'Notifications are blocked. Allow them in your browser’s site settings to enable reminders.'
           : !serviceAvailable && !on ? 'Reminders aren’t available yet. Please try again later.'
-            : on ? 'On · 1 PM and 7 PM IST, even when the app is closed.'
+            : on && Notification.permission === 'default' ? 'On · Allow browser notifications to receive reminders.'
+              : enabled() ? 'On · 1 PM and 7 PM IST, even when the app is closed.'
+                : on ? 'On · Connecting reminders. Please retry if this persists.'
               : 'Off · Water and meal reminders at 1 PM and 7 PM IST.');
   }
 
@@ -95,24 +100,37 @@
   }
   window.nutriGlanceDisableReminders = disable;
 
-  toggle?.addEventListener('click', async () => {
+  async function subscribe(reg) {
+    const requestGeneration = generation;
+    const requestUser = user;
+    const bytes = Uint8Array.from(atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+    const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: bytes });
+    try { await save(true, sub); } catch (error) { await sub.unsubscribe(); subscription = null; throw error; }
+    if (generation !== requestGeneration || user?.uid !== requestUser.uid) {
+      await sub.unsubscribe();
+      throw new Error('The account or notification preference changed.');
+    }
+    subscription = sub;
+    localStorage.setItem(ownerKey, user.uid);
+    localStorage.setItem(preferenceKey, '1');
+  }
+
+  async function updateReminders(turnOn) {
     if (busy) return;
     if (!user || !supported) { render(); return; }
-    if (!serviceAvailable && !enabled()) {
+    if (turnOn && !serviceAvailable) {
       await refresh();
       if (serviceAvailable) {
-        errorMessage = 'Reminders are ready. Turn on the switch to allow notifications.';
+        errorMessage = 'Reminders are ready. Allow notifications to receive them.';
         render();
       }
       return;
     }
     busy = true;
-    const requestGeneration = generation;
-    const requestUser = user;
     errorMessage = '';
     render();
     try {
-      if (enabled()) {
+      if (!turnOn) {
         await disable();
       } else {
         // Ask only after an explicit click, never automatically on page load.
@@ -121,17 +139,7 @@
           localStorage.setItem(preferenceKey, '0');
           if (permission === 'default') errorMessage = 'Permission wasn’t granted. Reminders are off.';
         } else {
-          const reg = await registration();
-          const bytes = Uint8Array.from(atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
-          const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: bytes });
-          try { await save(true, sub); } catch (error) { await sub.unsubscribe(); throw error; }
-          if (generation !== requestGeneration || user?.uid !== requestUser.uid) {
-            await sub.unsubscribe();
-            throw new Error('The account or notification preference changed.');
-          }
-          subscription = sub;
-          localStorage.setItem(ownerKey, user.uid);
-          localStorage.setItem(preferenceKey, '1');
+          await subscribe(await registration());
         }
       }
     } catch (error) {
@@ -141,7 +149,8 @@
           ['TimeoutError', 'AbortError'].includes(error.name) ? 'The reminder request timed out. Please try again.' :
             'Couldn’t update reminders. Please try again.';
     } finally { busy = false; render(); }
-  });
+  }
+  toggle?.addEventListener('click', () => updateReminders(!preferred()));
 
   async function refresh() {
     if (!supported || !user || busy) { render(); return; }
@@ -154,9 +163,7 @@
       if (subscription && localStorage.getItem(ownerKey) !== user.uid) {
         if (!await subscription.unsubscribe()) throw new Error('Could not remove previous subscription');
         subscription = null;
-        localStorage.setItem(preferenceKey, '0');
       }
-      if (!subscription) localStorage.setItem(preferenceKey, '0');
       if (subscription && localStorage.getItem(preferenceKey) !== '1') await disable();
       const response = await fetch('/api/reminders', { cache: 'no-store', signal: AbortSignal.timeout(15000) });
       serviceAvailable = response.ok;
@@ -165,7 +172,8 @@
       if (typeof publicKey !== 'string' || !/^[A-Za-z0-9_-]+={0,2}$/.test(publicKey) || atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')).length !== 65) {
         throw new ReminderError('Reminders are temporarily unavailable. Please try again later.');
       }
-      if (subscription && enabled() && serviceAvailable) await save(true, subscription);
+      // Restore the default preference without prompting if browser permission already exists.
+      if (preferred() && Notification.permission === 'granted') await subscribe(reg);
       errorMessage = '';
     } catch (error) {
       serviceAvailable = false;
@@ -182,6 +190,7 @@
     attachedAuth = auth;
     auth.onAuthStateChanged(async currentUser => {
       user = currentUser;
+      if (user && localStorage.getItem(preferenceKey) === null) localStorage.setItem(preferenceKey, '1');
       if (!user && supported) {
         try { await disable(); } catch { /* Retry when the app next opens. */ }
       }
@@ -190,7 +199,8 @@
   }
   window.addEventListener('nutriglance-auth-ready', attachAuth);
   window.addEventListener('focus', refresh);
-  retry?.addEventListener('click', refresh);
+  retry?.addEventListener('click', () => preferred() && serviceAvailable && Notification.permission === 'default'
+    ? updateReminders(true) : refresh());
   window.addEventListener('storage', event => {
     if ([preferenceKey, ownerKey, null].includes(event.key)) refresh();
   });

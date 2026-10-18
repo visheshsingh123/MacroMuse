@@ -1,6 +1,8 @@
 # Twice-daily Web Push reminders
 
-The app subscribes a signed-in device only after the user enables **Settings → Meal Reminders** and grants notification permission. Vercel runs two jobs at 07:30 and 13:30 UTC (1 PM and 7 PM IST). Delivery works with the page closed on browsers that support Web Push. On iPhone/iPad, the user must install the site to their Home Screen first (iOS/iPadOS 16.4+).
+Meal Reminders defaults to on for signed-in users without a saved reminder preference on that browser. Existing off choices are preserved. The switch represents the saved preference; its status explains whether notifications are active, awaiting permission, blocked, or unavailable. In Settings, **Allow notifications** requests browser permission after a click. No permission prompt appears automatically on page load. If permission is already granted, an on preference subscribes automatically. Delivery starts only after the server saves the subscription.
+
+Vercel runs two jobs at 07:30 and 13:30 UTC (1 PM and 7 PM IST). Delivery works with the page closed on browsers that support Web Push. On iPhone/iPad, the user must install the site to their Home Screen first (iOS/iPadOS 16.4+).
 
 Each job sends at most one combined notification per device. Water reminders stop after eight glasses; meal reminders are skipped when a meal is logged today (afternoon job), or since 1 PM IST (evening job). Both checks use the user's synced Firestore records. If both are satisfied, nothing is sent. Missed notifications expire after 30 minutes at the push service. Delivery timing also depends on the browser, device, and Vercel plan; Hobby daily jobs may run within an hour of the configured time.
 
@@ -22,9 +24,9 @@ Each job sends at most one combined notification per device. Water reminders sto
 
    Firestore permissions are additive: remove or restrict any existing broad wildcard rule that also grants access to this collection. Keep the existing rules for `users/{uid}` and its meal/progress collections. The server uses the Admin SDK; browser clients must have no read or write access to push endpoints or encryption keys. Use the Firebase Rules simulator to verify an authenticated client cannot read or write `reminderSubscriptions`.
 4. Redeploy on Vercel, then check Project → Cron Jobs for both schedules. No Firebase service-account, VAPID private key, or cron secret belongs in public files or Git. The setup values are not currently supplied by this repository.
-5. On the deployed HTTPS site, sign in and enable Meal Reminders. Grant browser permission, confirm the toggle stays on after reload, close the page, and check delivery at the next reminder time. Test disabling the toggle on the same device and confirm future pushes stop.
+5. On the deployed HTTPS site, sign in and open Meal Reminders in Settings. New preferences start on; use **Allow notifications** and grant browser permission. For an existing off preference, turn the switch on. Confirm the active status and saved preference after reload, close the page, and check delivery at the next reminder time. Test disabling the toggle on the same device and confirm future pushes stop.
 
-Without the production variables, `/api/reminders` returns 503 and Settings shows that reminders are not available. It never displays a working on switch for an unconfigured service.
+Without the production variables, `/api/reminders` returns 503 and Settings shows that reminders are not available, even if the saved preference is on. Only a saved subscription and granted browser permission produce the active delivery status.
 
 ## Troubleshooting a switch that will not turn on
 
@@ -32,7 +34,7 @@ Check that all five variable names above exist in Vercel's **Production** enviro
 
 Open Settings and inspect the failed `/api/reminders` request in Vercel Logs. Missing configuration logs list variable names only. Invalid Firebase credentials and invalid VAPID settings have separate messages; server initialization failures return 503 instead of incorrectly asking the user to sign in again. Never share secret values or the service-account JSON in chat or logs.
 
-After fixing the deployment, click the switch or **Retry reminders** in Settings to check availability, then enable the switch. Availability checks do not request notification permission. The switch remains clickable during an outage and shows the error; it is disabled only while a request is running. Service-worker readiness has a 15-second timeout so a stalled worker cannot permanently disable the controls. If notifications are blocked, allow them in the browser's site settings first. A successful subscription should remain on after reload; confirm actual delivery with a real device at the next scheduled time.
+After fixing the deployment, use **Retry reminders** in Settings to check availability. Availability checks do not request notification permission. If the preference is off, enable the switch; if browser permission is pending, use **Allow notifications**. The switch remains clickable during an outage so the preference can be turned off; it is disabled only while a request is running. Service-worker readiness has a 15-second timeout so a stalled worker cannot permanently disable the controls. If notifications are blocked, allow them in the browser's site settings first. A successful subscription should remain active after reload; confirm actual delivery with a real device at the next scheduled time.
 
 ## Operational details
 
