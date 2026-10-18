@@ -6,6 +6,35 @@
   const protectedPage = /^\/(dashboard|nutriglance|meals|progress|aichef|settings)(\.html)?\/?$/.test(location.pathname);
   let currentUid = null;
   const bootOwner = localStorage.getItem(ownerKey);
+  function mountLoader() {
+    if (!document.body || !document.documentElement.classList.contains('session-pending')) return;
+    if (!document.getElementById('session-loader')) {
+      const loader = document.createElement('div');
+      loader.id = 'session-loader';
+      loader.setAttribute('role', 'status');
+      const dashboard = /^\/(dashboard|nutriglance)(\.html)?\/?$/.test(location.pathname);
+      loader.setAttribute('aria-label', dashboard ? 'Loading dashboard' : 'Loading page');
+      const line = '<span class="loading-placeholder loading-line"></span>';
+      const card = `<div class="loading-card">${line}${line}</div>`;
+      loader.innerHTML = dashboard ? `
+        <div class="loading-dashboard" aria-hidden="true">
+          <div class="loading-navbar"><div><span class="loading-brand">NutriGlance</span><span class="loading-nav-links">${line}${line}${line}${line}</span><span class="loading-avatar loading-placeholder"></span></div></div>
+          <div class="loading-dashboard-content">
+            <div class="loading-greeting loading-placeholder"></div>
+            <div class="loading-dashboard-grid">
+              <div class="loading-card loading-nutrition">${line}<div class="loading-calorie-ring loading-placeholder"></div><div class="loading-macros">${line}${line}${line}${line}${line}${line}</div><div class="loading-input loading-placeholder"></div></div>
+              <div class="loading-meal-column"><div class="loading-card loading-upload"><span class="loading-upload-icon loading-placeholder"></span>${line}${line}</div><div class="loading-card loading-recent">${line}<div class="loading-meal-row">${line}${line}</div><div class="loading-meal-row">${line}${line}</div><div class="loading-meal-row">${line}${line}</div></div></div>
+              <div class="loading-actions">${card}${card}${card}<div class="loading-card loading-water">${line}<div>${Array(8).fill('<span class="loading-placeholder"></span>').join('')}</div></div></div>
+            </div>
+          </div>
+        </div>` : '<div class="session-loading-center"><span class="circular-loader" aria-hidden="true"></span></div>';
+      document.body.appendChild(loader);
+    }
+    document.documentElement.classList.add('session-loader-mounted');
+  }
+  // Paint before deferred Firebase modules finish downloading.
+  document.addEventListener?.('readystatechange', mountLoader);
+  window.addEventListener('DOMContentLoaded', mountLoader);
   function canResume(owner) {
     try {
       const hint = JSON.parse(tabStorage?.getItem(hintKey) || 'null');
@@ -16,7 +45,7 @@
   function hideAccount() {
     if (!protectedPage) return;
     document.documentElement.classList.add('session-pending');
-    document.documentElement.dataset.sessionStatus = 'Loading your account…';
+    mountLoader();
   }
   function clearAccount() {
     tabStorage?.removeItem(hintKey);
@@ -42,6 +71,8 @@
     currentUid = user.uid;
     tabStorage?.setItem(hintKey, JSON.stringify({ uid: user.uid, verifiedAt: Date.now() }));
     document.documentElement.classList.remove('session-pending');
+    document.documentElement.classList.remove('session-loader-mounted');
+    document.getElementById?.('session-loader')?.remove();
     return true;
   }
 

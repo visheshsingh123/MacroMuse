@@ -33,6 +33,7 @@
     toggle.setAttribute('aria-checked', String(on));
     toggle.disabled = busy;
     toggle.setAttribute('aria-busy', String(busy));
+    status.classList.toggle('inline-loading', busy);
     toggle.classList.toggle('bg-brand', on);
     toggle.classList.toggle('bg-slate-200', !on);
     thumb.classList.toggle('translate-x-5', on);

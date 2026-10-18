@@ -637,6 +637,7 @@
       const btn = profileEditForm.querySelector('button[type="submit"]');
       btn.disabled = true;
       btn.textContent = 'Saving…';
+      btn.classList.add('inline-loading');
       try {
         await saveProfile({ name, gender, age, weight, height, activityLevel, goalPreference, ...targets });
         updateAvatars();
@@ -650,6 +651,8 @@
         profileEditError.classList.remove('hidden');
         btn.textContent = 'Save Changes';
         btn.disabled = false;
+      } finally {
+        btn.classList.remove('inline-loading');
       }
     });
 

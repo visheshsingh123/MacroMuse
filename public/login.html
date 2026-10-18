@@ -612,6 +612,7 @@
 
       btn.disabled = true;
       btn.textContent = 'Signing in…';
+      btn.classList.add('inline-loading');
 
       try {
         if (window._signInEmail) {
@@ -626,6 +627,7 @@
       } finally {
         btn.disabled = false;
         btn.textContent = 'Sign In';
+        btn.classList.remove('inline-loading');
       }
     }
     window.handleSignIn = handleSignIn;
@@ -662,6 +664,7 @@
 
       btn.disabled = true;
       btn.textContent = 'Creating account…';
+      btn.classList.add('inline-loading');
 
       try {
         if (window._signUpEmail) {
@@ -675,6 +678,7 @@
       } finally {
         btn.disabled = false;
         btn.textContent = 'Create Account';
+        btn.classList.remove('inline-loading');
       }
     }
     window.handleSignUp = handleSignUp;

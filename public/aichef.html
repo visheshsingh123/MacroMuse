@@ -524,10 +524,8 @@
             <line x1="6" y1="17" x2="18" y2="17"/>
           </svg>
         </div>
-        <div class="bg-slate-50 rounded-2xl rounded-tl-sm px-4 py-3 flex gap-1 items-center">
-          <span class="typing-dot w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-          <span class="typing-dot w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-          <span class="typing-dot w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+        <div class="bg-slate-50 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center" role="status" aria-label="AI Chef is preparing a reply">
+          <span class="circular-loader" aria-hidden="true"></span>
         </div>`;
       chatLog.appendChild(wrapper);
       scrollToBottom();

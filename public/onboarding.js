@@ -160,6 +160,7 @@
   async function readProfile(current) {
     retry.disabled = true;
     retry.textContent = 'Checking…';
+    retry.classList.add('inline-loading');
     try {
       const snapshot = await current.getDoc(current.doc(current.db, 'users', current.uid));
       if (!isCurrent(current)) { settle(current, null); return; }
@@ -183,6 +184,7 @@
     } finally {
       retry.disabled = false;
       retry.textContent = 'Try again';
+      retry.classList.remove('inline-loading');
     }
   }
   function ensureProfile(options) {
@@ -241,6 +243,7 @@
     const label = submit.innerHTML;
     submit.disabled = true;
     submit.textContent = 'Saving your goals…';
+    submit.classList.add('inline-loading');
     try {
       await current.setDoc(current.doc(current.db, 'users', current.uid), { profile }, { merge: true });
       if (!isCurrent(current)) { settle(current, null); return; }
@@ -253,6 +256,7 @@
     } finally {
       submit.disabled = false;
       submit.innerHTML = label;
+      submit.classList.remove('inline-loading');
     }
   });
 
