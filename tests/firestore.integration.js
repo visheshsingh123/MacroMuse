@@ -34,6 +34,21 @@ test('anonymous and other-account clients cannot read or write private app recor
   }
 });
 
+test('only valid lifestyle choices can be saved by the profile owner', async () => {
+  const db = env.authenticatedContext('alice').firestore();
+  for (const activityLevel of ['sedentary', 'lightly_active', 'moderately_active', 'very_active']) {
+    await assertSucceeds(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice', activityLevel } }));
+  }
+  for (const activityLevel of ['', 'active', 1.55, null, { admin: true }]) {
+    await assertFails(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice', activityLevel } }));
+  }
+  await assertFails(setDoc(doc(env.authenticatedContext('bob').firestore(), 'users/alice'), {
+    profile: { name: 'Alice', activityLevel: 'very_active' },
+  }));
+  // Profiles from before lifestyle setup remain valid.
+  await assertSucceeds(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice' } }));
+});
+
 test('quotas, notification secrets, and unknown collections are server-only', async () => {
   const db = env.authenticatedContext('alice').firestore();
   for (const path of ['serverQuotas/global', 'reminderSubscriptions/device', 'unknown/data']) {

@@ -17,9 +17,10 @@ service cloud.firestore {
         && numberField(data, 'water', 100);
     }
     function profile(data) {
-      return data is map && data.keys().hasOnly(['name','gender','age','weight','height','targetKcal','targetProtein','targetCarbs','targetFat','targetFiber','targetFibre'])
+      return data is map && data.keys().hasOnly(['name','gender','age','weight','height','activityLevel','targetKcal','targetProtein','targetCarbs','targetFat','targetFiber','targetFibre'])
         && data.name is string && data.name.size() > 0 && data.name.size() <= 160
         && (!('gender' in data) || data.gender in ['male','female'])
+        && (!('activityLevel' in data) || data.activityLevel in ['sedentary','lightly_active','moderately_active','very_active'])
         && numberField(data, 'age', 120) && numberField(data, 'weight', 500)
         && numberField(data, 'height', 300) && numberField(data, 'targetKcal', 20000)
         && numberField(data, 'targetProtein', 20000) && numberField(data, 'targetCarbs', 20000)

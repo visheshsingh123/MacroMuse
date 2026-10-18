@@ -27,6 +27,8 @@
 #onboarding-form label:not(.onboarding-choice),.onboarding-gender legend { display:block; font-size:11px; font-weight:600; margin-bottom:8px; }
 #onboarding-overlay .onboarding-input { width:100%; min-height:46px; padding:11px 13px; border:1px solid var(--onb-line); border-radius:11px; background:var(--onb-surface)!important; color:var(--onb-text)!important; font-size:16px; }
 #onboarding-form input::placeholder { color:var(--onb-muted); opacity:.65; }
+#onboarding-overlay select.onboarding-input { min-width:0; font-size:14px; color-scheme:light; }
+.onboarding-activity-help { margin-top:8px; font-size:11px; line-height:1.7; color:var(--onb-muted); }
 .onboarding-gender { min-width:0; margin-top:18px; }
 .onboarding-gender legend { margin-bottom:4px; }
 .onboarding-gender > p { color:var(--onb-muted); font-size:10px; line-height:1.6; margin-bottom:10px; }
@@ -43,7 +45,7 @@
 #onboarding-overlay .onboarding-field input { width:100%; min-width:0; height:46px; padding:0; border:0!important; outline:none; background:transparent!important; color:var(--onb-text)!important; font-size:16px; font-weight:500; font-variant-numeric:tabular-nums; appearance:textfield; }
 .onboarding-field input::-webkit-inner-spin-button,.onboarding-field input::-webkit-outer-spin-button { appearance:none; margin:0; }
 .onboarding-field > span { color:var(--onb-muted); flex-shrink:0; margin-left:4px; font-size:10px; }
-#onboarding-overlay input[aria-invalid=true],.onboarding-field:has(input[aria-invalid=true]) { border-color:#ef4444!important; }
+#onboarding-overlay [aria-invalid=true],.onboarding-field:has(input[aria-invalid=true]) { border-color:#ef4444!important; }
 #onboarding-error { color:#dc2626; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:10px 12px; font-size:11px; line-height:1.7; }
 .onboarding-submit button { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; min-height:48px; border:1px solid transparent; border-radius:12px; background:#047857; color:#fff; font-size:12px; font-weight:600; }
 .onboarding-submit button:hover { background:#065f46; }
@@ -54,6 +56,7 @@ html.dark .onboarding-intro { background:#12382e; color:#6ee7b7; border-color:#2
 html.dark .onboarding-intro-copy > p:last-child,html.dark .onboarding-intro-note { color:#a7c9b8; }
 html.dark .onboarding-goal-preview { background:#1e293b; border-color:#245b49; }
 html.dark #onboarding-error { color:#fca5a5; background:#3b202a; border-color:#713340; }
+html.dark #onboarding-overlay select.onboarding-input { color-scheme:dark; }
 @media(max-width:719px) {
   #onboarding-overlay { padding:16px; }
   .onboarding-card { max-width:440px; max-height:calc(100dvh - 32px); grid-template-columns:minmax(0,1fr); border-radius:24px; }

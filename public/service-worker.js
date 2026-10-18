@@ -10,6 +10,7 @@ const PRECACHE = [
   '/login',
   '/reminders.js',
   '/security.js',
+  '/nutrition-goals.js',
   '/security.css',
   '/app.css',
 ];

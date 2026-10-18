@@ -9,6 +9,8 @@ The AI API now requires a Firebase ID token and persistent server-side quotas. I
 3. Publish the included **`firestore.rules`** to the actual database. Either paste the complete file into Firebase Console → Firestore Database → Rules and click Publish, or authenticate the Firebase CLI and run `npx firebase deploy --only firestore:rules --project nutriglance`. The CLI command deploys only database rules, not Hosting. Rules replace the previous ruleset; these rules cover the user profile, meals, progress, and all current server-only collections.
 4. Verify that another signed-in account cannot read or write your user's profile, meal log, or progress. Verify that browser clients cannot read or write `reminderSubscriptions` or `serverQuotas`. Admin SDK access intentionally bypasses these rules.
 
+Lifestyle setup adds the optional profile field `activityLevel`, limited to `sedentary`, `lightly_active`, `moderately_active`, or `very_active`. Publish the updated rules before using this feature; older rules reject the new field. Existing profiles without it remain valid and keep their saved targets until the user updates their profile. Setup and Settings show a retryable error if the profile cannot be saved.
+
 The repository cannot publish Firebase rules or add Vercel secrets without authorized access to those services. Pushing a Git commit alone does not change the deployed Firestore rules.
 
 ## Protections

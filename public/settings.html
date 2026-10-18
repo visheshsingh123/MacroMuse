@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -380,7 +381,19 @@
                 </div>
               </div>
 
-              <p id="profile-edit-error" class="hidden text-xs font-semibold text-red-500 -mb-1"></p>
+              <div class="settings-activity">
+                <label for="prof-activity" class="block text-xs font-semibold text-charcoal uppercase tracking-wide mb-1.5">Activity level</label>
+                <select id="prof-activity" aria-describedby="prof-activity-help" class="w-full text-sm bg-slate-50 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand" required>
+                  <option value="" disabled selected>Choose your activity level</option>
+                  <option value="sedentary">Sedentary</option>
+                  <option value="lightly_active">Lightly active</option>
+                  <option value="moderately_active">Moderately active</option>
+                  <option value="very_active">Very active</option>
+                </select>
+                <p id="prof-activity-help" class="text-xs text-muted mt-2">Include your work, walking, and exercise in a typical week.</p>
+              </div>
+
+              <p id="profile-edit-error" role="alert" class="hidden text-xs font-semibold text-red-500 -mb-1"></p>
 
               <button type="submit"
                       class="w-full bg-brand text-white font-semibold text-sm rounded-xl py-3
@@ -527,38 +540,8 @@
     function loadProfile() {
       try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); } catch { return null; }
     }
-    function saveProfile(profile) {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-    }
-
-    function calculateTargets({ gender, age, weight, height }) {
-      const bmr = gender === 'male'
-        ? (10 * weight) + (6.25 * height) - (5 * age) + 5
-        : (10 * weight) + (6.25 * height) - (5 * age) - 161;
-      const totalCalories = bmr * 1.3;
-      let proteinMultiplier;
-      if      (age >= 1 && age <= 3)  { proteinMultiplier = 1.30; }
-      else if (age <= 13)             { proteinMultiplier = 1.15; }
-      else if (age <= 25)             { proteinMultiplier = 1.40; }
-      else if (age <= 45)             { proteinMultiplier = 1.00; }
-      else                            { proteinMultiplier = 1.25; }
-      const targetProtein = weight * proteinMultiplier;
-      const proteinKcal   = targetProtein * 4;
-      let fatPercentage;
-      if      (age >= 1 && age <= 3)  { fatPercentage = 0.35; }
-      else if (age <= 15)             { fatPercentage = 0.30; }
-      else if (gender === 'male')     { fatPercentage = 0.25; }
-      else                            { fatPercentage = 0.30; }
-      const fatKcal       = totalCalories * fatPercentage;
-      const targetFat     = fatKcal / 9;
-      const remainingKcal = totalCalories - proteinKcal - fatKcal;
-      const targetCarbs   = Math.max(0, remainingKcal / 4);
-      return {
-        targetKcal:    Math.round(totalCalories),
-        targetProtein: Math.round(targetProtein),
-        targetFat:     Math.round(targetFat),
-        targetCarbs:   Math.round(targetCarbs),
-      };
+    async function saveProfile() {
+      throw new Error('Your account is still loading. Please try again.');
     }
 
     function updateAvatars() {
@@ -571,7 +554,8 @@
       document.getElementById('profile-name-display').textContent = p?.name || '—';
       if (p) {
         document.getElementById('profile-meta-display').textContent =
-          `${p.gender === 'female' ? '♀' : '♂'} · ${p.age} yrs · ${p.weight} kg · ${p.height} cm`;
+          `${p.gender === 'female' ? '♀' : '♂'} · ${p.age} yrs · ${p.weight} kg · ${p.height} cm` +
+          (window.NutriGoals.hasActivityLevel(p.activityLevel) ? ` · ${window.NutriGoals.activityLevels[p.activityLevel].label}` : '');
       }
     }
 
@@ -585,6 +569,9 @@
       document.getElementById('prof-height').value = p.height || '';
       const radio = document.querySelector(`input[name="prof-gender"][value="${p.gender || 'male'}"]`);
       if (radio) radio.checked = true;
+      const activity = document.getElementById('prof-activity');
+      activity.value = window.NutriGoals.hasActivityLevel(p.activityLevel) ? p.activityLevel : '';
+      activity.dispatchEvent(new Event('change'));
     }
 
     updateAvatars();
@@ -594,7 +581,7 @@
     const profileEditForm  = document.getElementById('profile-edit-form');
     const profileEditError = document.getElementById('profile-edit-error');
 
-    profileEditForm.addEventListener('submit', (e) => {
+    profileEditForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name   = document.getElementById('prof-name').value.trim();
       const gender = profileEditForm.querySelector('input[name="prof-gender"]:checked')?.value || 'male';
@@ -602,30 +589,45 @@
       const weight = parseFloat(document.getElementById('prof-weight').value);
       const height = parseFloat(document.getElementById('prof-height').value);
 
-      if (!name) {
+      const activityLevel = document.getElementById('prof-activity').value;
+
+      if (!name || name.length > 160) {
         profileEditError.textContent = 'Please enter your name.';
         profileEditError.classList.remove('hidden');
         return;
       }
-      if (!age || !weight || !height || age <= 0 || weight <= 0 || height <= 0) {
+      if (!Number.isInteger(age) || age < 10 || age > 100 || !Number.isFinite(weight) || weight < 20 || weight > 300 ||
+          !document.getElementById('prof-weight').checkValidity() || !Number.isInteger(height) || height < 100 || height > 250) {
         profileEditError.textContent = 'Please fill in age, weight, and height with valid numbers.';
         profileEditError.classList.remove('hidden');
         return;
       }
+      if (!window.NutriGoals.hasActivityLevel(activityLevel)) {
+        profileEditError.textContent = 'Please choose your activity level.';
+        profileEditError.classList.remove('hidden');
+        document.getElementById('prof-activity').focus();
+        return;
+      }
       profileEditError.classList.add('hidden');
 
-      const targets = calculateTargets({ gender, age, weight, height });
-      saveProfile({ name, gender, age, weight, height, ...targets });
-      updateAvatars();
-
-      // Brief visual confirmation on the button
+      const targets = window.NutriGoals.calculateTargets({ gender, age, weight, height, activityLevel });
       const btn = profileEditForm.querySelector('button[type="submit"]');
-      btn.textContent = '✅ Saved!';
       btn.disabled = true;
-      setTimeout(() => {
+      btn.textContent = 'Saving…';
+      try {
+        await saveProfile({ name, gender, age, weight, height, activityLevel, ...targets });
+        updateAvatars();
+        btn.textContent = '✅ Saved!';
+        setTimeout(() => {
+          btn.textContent = 'Save Changes';
+          btn.disabled = false;
+        }, 1800);
+      } catch {
+        profileEditError.textContent = 'Couldn’t save your profile. Please try again.';
+        profileEditError.classList.remove('hidden');
         btn.textContent = 'Save Changes';
         btn.disabled = false;
-      }, 1800);
+      }
     });
 
     // ── Dark Mode ──
@@ -724,10 +726,10 @@
 
     // Save profile to Firestore AND localStorage
     async function saveProfileEverywhere(uid, profile) {
+      if (!window.NutriSecurity.isCurrent(uid)) throw new Error('Account changed');
+      await setDoc(doc(db, 'users', uid), { profile }, { merge: true });
+      if (!window.NutriSecurity.isCurrent(uid)) throw new Error('Account changed');
       localStorage.setItem('nutriglance_profile', JSON.stringify(profile));
-      try {
-        await setDoc(doc(db, 'users', uid), { profile }, { merge: true });
-      } catch (e) { console.warn('Profile save error:', e); }
     }
 
     auth.onAuthStateChanged(async user => {
@@ -743,10 +745,7 @@
       await loadAndApplyProfile(_uid);
 
       // Patch the existing saveProfile function to also write to Firestore
-      const origSave = window.saveProfile;
-      window.saveProfile = function(profile) {
-        saveProfileEverywhere(_uid, profile);
-      };
+      window.saveProfile = profile => saveProfileEverywhere(_uid, profile);
     });
 
     // Sign out

@@ -23,7 +23,7 @@
   }
   overlay.addEventListener('keydown', event => {
     if (event.key !== 'Tab') return;
-    const fields = [...overlay.querySelectorAll('input,button,a[href]')].filter(node => !node.disabled);
+    const fields = [...overlay.querySelectorAll('input,select,button,a[href]')].filter(node => !node.disabled);
     const first = fields[0], last = fields.at(-1);
     if (event.shiftKey && (document.activeElement === first || document.activeElement === document.getElementById('onboarding-title'))) {
       event.preventDefault(); last.focus();

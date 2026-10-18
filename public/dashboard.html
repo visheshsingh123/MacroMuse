@@ -4,6 +4,7 @@
 <head>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -339,6 +340,18 @@
               <div><label for="onb-weight">Weight <span class="sr-only">in kilograms</span></label><div class="onboarding-field"><input id="onb-weight" type="number" inputmode="decimal" min="20" max="300" step="0.1" placeholder="68" required /><span aria-hidden="true">kg</span></div></div>
               <div><label for="onb-height">Height <span class="sr-only">in centimeters</span></label><div class="onboarding-field"><input id="onb-height" type="number" inputmode="numeric" min="100" max="250" step="1" placeholder="172" required /><span aria-hidden="true">cm</span></div></div>
             </div>
+          </div>
+          <div class="onboarding-form-section">
+            <div class="onboarding-section-title"><span>03</span><h3>Your lifestyle</h3></div>
+            <label for="onb-activity">Activity level</label>
+            <select id="onb-activity" class="onboarding-input" aria-describedby="onb-activity-help" required>
+              <option value="" disabled selected>Choose your activity level</option>
+              <option value="sedentary">Sedentary</option>
+              <option value="lightly_active">Lightly active</option>
+              <option value="moderately_active">Moderately active</option>
+              <option value="very_active">Very active</option>
+            </select>
+            <p id="onb-activity-help" class="onboarding-activity-help">Include your work, walking, and exercise in a typical week.</p>
           </div>
           <p id="onboarding-error" role="alert" class="hidden"></p>
           <div class="onboarding-submit">
@@ -1130,76 +1143,6 @@
     const onboardingForm    = document.getElementById('onboarding-form');
     const onboardingError   = document.getElementById('onboarding-error');
 
-    function calculateTargets({ gender, age, weight, height }) {
-      // ── Step 1: BMR — Mifflin-St Jeor (1990) ─────────────────────────────────
-      // Most validated BMR equation for general non-athletic populations.
-      // The sex constant (+5 male / -161 female) accounts for average lean-mass
-      // differences at equivalent height and weight.
-      const bmr = gender === 'male'
-        ? (10 * weight) + (6.25 * height) - (5 * age) + 5
-        : (10 * weight) + (6.25 * height) - (5 * age) - 161;
-
-      // ── Step 2: Total Daily Calories (BMR × activity buffer) ─────────────────
-      // 1.3 = WHO "low active" PAL — conservative baseline for a form without
-      // an activity selector; avoids sedentary under-eating (1.2) or assuming
-      // structured exercise the user may not do.
-      const ACTIVITY_BUFFER = 1.3;
-      const totalCalories   = bmr * ACTIVITY_BUFFER;
-
-      // ── Step 3: Protein (g/kg, age-stratified per DRI/RDA) ───────────────────
-      // Protein requirements track body mass and physiological stage, NOT total
-      // energy intake — so we assign grams directly, not a % of calories.
-      //
-      //  1–3  yrs → 1.10 g/kg  (rapid neural + tissue growth; IOM DRI)
-      //  4–13 yrs → 0.95 g/kg  (steady growth phase; IOM DRI)
-      // 14–45 yrs → 0.85 g/kg  (maintenance; above RDA floor of 0.8 g/kg)
-      //  45+  yrs → 1.10 g/kg  (offset anabolic resistance / sarcopenia;
-      //                          Cruz-Jentoft et al. 2019, PROT-AGE Study Group)
-      let proteinMultiplier;
-      if      (age >= 1 && age <= 3)  { proteinMultiplier = 1.30; }  // Rapid early development
-      else if (age <= 13)             { proteinMultiplier = 1.15; }  // Active growth phase
-      else if (age <= 25)             { proteinMultiplier = 1.40; }  // Peak growth + hormonal surge
-      else if (age <= 45)             { proteinMultiplier = 1.00; }  // Maintenance baseline
-      else                            { proteinMultiplier = 1.25; }  // Stronger sarcopenia buffer
-
-      const targetProtein = weight * proteinMultiplier;
-      const proteinKcal   = targetProtein * 4;   // 4 kcal per gram
-
-      // ── Step 4: Fat (% of total calories, age + sex stratified) ─────────────
-      // Fat is allocated as % of total calories because it serves systemic roles
-      // (hormone synthesis, fat-soluble vitamin absorption, neurological
-      // development) that scale with overall energy needs.
-      //
-      // Ages 1–3   → 35%  (IOM: higher fat essential for brain myelination)
-      // Ages 4–15  → 30%  (IOM AMDR lower bound for children/adolescents)
-      // Men  16+   → 25%  (AMDR midpoint; lower to headroom for carbs)
-      // Women 16+  → 30%  (Endocrine Society: supports oestrogen synthesis,
-      //                     menstrual regularity, and bone density)
-      let fatPercentage;
-      if      (age >= 1 && age <= 3)  { fatPercentage = 0.35; }
-      else if (age <= 15)             { fatPercentage = 0.30; }
-      else if (gender === 'male')     { fatPercentage = 0.25; }
-      else                            { fatPercentage = 0.30; }
-
-      const fatKcal    = totalCalories * fatPercentage;
-      const targetFat  = fatKcal / 9;   // 9 kcal per gram
-
-      // ── Step 5: Carbohydrates (Balancing Remainder Method) ───────────────────
-      // Carbs absorb whatever caloric space remains after protein and fat are
-      // placed. Protein and fat have hard physiological floors; carbs do not.
-      // This guarantees the three macros always sum to exactly totalCalories
-      // with no rounding drift. Math.max(0, …) guards against edge-case negatives.
-      const remainingKcal = totalCalories - proteinKcal - fatKcal;
-      const targetCarbs   = Math.max(0, remainingKcal / 4);   // 4 kcal per gram
-
-      return {
-        targetKcal:    Math.round(totalCalories),
-        targetProtein: Math.round(targetProtein),
-        targetFat:     Math.round(targetFat),
-        targetCarbs:   Math.round(targetCarbs),
-      };
-    }
-
     function closeOnboardingModal() {
       onboardingOverlay.style.transition = 'opacity 0.25s ease';
       onboardingOverlay.style.opacity = '0';
@@ -1211,7 +1154,7 @@
       }, 250);
     }
 
-    onboardingForm.addEventListener('submit', (e) => {
+    onboardingForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name     = document.getElementById('onb-name').value.trim();
@@ -1220,16 +1163,20 @@
       const weight   = parseFloat(document.getElementById('onb-weight').value);
       const height   = parseFloat(document.getElementById('onb-height').value);
 
+      const activityLevel = document.getElementById('onb-activity').value;
+
       const validations = [
         ['onb-name', !name || name.length > 160, 'Please enter your name (up to 160 characters).'],
         ['onb-age', !Number.isInteger(age) || age < 10 || age > 100, 'Enter an age between 10 and 100 years.'],
         ['onb-weight', !Number.isFinite(weight) || weight < 20 || weight > 300 || !document.getElementById('onb-weight').checkValidity(), 'Enter a weight between 20 and 300 kg.'],
         ['onb-height', !Number.isInteger(height) || height < 100 || height > 250, 'Enter a height between 100 and 250 cm.'],
+        ['onb-activity', !window.NutriGoals.hasActivityLevel(activityLevel), 'Please choose your activity level.'],
       ];
       for (const [id] of validations) {
         const field = document.getElementById(id);
         field.removeAttribute('aria-invalid');
-        field.removeAttribute('aria-describedby');
+        if (id === 'onb-activity') field.setAttribute('aria-describedby', 'onb-activity-help');
+        else field.removeAttribute('aria-describedby');
       }
       const invalid = validations.find(([, failed]) => failed);
       if (invalid) {
@@ -1238,21 +1185,31 @@
         onboardingError.classList.remove('hidden');
         const field = document.getElementById(id);
         field.setAttribute('aria-invalid', 'true');
-        field.setAttribute('aria-describedby', 'onboarding-error');
+        field.setAttribute('aria-describedby', id === 'onb-activity' ? 'onb-activity-help onboarding-error' : 'onboarding-error');
         field.focus();
         return;
       }
       onboardingError.classList.add('hidden');
 
-      const targets = calculateTargets({ gender, age, weight, height });
-
-      // Save profile + calculated targets to localStorage
-      const profileData = { name, gender, age, weight, height, ...targets };
-      saveProfile(profileData);
-
-      // Also save to Firestore immediately (first-time account setup)
-      if (window._currentUID && typeof window._syncProfileToFirestore === 'function') {
-        window._syncProfileToFirestore(window._currentUID, profileData);
+      const targets = window.NutriGoals.calculateTargets({ gender, age, weight, height, activityLevel });
+      const profileData = { name, gender, age, weight, height, activityLevel, ...targets };
+      const submit = onboardingForm.querySelector('button[type="submit"]');
+      const label = submit.innerHTML;
+      submit.disabled = true;
+      submit.textContent = 'Saving your goals…';
+      const profileUid = window._currentUID;
+      try {
+        if (!profileUid || typeof window._syncProfileToFirestore !== 'function') throw new Error('Account is still loading');
+        await window._syncProfileToFirestore(profileUid, profileData);
+        if (!window.NutriSecurity.isCurrent(profileUid)) return;
+        saveProfile(profileData);
+      } catch {
+        onboardingError.textContent = 'Couldn’t save your profile. Please try again.';
+        onboardingError.classList.remove('hidden');
+        return;
+      } finally {
+        submit.disabled = false;
+        submit.innerHTML = label;
       }
 
       // Apply the new targets to the live dashboard immediately
@@ -2002,9 +1959,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // Save profile both to Firestore and localStorage cache
     async function syncProfileToFirestore(uid, profile) {
-      try {
-        await setDoc(doc(db, 'users', uid), { profile }, { merge: true });
-      } catch (e) { console.warn('Profile sync error:', e); }
+      await setDoc(doc(db, 'users', uid), { profile }, { merge: true });
     }
 
     // Expose so the onboarding submit handler (non-module script) can call it
