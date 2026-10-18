@@ -22,27 +22,27 @@
 .hero-benefits { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:28px; font-size:11px; font-weight:600; color:#64748b; }
 .hero-visual { position:relative; width:100%; max-width:500px; aspect-ratio:1; margin-inline:auto; }
 .hero-illustration { display:block; width:100%; height:auto; filter:drop-shadow(0 20px 24px #064e3b12); }
-/* A short opening sequence, with no layout changes or blocking overlay. */
-#landing-hero { transform-origin:50% 25%; animation:landing-open .9s cubic-bezier(.16,1,.3,1) both; }
-#landing-hero > div:first-child > * { animation:landing-copy-enter .7s cubic-bezier(.16,1,.3,1) both; }
-#landing-hero > div:first-child > span { animation-delay:40ms; }
-#landing-hero > div:first-child > h1 { animation-delay:100ms; }
-#landing-hero > div:first-child > p { animation-delay:180ms; }
-#landing-hero > div:first-child > div:not(.hero-benefits) { animation-delay:260ms; }
-#landing-hero > div:first-child > .hero-benefits { animation-delay:340ms; }
-#landing-hero .hero-visual { transform-origin:50% 55%; animation:landing-art-enter 1.1s cubic-bezier(.16,1,.3,1) 120ms both; }
-@keyframes landing-open {
-  from { opacity:0; transform:translateY(12px) scale(.97); }
-  to { opacity:1; transform:none; }
+/* Original opening: a soft page-wide zoom with the artwork settling into place. */
+.landing-entry { transform-origin:50% 32vh; animation:landing-arrive 1.15s cubic-bezier(.16,1,.3,1) backwards; }
+#landing-hero .hero-visual { transform-origin:50% 55%; animation:landing-art-settle 1.35s cubic-bezier(.16,1,.3,1) 80ms backwards; }
+.landing-gradient::after { content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 50% 35%,#94a3b833,transparent 65%); opacity:0; animation:landing-opening-glow 1.6s ease-out backwards; }
+@keyframes landing-arrive {
+  from { opacity:0; transform:translateY(20px) scale(.94); filter:blur(4px); }
+  55% { opacity:1; filter:blur(0); }
+  to { opacity:1; transform:none; filter:none; }
 }
-@keyframes landing-copy-enter {
-  from { opacity:0; transform:translateY(14px); }
-  to { opacity:1; transform:none; }
+@keyframes landing-art-settle {
+  from { transform:translateY(16px) scale(.94); }
+  to { transform:none; }
 }
-@keyframes landing-art-enter {
-  from { opacity:0; transform:translateY(22px) scale(.9); }
-  to { opacity:1; transform:none; }
+@keyframes landing-opening-glow {
+  0% { opacity:0; transform:scale(.8); }
+  30% { opacity:.65; }
+  100% { opacity:0; transform:scale(1.18); }
 }
+/* Section links and keyboard navigation can bypass the entrance immediately. */
+.landing-page:focus-within .landing-entry,.landing-page:focus-within .hero-visual,
+.landing-page:has(:target) .landing-entry,.landing-page:has(:target) .hero-visual { animation:none; }
 .flavor-strip { display:flex; align-items:center; justify-content:center; gap:clamp(14px,4vw,65px); padding:22px 16px; background:#10b981; border-block:1px solid #0f172a1a; font-family:'Space Grotesk',sans-serif; font-size:clamp(11px,1.5vw,17px); font-weight:700; letter-spacing:.1em; }
 .flavor-strip span:nth-child(even) { color:#064e3b; font-size:24px; }
 .landing-page main > section { scroll-margin-top:95px; }
