@@ -48,7 +48,7 @@
 #chef-page .chef-chat-header { min-height:80px; padding:20px 24px; gap:12px; }
 #chef-page .chef-chat-header > div:first-child > div:first-child { width:40px; height:40px; border-radius:14px; }
 #chef-page #clear-chat-btn { border:1px solid var(--ws-line); padding:8px 12px; border-radius:10px; white-space:nowrap; }
-#chef-page #chat-log { padding:24px; gap:22px; min-height:0; overscroll-behavior:contain; }
+#chef-page #chat-log { padding:24px; gap:22px; min-height:0; overscroll-behavior:auto; }
 #chef-page .chat-msg { min-width:0; }
 #chef-page .chat-msg > div:last-child { overflow-wrap:anywhere; font-size:14px; line-height:1.8; border-radius:16px; padding:14px 18px; }
 #chef-page .chat-msg.justify-end > div { background:#047857; color:white; }
