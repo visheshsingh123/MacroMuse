@@ -22,9 +22,9 @@ test('guidance uses actual logged totals, goal differences and hydration rather 
   assert.equal(guidance({ ...base, totals: { kcal: 1900, protein: 100 } }).protein, 'Protein goal reached');
 });
 
-test('night and over-goal guidance stay neutral and never show negative remaining amounts', () => {
+test('over-goal guidance stays neutral and nutrition guidance remains available at night', () => {
   const over = guidance({ ...base, totals: { kcal: 2100, protein: 100 }, waterCount: 10 });
   assert.equal(over.calories, '100 kcal above estimate');assert.equal(over.water, '8/8 glasses of water');assert.match(over.message, /without judgment/);
-  assert.match(guidance({ ...base, hour: 23 }).message, /wind down/);
+  assert.equal(guidance({ ...base, hour: 23 }).message, 'You have 25g of protein left today.');
   assert.equal(guidance({ ...base, goals: { kcal: 0, protein: NaN } }).protein, 'Set your protein goal');
 });

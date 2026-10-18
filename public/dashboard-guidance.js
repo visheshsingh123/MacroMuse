@@ -5,14 +5,13 @@
     const phrase = hour >= 5 && hour < 12 ? 'Good morning' : hour >= 12 && hour < 17 ? 'Good afternoon' : hour >= 17 && hour < 22 ? 'Good evening' : 'Good night';
     return `${phrase}${name.trim() ? `, ${name.trim()}` : ''}!`;
   }
-  function guidance({ totals, goals, mealCount, waterCount, hour }) {
+  function guidance({ totals, goals, mealCount, waterCount }) {
     const kcal = positive(totals.kcal), protein = positive(totals.protein);
     const calorieGoal = positive(goals.kcal), proteinGoal = positive(goals.protein);
     const proteinLeft = Math.max(0, Math.round(proteinGoal - protein));
     const calorieLeft = Math.round(calorieGoal - kcal);
     let message;
     if (!mealCount) message = 'Ready when you are. Log a meal to see your day take shape.';
-    else if (hour >= 22 || hour < 5) message = 'Your day at a glance. Review your meals and wind down at your own pace.';
     else if (calorieGoal && kcal > calorieGoal) message = 'Today’s log is a little above your calorie estimate. Use it to notice patterns, without judgment.';
     else if (proteinGoal && proteinLeft > 0) message = `You have ${proteinLeft}g of protein left today.`;
     else if (proteinGoal && protein >= proteinGoal) message = 'You’ve reached your protein goal today. Nice work staying aware of your nutrition.';
