@@ -1,0 +1,73 @@
+/* Small, consistent feedback and reachable actions throughout the app. */
+.meal-delete { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; width:36px; min-height:36px; border:1px solid #e2e8f0; border-radius:11px; background:transparent; color:#64748b; cursor:pointer; transition:background .18s,color .18s,transform .18s,border-color .18s; }
+.meal-delete:hover { color:#dc2626; border-color:#fecaca; background:#fef2f2; }
+.meal-delete:active { transform:scale(.94); }
+.meal-delete:disabled { opacity:.45; cursor:wait; }
+.meal-delete[aria-busy="true"] > svg { animation:feedback-pulse .8s ease infinite alternate; }
+.meal-delete:focus-visible,.app-feedback-card button:focus-visible,.quick-action:focus-visible,.empty-action:focus-visible { outline:3px solid #059669; outline-offset:3px; }
+.meal-energy .meal-delete { margin-top:10px; }
+#dashboard-page .meal-item > .meal-delete { width:32px; min-height:32px; }
+#app-feedback { position:fixed; z-index:80; bottom:24px; left:50%; transform:translateX(-50%); width:min(440px,calc(100% - 32px)); display:flex; flex-direction:column; gap:8px; }
+.app-feedback-card { display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid #334155; border-radius:16px; background:#0f172a; color:#f8fafc; box-shadow:0 8px 28px #02061726; font:500 13px/1.6 Inter,sans-serif; animation:feedback-enter .2s ease-out; }
+.app-feedback-card > span { flex:1; min-width:0; overflow-wrap:anywhere; }
+.app-feedback-card button { flex-shrink:0; min-height:36px; border:0; border-radius:9px; background:transparent; cursor:pointer; }
+.app-feedback-action { color:#6ee7b7; font-weight:700; padding:4px 8px; }
+.app-feedback-action:hover { background:#ffffff12; }
+.app-feedback-close { color:#cbd5e1; font-size:21px; min-width:32px; }
+.empty-actions { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:10px; margin-top:18px; }
+.empty-action { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:42px; padding:10px 15px; border:1px solid #cbd5e1; border-radius:12px; background:transparent; color:#047857; font-size:12px; font-weight:600; text-decoration:none; cursor:pointer; transition:background .18s,transform .18s; }
+.empty-action-primary { background:#047857; border-color:#047857; color:#fff; }
+#empty-state > .hidden,.empty-action[hidden] { display:none!important; }
+.empty-action:hover { background:#ecfdf5; }
+.empty-action-primary:hover { background:#065f46; }
+.empty-action:active { transform:scale(.97); }
+.empty-illustration { width:90px; height:74px; margin-bottom:14px; color:#059669; }
+.mobile-quick-actions { display:none; }
+#meals-page .meal-icon { transition:transform .2s; }
+#meals-page .meal-row:hover .meal-icon { transform:translateY(-2px); }
+#water-drops button { transition:background .2s,border-color .2s,transform .2s; }
+#water-drops button:active { transform:scale(.9); }
+.goal-celebrate { animation:goal-glow .65s ease-out; }
+html.dark .meal-delete { color:#94a3b8; border-color:#334155; }
+html.dark .meal-delete:hover { color:#fca5a5; background:#451a1a; border-color:#7f1d1d; }
+html.dark .empty-action { color:#6ee7b7; border-color:#334155; }
+html.dark .empty-action:hover { background:#12382e; }
+html.dark .empty-action-primary { color:#0f172a; background:#6ee7b7; border-color:#6ee7b7; }
+html.dark .empty-illustration { color:#6ee7b7; }
+@keyframes feedback-enter { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+@keyframes feedback-pulse { to { opacity:.35; } }
+@keyframes goal-glow { 0%,100% { box-shadow:0 0 0 0 #10b98100; } 40% { box-shadow:0 0 0 8px #10b98124; } }
+@media(min-width:768px) {
+  #dashboard-page .dashboard-empty { padding:12px 8px; min-height:0; }
+  #dashboard-page .dashboard-empty .empty-illustration { width:64px; height:48px; margin-bottom:8px; }
+  #dashboard-page .dashboard-empty > span { font-size:11px; line-height:1.6; margin-top:6px; }
+  #dashboard-page .dashboard-empty .empty-actions { margin-top:12px; gap:8px; }
+  #dashboard-page .dashboard-empty .empty-action { font-size:11px; padding:8px 12px; min-height:36px; }
+}
+@media(max-width:767px) {
+  .meal-delete,#dashboard-page .meal-item > .meal-delete { width:40px; min-height:44px; }
+  #dashboard-page .meal-item { display:grid; grid-template-columns:8px minmax(0,1fr) auto; column-gap:10px; }
+  #dashboard-page .meal-item > span { grid-column:2; grid-row:2; margin:0; font-size:10px; }
+  #dashboard-page .meal-item > .meal-delete { grid-column:3; grid-row:1/3; align-self:center; }
+  #dashboard-page { padding-bottom:180px; }
+  .mobile-quick-actions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; position:fixed; z-index:35; left:12px; right:12px; bottom:calc(72px + env(safe-area-inset-bottom,0px)); padding:7px; border:1px solid #d1e5dd; border-radius:20px; background:#ffffffed; box-shadow:0 6px 24px #0f172a14; backdrop-filter:blur(12px); }
+  .quick-action { display:flex; align-items:center; justify-content:center; gap:7px; min-height:46px; padding:8px 4px; border:0; border-radius:14px; background:transparent; color:#047857; font-size:12px; font-weight:600; cursor:pointer; transition:background .18s,transform .18s; }
+  .quick-action-primary { background:#047857; color:#fff; }
+  .quick-action:active { transform:scale(.96); }
+  .quick-action:disabled { opacity:.5; cursor:wait; }
+  .quick-action:not(.quick-action-primary):hover { background:#ecfdf5; }
+  .quick-action svg { flex-shrink:0; }
+  .editing-field .mobile-quick-actions,.menu-open .mobile-quick-actions { display:none; }
+  #app-feedback { bottom:calc(82px + env(safe-area-inset-bottom,0px)); }
+  body:has(#dashboard-page):not(.editing-field) #app-feedback,body:has(#dashboard-page):not(.editing-field) #toast { bottom:calc(152px + env(safe-area-inset-bottom,0px)); }
+  html.dark .mobile-quick-actions { background:#1e293bf2; border-color:#334155; }
+  html.dark .quick-action { color:#6ee7b7; }
+  html.dark .quick-action-primary { background:#6ee7b7; color:#0f172a; }
+  html.dark .quick-action:not(.quick-action-primary):hover { background:#12382e; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .meal-delete,.app-feedback-card,.empty-action,.quick-action,#meals-page .meal-icon,#water-drops button,.goal-celebrate { animation:none!important; transition:none!important; }
+  #dashboard-page .meal-item,#dashboard-page .ring-fill,#dashboard-page .transition-all { animation:none!important; transition:none!important; }
+  #meals-page .meal-row:hover .meal-icon,.meal-delete:active,.empty-action:active,.quick-action:active,#water-drops button:active { transform:none; }
+}
+@media print { .meal-delete,.mobile-quick-actions,#app-feedback { display:none!important; } }

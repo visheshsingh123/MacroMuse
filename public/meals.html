@@ -4,6 +4,9 @@
 <head>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <link rel="stylesheet" href="/app-interactions.css" />
+  <script src="/app-interactions.js"></script>
+  <script src="/meal-actions.js"></script>
   <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -338,7 +341,7 @@
       <h1 class="font-display text-3xl font-extrabold text-charcoal">Your Meals</h1>
       <p class="meals-intro">Your meals, macros, and daily nutrition in one place.</p>
     </div>
-    <a href="/dashboard"
+    <a href="/dashboard#upload-zone"
        class="flex items-center gap-2 bg-brand text-white text-sm font-semibold px-5 py-2.5 rounded-xl
               hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-sm self-start sm:self-auto">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -453,9 +456,7 @@
 
       <!-- Empty state -->
       <div id="empty-state" class="hidden flex-col items-center text-center gap-3 py-14 px-6">
-        <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-        </div>
+        <svg class="empty-illustration" viewBox="0 0 110 90" fill="none" aria-hidden="true"><circle cx="55" cy="44" r="33" fill="currentColor" opacity=".08"/><circle cx="55" cy="44" r="25" stroke="currentColor" stroke-width="1.8"/><path d="M41 48c7-17 21-13 29-21-1 18-9 27-24 26M45 52l16-15M17 21v15a7 7 0 0 0 7 7V70M24 21v15M31 21v15a7 7 0 0 1-7 7M87 21v49M87 21c-10 7-13 20 0 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M70 12h8M74 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <p class="font-display text-lg font-extrabold text-charcoal" id="empty-title">No meals logged yet</p>
         <p class="text-sm text-muted max-w-xs" id="empty-subtitle">Scan a meal from your Dashboard and it'll show up here automatically.</p>
         <a href="/dashboard"
@@ -463,6 +464,7 @@
                   hover:bg-emerald-600 active:scale-95 transition-all duration-150 shadow-sm">
           Log your first meal
         </a>
+        <button id="empty-reset-filters" type="button" class="empty-action" hidden>Clear filters</button>
       </div>
 
       <!-- Grouped meal list — populated by JS -->
@@ -652,6 +654,7 @@ function renderHistory() {
 
   const filtered = getFilteredSortedMeals(allMeals);
   emptyState.querySelector('a').classList.toggle('hidden', allMeals.length > 0);
+  document.getElementById('empty-reset-filters').hidden = allMeals.length === 0;
   document.getElementById('meal-result-count').textContent = `${filtered.length} of ${allMeals.length} meal${allMeals.length === 1 ? '' : 's'}`;
   document.getElementById('reset-meal-filters').hidden = !searchInput.value && rangeSelect.value === 'all' && sortSelect.value === 'newest';
 
@@ -660,8 +663,8 @@ function renderHistory() {
   if (allMeals.length === 0) {
     emptyState.classList.remove('hidden');
     emptyState.classList.add('flex');
-    document.getElementById('empty-title').textContent = 'No meals logged yet';
-    document.getElementById('empty-subtitle').textContent = "Scan a meal from your Dashboard and it'll show up here automatically.";
+    document.getElementById('empty-title').textContent = 'Your first meal starts the story';
+    document.getElementById('empty-subtitle').textContent = "Snap a meal or describe what you ate. Your nutrition history will build up here.";
     return;
   }
 
@@ -711,6 +714,8 @@ function renderHistory() {
         </div>
         <div class="meal-energy"><strong>${escapeHtml(meal.kcal || 0)}</strong><span>kcal</span></div>
       `;
+      const actions = row.querySelector('.meal-energy');
+      window.NutriMeals.addDeleteButton(actions, meal);
       groupWrap.appendChild(row);
     });
 
@@ -728,6 +733,7 @@ function refreshAll() {
 searchInput.addEventListener('input', renderHistory);
 rangeSelect.addEventListener('change', renderHistory);
 sortSelect.addEventListener('change', renderHistory);
+document.getElementById('empty-reset-filters').addEventListener('click', () => document.getElementById('reset-meal-filters').click());
 document.getElementById('reset-meal-filters').addEventListener('click', () => {
   searchInput.value = '';
   rangeSelect.value = 'all';
@@ -798,7 +804,7 @@ refreshAll();
     import { getAuth }         from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
     import {
       getFirestore, doc, getDoc, setDoc,
-      collection, getDocs, writeBatch
+      collection, getDocs, writeBatch, deleteDoc, Timestamp
     } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -825,7 +831,7 @@ refreshAll();
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
         if (!window.NutriSecurity.isCurrent(uid)) return;
         const meals = [];
-        snap.forEach(d => meals.push({ _id: d.id, ...d.data() }));
+        snap.forEach(d => meals.push({ ...d.data(), _id: d.id }));
         meals.sort((a, b) => new Date(a.loggedAt) - new Date(b.loggedAt));
         localStorage.setItem('nutriglance_meals', JSON.stringify(meals));
         return meals;
@@ -856,6 +862,17 @@ refreshAll();
 
       // Load meals from Firestore then re-render
       await loadMealsFromFirestore(_uid);
+      if (!window.NutriSecurity.isCurrent(_uid)) return;
+      const uid = _uid;
+      window.NutriMeals.configure({
+        uid,
+        remove: id => deleteDoc(doc(db, 'users', uid, 'meals', id)),
+        restore: (id, meal) => {
+          const { _id, createdAt, ...data } = meal;
+          return setDoc(doc(db, 'users', uid, 'meals', id), { ...data, createdAt: Timestamp.now() });
+        },
+        refresh: () => window.refreshAll(),
+      });
       if (typeof window.refreshAll === 'function') window.refreshAll();
 
       // Patch clearAllBtn to also delete from Firestore

@@ -4,6 +4,9 @@
 <head>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <link rel="stylesheet" href="/app-interactions.css" />
+  <script src="/app-interactions.js"></script>
+  <script src="/meal-actions.js"></script>
   <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -675,9 +678,13 @@
           <div id="meals-container" class="flex flex-col gap-2.5">
             <!-- Skeleton lines shown when no meals are logged — replaced by JS -->
             <div id="skeleton-placeholder" class="dashboard-empty">
-              <div class="dashboard-empty-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v5a3 3 0 0 0 6 0V3M7 3v18M10 6H4M20 3c-4 2-5 7-3 9h3M20 3v18"/></svg></div>
-              <p>Your meals will appear here</p>
-              <span>Upload a photo above or describe what you ate to start your day.</span>
+              <svg class="empty-illustration" viewBox="0 0 110 90" fill="none" aria-hidden="true"><circle cx="55" cy="44" r="33" fill="currentColor" opacity=".08"/><circle cx="55" cy="44" r="25" stroke="currentColor" stroke-width="1.8"/><path d="M41 48c7-17 21-13 29-21-1 18-9 27-24 26M45 52l16-15M17 21v15a7 7 0 0 0 7 7V70M24 21v15M31 21v15a7 7 0 0 1-7 7M87 21v49M87 21c-10 7-13 20 0 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M70 12h8M74 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <p>A fresh start, one meal at a time</p>
+              <span>Scan a photo or describe your meal. We’ll take care of the nutrition.</span>
+              <div class="empty-actions">
+                <button type="button" id="empty-scan-btn" class="empty-action empty-action-primary">Scan your first meal</button>
+                <button type="button" id="empty-describe-btn" class="empty-action">Describe a meal</button>
+              </div>
             </div>
           </div>
           <div class="dashboard-recent-footer"><a href="/meals">View all meals <span aria-hidden="true">→</span></a></div>
@@ -781,6 +788,11 @@
 
     </div><!-- /grid -->
   </main><!-- /main -->
+  <div class="mobile-quick-actions" role="group" aria-label="Quick tracking actions">
+    <button id="quick-scan" type="button" class="quick-action quick-action-primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8V4h4M17 4h4v4M21 16v4h-4M7 20H3v-4M6 12h12"/></svg>Scan meal</button>
+    <button id="quick-describe" type="button" class="quick-action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v12H9l-5 4V5Z"/><path d="M8 9h8M8 13h5"/></svg>Describe</button>
+    <button id="quick-water" type="button" disabled class="quick-action"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3C9 8 6 11 6 15a6 6 0 0 0 12 0c0-4-3-7-6-12Z"/></svg>+ Water</button>
+  </div>
 
 
   <!-- ════════════════════════════════════════════════════════════════
@@ -1033,6 +1045,7 @@
             ${formatTime(meal.loggedAt)}
           </span>
         `;
+        window.NutriMeals.addDeleteButton(item, meal);
         mealsContainer.appendChild(item);
       });
 
@@ -1205,6 +1218,7 @@ All numeric values must be integers. Be realistic and accurate.`;
 
         // Log the meal
         const newMeal = {
+          _id: crypto.randomUUID(),
           name:     result.name,
           kcal:     result.kcal,
           protein:  result.protein,
@@ -1572,7 +1586,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     document.getElementById('result-log-btn').addEventListener('click', () => {
       if (!pendingMeal) return;
       const meals = loadAllMeals(); // load full history so we don't overwrite past days
-      const mealToLog = { ...pendingMeal, loggedAt: pendingMeal.loggedAt || new Date().toISOString() };
+      const mealToLog = { ...pendingMeal, _id: crypto.randomUUID(), loggedAt: pendingMeal.loggedAt || new Date().toISOString() };
       meals.push(mealToLog);
       saveMeals(meals);
       // Also sync to Firestore
@@ -1643,6 +1657,8 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       const container = document.getElementById('water-drops');
       const label     = document.getElementById('water-count');
       label.textContent = count;
+      if (count < 8) document.getElementById('water-drops').classList.remove('goal-celebrate');
+      document.getElementById('quick-water').setAttribute('aria-label', `Add a glass of water, ${count} of 8 logged`);
       container.innerHTML = '';
 
       for (let i = 0; i < 8; i++) {
@@ -1661,11 +1677,34 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
           const newCount = filled ? i : i + 1;
           saveWater(newCount);
           renderWater();
+          if (newCount === 8 && count < 8) {
+            const goal = document.getElementById('water-drops');
+            goal.classList.remove('goal-celebrate');
+            requestAnimationFrame(() => goal.classList.add('goal-celebrate'));
+          }
           showToast(newCount >= 8 ? '🎉 Hydration goal met!' : `${newCount}/8 glasses logged`);
         });
         container.appendChild(btn);
       }
     }
+
+    function describeMeal() {
+      textMealInput.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' });
+      textMealInput.focus({ preventScroll: true });
+    }
+    document.getElementById('quick-scan').addEventListener('click', () => cameraInput.click());
+    document.getElementById('empty-scan-btn').addEventListener('click', () => cameraInput.click());
+    document.getElementById('quick-describe').addEventListener('click', describeMeal);
+    document.getElementById('empty-describe-btn').addEventListener('click', describeMeal);
+    document.getElementById('quick-water').addEventListener('click', () => {
+      if (!window.NutriSecurity.isCurrent(window._currentUID)) return;
+      const count = loadWater().count;
+      if (count >= 8) { window.NutriFeedback.show('You’ve reached today’s water goal.'); return; }
+      saveWater(count + 1);
+      renderWater();
+      if (count === 7) document.getElementById('water-drops').classList.add('goal-celebrate');
+      window.NutriFeedback.show(count === 7 ? 'Water goal reached. Nicely done!' : `${count + 1}/8 glasses logged.`);
+    });
 
     document.getElementById('water-reset').addEventListener('click', () => {
       saveWater(0);
@@ -1800,14 +1839,10 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // Add a single meal to Firestore subcollection
     window._addMealToFirestore = async function(uid, meal) {
-      try {
-        const ref = await addDoc(collection(db, 'users', uid, 'meals'), {
-          ...meal,
-          loggedAt: meal.loggedAt || new Date().toISOString(),
-          createdAt: Timestamp.now(),
-        });
-        return ref.id;
-      } catch (e) { console.warn('Meal add error:', e); }
+      if (!window.NutriSecurity.isCurrent(uid)) throw new Error('Your account changed.');
+      const { _id, createdAt, ...data } = meal;
+      await setDoc(doc(db, 'users', uid, 'meals', _id), { ...data, createdAt: Timestamp.now() });
+      return _id;
     };
 
     // Load all meals from Firestore and cache to localStorage
@@ -1816,7 +1851,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
         if (!window.NutriSecurity.isCurrent(uid)) return;
         const meals = [];
-        snap.forEach(d => meals.push({ _id: d.id, ...d.data() }));
+        snap.forEach(d => meals.push({ ...d.data(), _id: d.id }));
         // Sort ascending by loggedAt
         meals.sort((a, b) => new Date(a.loggedAt) - new Date(b.loggedAt));
         localStorage.setItem(STORAGE_KEY, JSON.stringify(meals));
@@ -1871,6 +1906,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       }
 
       const uid = user.uid;
+      document.getElementById('quick-water').disabled = true;
       window._currentUID = uid; // expose UID for other functions to use
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
@@ -1881,6 +1917,15 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       // 2. Load meals from Firestore and refresh dashboard
       await loadMealsFromFirestore(uid);
       if (!window.NutriSecurity.isCurrent(uid)) return;
+      window.NutriMeals.configure({
+        uid,
+        remove: id => deleteDoc(doc(db, 'users', uid, 'meals', id)),
+        restore: (id, meal) => {
+          const { _id, createdAt, ...data } = meal;
+          return setDoc(doc(db, 'users', uid, 'meals', id), { ...data, createdAt: Timestamp.now() });
+        },
+        refresh: () => window.refresh(),
+      });
       if (typeof window.refresh === 'function') window.refresh();
 
       // 3. Load today's water count from Firestore
@@ -1891,6 +1936,8 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
         localStorage.setItem(WATER_KEY, JSON.stringify({ count: waterCount, date: today }));
         if (typeof window.renderWater === 'function') window.renderWater();
       }
+
+      document.getElementById('quick-water').disabled = false;
 
       // 4. Patch saveMeals to also write to Firestore
       const origSaveMeals = window.saveMeals;
@@ -1910,10 +1957,14 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     // We wrap the loadAllMeals + saveMeals pattern in dashboard.html by
     // patching the global saveMeals after a meal push — but the cleanest way
     // is to expose an async addMeal that pages can call.
-    window._logMealToFirestore = async function(meal) {
+    window._logMealToFirestore = function(meal) {
       const uid = window._currentUID;
-      if (!uid) return;
-      await window._addMealToFirestore(uid, meal);
+      if (!window.NutriSecurity.isCurrent(uid)) return;
+      const pending = window._addMealToFirestore(uid, meal);
+      window.NutriMeals.trackWrite(meal._id, pending);
+      pending.catch(() => {
+        if (window.NutriSecurity.isCurrent(uid)) window.showToast('Meal saved on this device. Cloud sync failed.');
+      });
     };
   </script>
 
