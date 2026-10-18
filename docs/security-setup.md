@@ -27,6 +27,8 @@ The repository cannot publish Firebase rules or add Vercel secrets without autho
 
 Run `npm test`, `npm run build`, and `npm run test:rules`. The rules suite downloads the official emulator, verifies its pinned SHA-256 checksum, and uses a demo project bound to localhost, never the production database. Java 21 is required. The GitHub security workflow repeats these checks and the production dependency audit.
 
+The `jwks-rsa` dependency has a scoped override to `jose` 5.10.0, which supports CommonJS. Its default ESM-only dependency crashes Firebase Admin startup under Vercel loaders that cannot use synchronous `require(ESM)`. The startup regression runs without that Node feature and checks public-key import and signature verification. Keep this check passing when updating or removing the override; it does not replace Firebase token verification or revocation checks.
+
 When changing inline JavaScript, run **`npm run security:headers`** and commit `vercel.json`; the build rejects stale CSP hashes. When changing utility classes, run `npm run build` and commit `public/app.css`. Vercel runs the build as well. Static generated files remain in Git so previews and plain static servers work.
 
 Local API/rendering/session tests and browser checks do not certify the deployed website. Confirm the environment variables, published database rules, HTTPS response headers, email/Google login, meal scans, and notifications on the real deployment. Keep Firebase Authentication's authorized domains restricted to the domains you actually use, and remove old server keys if they were ever exposed.
