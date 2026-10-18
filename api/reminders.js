@@ -9,12 +9,19 @@ export function createReminderHandler({ getServices = services, isConfigured = c
       return res.status(405).json({ error: 'Method not allowed' });
     }
     if (!isConfigured()) return res.status(503).json({ error: 'Reminders are not available yet. Please try again later.' });
-    if (req.method === 'GET') return res.status(200).json({ publicKey: process.env.VAPID_PUBLIC_KEY });
+    if (req.method === 'GET') {
+      try {
+        getServices(); // Do not advertise availability when server credentials or push settings are invalid.
+        return res.status(200).json({ publicKey: process.env.VAPID_PUBLIC_KEY });
+      } catch { return res.status(503).json({ error: 'Reminders are temporarily unavailable. Please try again later.' }); }
+    }
     const token = req.headers.authorization?.match(/^Bearer (.+)$/)?.[1];
     if (!token) return res.status(401).json({ error: 'Please sign in again.' });
     let auth, db, uid;
     try {
       ({ auth, db } = getServices());
+    } catch { return res.status(503).json({ error: 'Reminders are temporarily unavailable. Please try again later.' }); }
+    try {
       const decoded = await auth.verifyIdToken(token, true);
       if (!decoded.uid || decoded.firebase?.sign_in_provider === 'anonymous') throw new Error('Sign in required');
       uid = decoded.uid;

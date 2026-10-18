@@ -26,6 +26,14 @@ Each job sends at most one combined notification per device. Water reminders sto
 
 Without the production variables, `/api/reminders` returns 503 and Settings shows that reminders are not available. It never displays a working on switch for an unconfigured service.
 
+## Troubleshooting a switch that will not turn on
+
+Check that all five variable names above exist in Vercel's **Production** environment, then redeploy after changes. Keep an existing VAPID key pair; generate one only if it has never been configured. Groq keys do not configure Web Push.
+
+Open Settings and inspect the failed `/api/reminders` request in Vercel Logs. Missing configuration logs list variable names only. Invalid Firebase credentials and invalid VAPID settings have separate messages; server initialization failures return 503 instead of incorrectly asking the user to sign in again. Never share secret values or the service-account JSON in chat or logs.
+
+After fixing the deployment, use **Retry reminders** in Settings, then enable the switch. Retry checks availability without requesting notification permission. If notifications are blocked, allow them in the browser's site settings first. A successful subscription should remain on after reload; confirm actual delivery with a real device at the next scheduled time.
+
 ## Operational details
 
 - Subscription requests require a verified Firebase ID token. Devices are separate subscriptions; disabling a device affects that browser/install. Signing out or resetting app data also unsubscribes that device.

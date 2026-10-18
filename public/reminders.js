@@ -5,6 +5,7 @@
   const toggle = document.getElementById('notif-toggle');
   const thumb = document.getElementById('notif-thumb');
   const status = document.getElementById('notif-status');
+  const retry = document.getElementById('notif-retry');
   const supported = window.isSecureContext && 'Notification' in window &&
     'serviceWorker' in navigator && 'PushManager' in window;
   let user = null;
@@ -27,6 +28,10 @@
     toggle.classList.toggle('bg-slate-200', !on);
     thumb.classList.toggle('translate-x-5', on);
     thumb.classList.toggle('translate-x-0.5', !on);
+    if (retry) {
+      retry.classList.toggle('hidden', !supported || !user || (!message && serviceAvailable));
+      retry.disabled = busy;
+    }
     status.textContent = message || (!supported
       ? 'Reminders aren’t supported in this browser. On iPhone, add NutriGlance to your Home Screen first.'
       : !user ? 'Sign in to manage reminders.'
@@ -37,13 +42,26 @@
               : 'Off · Water and meal reminders at 1 PM and 7 PM IST.');
   }
 
+  class ReminderError extends Error {}
+  async function responseError(response) {
+    const body = await response.json().catch(() => ({}));
+    const message = typeof body.error === 'string' ? body.error : body.error?.message;
+    return new ReminderError(typeof message === 'string' && message.length <= 240 ? message :
+      response.status === 401 ? 'Your session has expired. Please sign in again.' :
+        response.status === 429 ? 'Too many reminder requests. Wait a minute and try again.' :
+          'Reminders are temporarily unavailable. Please try again later.');
+  }
   async function save(enabled, sub) {
-    const token = await user.getIdToken();
+    const owner = user;
+    if (!owner) throw new ReminderError('Please sign in to manage reminders.');
+    const token = await owner.getIdToken();
+    if (user?.uid !== owner.uid) throw new ReminderError('Your account changed. Please try again.');
     const response = await fetch('/api/reminders', {
       method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(enabled ? { enabled, subscription: sub.toJSON() } : { enabled, endpoint: sub.endpoint }),
+      signal: AbortSignal.timeout(15000),
     });
-    if (!response.ok) throw new Error('Couldn’t save reminders. Please try again.');
+    if (!response.ok) throw await responseError(response);
   }
 
   async function dismiss(reg) {
@@ -102,7 +120,9 @@
     } catch (error) {
       errorMessage = error.name === 'NotAllowedError'
         ? 'Notifications weren’t allowed. Check your browser’s site settings.'
-        : 'Couldn’t update reminders. Please try again.';
+        : error instanceof ReminderError ? error.message :
+          ['TimeoutError', 'AbortError'].includes(error.name) ? 'The reminder request timed out. Please try again.' :
+            'Couldn’t update reminders. Please try again.';
     } finally { busy = false; render(); }
   });
 
@@ -120,12 +140,20 @@
       }
       if (!subscription) localStorage.setItem(preferenceKey, '0');
       if (subscription && localStorage.getItem(preferenceKey) !== '1') await disable();
-      const response = await fetch('/api/reminders', { cache: 'no-store' });
+      const response = await fetch('/api/reminders', { cache: 'no-store', signal: AbortSignal.timeout(15000) });
       serviceAvailable = response.ok;
-      publicKey = response.ok ? (await response.json()).publicKey : null;
+      if (!response.ok) { publicKey = null; throw await responseError(response); }
+      publicKey = (await response.json()).publicKey;
+      if (typeof publicKey !== 'string' || !/^[A-Za-z0-9_-]+={0,2}$/.test(publicKey) || atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')).length !== 65) {
+        throw new ReminderError('Reminders are temporarily unavailable. Please try again later.');
+      }
       if (subscription && enabled() && serviceAvailable) await save(true, subscription);
       errorMessage = '';
-    } catch { errorMessage = 'Couldn’t load reminders. Please try again.'; }
+    } catch (error) {
+      serviceAvailable = false;
+      publicKey = null;
+      errorMessage = error instanceof ReminderError ? error.message : 'Couldn’t load reminders. Check your connection and try again.';
+    }
     finally { busy = false; render(); }
   }
 
@@ -144,6 +172,7 @@
   }
   window.addEventListener('nutriglance-auth-ready', attachAuth);
   window.addEventListener('focus', refresh);
+  retry?.addEventListener('click', refresh);
   window.addEventListener('storage', event => {
     if ([preferenceKey, ownerKey, null].includes(event.key)) refresh();
   });

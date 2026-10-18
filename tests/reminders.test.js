@@ -104,6 +104,20 @@ test('subscription API handles unavailable config, auth, validation and ownershi
   assert.equal(fixture.records.size, 0);
 });
 
+test('server initialization failures return unavailable rather than a sign-in error', async () => {
+  const handler = createReminderHandler({
+    isConfigured: () => true,
+    getServices: () => { throw new Error('private credential detail'); },
+  });
+  for (const request of [{ method: 'GET' }, post({ enabled: true, subscription })]) {
+    const res = response();
+    await handler(request, res);
+    assert.equal(res.code, 503);
+    assert.match(res.body.error, /temporarily unavailable/);
+    assert(!JSON.stringify(res.body).includes('private credential detail'));
+  }
+});
+
 test('cron gates timing, sends twice at most, checks meals/water and cleans expired endpoints', async () => {
   const fixture = fakeServices({
     'reminderSubscriptions/device-1': { uid: 'user-1', enabled: true, subscription },
