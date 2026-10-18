@@ -11,6 +11,7 @@ const PRECACHE = [
   '/reminders.js',
   '/security.js',
   '/nutrition-goals.js',
+  '/weekly-insights.js',
   '/onboarding.js',
   '/onboarding.css',
   '/security.css',

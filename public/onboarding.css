@@ -33,6 +33,7 @@
 #onboarding-form input::placeholder { color:var(--onb-muted); opacity:.65; }
 #onboarding-overlay select.onboarding-input { min-width:0; font-size:14px; color-scheme:light; }
 .onboarding-activity-help { margin-top:8px; font-size:11px; line-height:1.7; color:var(--onb-muted); }
+.onboarding-goal-field { margin-top:18px; }
 .onboarding-gender { min-width:0; margin-top:18px; }
 .onboarding-gender legend { margin-bottom:4px; }
 .onboarding-gender > p { color:var(--onb-muted); font-size:10px; line-height:1.6; margin-bottom:10px; }

@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
   <script src="/nutrition-goals.js"></script>
+  <script src="/weekly-insights.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
@@ -378,6 +379,27 @@
     </div>
 
   </div>
+
+  <section id="weekly-insights" class="progress-card weekly-insights" aria-labelledby="weekly-insights-title">
+    <div class="weekly-insights-header">
+      <div>
+        <p class="weekly-eyebrow">A LITTLE PERSPECTIVE</p>
+        <h2 id="weekly-insights-title" class="font-display text-charcoal font-extrabold">Weekly insights</h2>
+        <p id="weekly-status">Your first logged day will start this comparison.</p>
+      </div>
+      <div class="weekly-ranges">
+        <p><span>This week</span><strong id="weekly-current-range">—</strong></p>
+        <p><span>Last week</span><strong id="weekly-previous-range">—</strong></p>
+      </div>
+    </div>
+    <div class="weekly-metrics">
+      <div><h3>Average calories</h3><p id="weekly-calories-value" class="weekly-value">—</p><p id="weekly-calories-change" class="weekly-change">Add a log to compare</p><p id="weekly-calories-previous" class="weekly-previous">Last week: no entries</p></div>
+      <div><h3>Average protein</h3><p id="weekly-protein-value" class="weekly-value">—</p><p id="weekly-protein-change" class="weekly-change">Add a log to compare</p><p id="weekly-protein-previous" class="weekly-previous">Last week: no entries</p></div>
+      <div><h3>Days logged</h3><p id="weekly-logged-value" class="weekly-value">0</p><p id="weekly-logged-change" class="weekly-change">No logs yet</p><p id="weekly-logged-previous" class="weekly-previous">Last week: 0</p></div>
+      <div><h3>Within calorie goal</h3><p id="weekly-goal-value" class="weekly-value">—</p><p id="weekly-goal-change" class="weekly-change">Add a log to compare</p><p id="weekly-goal-previous" class="weekly-previous">Last week: no entries</p></div>
+    </div>
+    <p class="weekly-method">Weeks start Monday; comparisons cover the same weekdays through today. Averages use logged days only. Goal rate means within ±10% of your current calorie target.</p>
+  </section>
 
   <div class="progress-workspace">
     <aside class="progress-sidebar">
@@ -1084,6 +1106,7 @@ let currentRange = 7;
 function renderAll() {
   renderTodayRing();
   renderStats();
+  window.NutriWeekly.render(loadProgress(), getGoal());
   renderCalorieChart(currentRange);
   renderMacroChart();
   renderCalendar();

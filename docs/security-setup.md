@@ -11,6 +11,8 @@ The AI API now requires a Firebase ID token and persistent server-side quotas. I
 
 Lifestyle setup adds the optional profile field `activityLevel`, limited to `sedentary`, `lightly_active`, `moderately_active`, or `very_active`. Publish the updated rules before using this feature; older rules reject the new field. Existing profiles without it remain valid and keep their saved targets until the user updates their profile. Setup and Settings show a retryable error if the profile cannot be saved.
 
+Goal preferences add the optional field `goalPreference`, limited to `maintenance`, `weight_loss`, or `weight_gain`. Publish the latest rules to allow it. Adults can choose an estimated 10% calorie deficit or surplus relative to activity-based maintenance; under-18 profiles use maintenance estimates. Existing profiles keep their saved targets until edited. Weekly insights compare Monday through today with the same weekdays in the previous week, exclude unlogged days from averages, and evaluate both weeks against the current calorie goal.
+
 The repository cannot publish Firebase rules or add Vercel secrets without authorized access to those services. Pushing a Git commit alone does not change the deployed Firestore rules.
 
 ## Protections

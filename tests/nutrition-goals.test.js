@@ -27,3 +27,24 @@ test('unknown or missing lifestyle choices cannot silently generate targets', ()
     assert.throws(() => goals.calculateTargets({ ...profile, activityLevel }), /choose your activity level/);
   }
 });
+
+test('adult goal preferences adjust maintenance by ten percent and keep macros consistent', () => {
+  const expected = { maintenance: 2511, weight_loss: 2260, weight_gain: 2762 };
+  for (const [goalPreference, calories] of Object.entries(expected)) {
+    const targets = goals.calculateTargets({ ...profile, activityLevel: 'moderately_active', goalPreference });
+    assert.equal(targets.targetKcal, calories);
+    assert.equal(targets.targetProtein, 68);
+    assert(Math.abs(targets.targetProtein * 4 + targets.targetCarbs * 4 + targets.targetFat * 9 - calories) <= 10);
+  }
+  assert.equal(goals.calculateTargets({ ...profile, activityLevel: 'moderately_active' }).targetKcal, 2511);
+});
+
+test('unknown goals are rejected and under-18 estimates stay at maintenance', () => {
+  for (const goalPreference of ['', null, 'extreme_loss', 'constructor', 10, {}]) {
+    assert.equal(goals.hasGoalPreference(goalPreference), false);
+    assert.throws(() => goals.calculateTargets({ ...profile, activityLevel: 'sedentary', goalPreference }), /choose your goal/);
+  }
+  const young = { ...profile, age: 17, activityLevel: 'lightly_active' };
+  const maintenance = goals.calculateTargets(young).targetKcal;
+  for (const goalPreference of ['weight_loss', 'weight_gain']) assert.equal(goals.calculateTargets({ ...young, goalPreference }).targetKcal, maintenance);
+});

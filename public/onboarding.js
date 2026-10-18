@@ -71,6 +71,15 @@
               <option value="very_active">Very active</option>
             </select>
             <p id="onb-activity-help" class="onboarding-activity-help">Include your work, walking, and exercise in a typical week.</p>
+            <div class="onboarding-goal-field">
+              <label for="onb-goal">Your goal</label>
+              <select id="onb-goal" class="onboarding-input" aria-describedby="onb-goal-help" required>
+                <option value="maintenance" selected>Maintain weight</option>
+                <option value="weight_loss">Lose weight</option>
+                <option value="weight_gain">Gain weight</option>
+              </select>
+              <p id="onb-goal-help" class="onboarding-activity-help">An estimate of the calories needed to maintain your current weight.</p>
+            </div>
           </div>
           <p id="onboarding-error" role="alert" class="hidden"></p>
           <div class="onboarding-submit">
@@ -144,6 +153,9 @@
     const activity = document.getElementById('onb-activity');
     activity.value = window.NutriGoals.hasActivityLevel(profile?.activityLevel) ? profile.activityLevel : '';
     activity.dispatchEvent(new Event('change'));
+    const goal = document.getElementById('onb-goal');
+    goal.value = window.NutriGoals.hasGoalPreference(profile?.goalPreference) ? profile.goalPreference : 'maintenance';
+    goal.dispatchEvent(new Event('change'));
   }
   async function readProfile(current) {
     retry.disabled = true;
@@ -196,17 +208,19 @@
     const weight = parseFloat(document.getElementById('onb-weight').value);
     const height = parseFloat(document.getElementById('onb-height').value);
     const activityLevel = document.getElementById('onb-activity').value;
+    const goalPreference = document.getElementById('onb-goal').value;
     const validations = [
       ['onb-name', !name || name.length > 160, 'Please enter your name (up to 160 characters).'],
       ['onb-age', !Number.isInteger(age) || age < 10 || age > 100, 'Enter an age between 10 and 100 years.'],
       ['onb-weight', !Number.isFinite(weight) || weight < 20 || weight > 300 || !document.getElementById('onb-weight').checkValidity(), 'Enter a weight between 20 and 300 kg.'],
       ['onb-height', !Number.isInteger(height) || height < 100 || height > 250, 'Enter a height between 100 and 250 cm.'],
       ['onb-activity', !window.NutriGoals.hasActivityLevel(activityLevel), 'Please choose your activity level.'],
+      ['onb-goal', !window.NutriGoals.hasGoalPreference(goalPreference) || (age < 18 && goalPreference !== 'maintenance'), 'Please choose a valid goal for your age.'],
     ];
     for (const [id] of validations) {
       const field = document.getElementById(id);
       field.removeAttribute('aria-invalid');
-      if (id === 'onb-activity') field.setAttribute('aria-describedby', 'onb-activity-help');
+      if (id === 'onb-activity' || id === 'onb-goal') field.setAttribute('aria-describedby', `${id}-help`);
       else field.removeAttribute('aria-describedby');
     }
     const invalid = validations.find(([, failed]) => failed);
@@ -216,13 +230,13 @@
       error.classList.remove('hidden');
       const field = document.getElementById(id);
       field.setAttribute('aria-invalid', 'true');
-      field.setAttribute('aria-describedby', id === 'onb-activity' ? 'onb-activity-help onboarding-error' : 'onboarding-error');
+      field.setAttribute('aria-describedby', ['onb-activity', 'onb-goal'].includes(id) ? `${id}-help onboarding-error` : 'onboarding-error');
       field.focus();
       return;
     }
     error.classList.add('hidden');
-    const profile = { name, gender, age, weight, height, activityLevel,
-      ...window.NutriGoals.calculateTargets({ gender, age, weight, height, activityLevel }) };
+    const profile = { name, gender, age, weight, height, activityLevel, goalPreference,
+      ...window.NutriGoals.calculateTargets({ gender, age, weight, height, activityLevel, goalPreference }) };
     const submit = form.querySelector('button[type="submit"]');
     const label = submit.innerHTML;
     submit.disabled = true;

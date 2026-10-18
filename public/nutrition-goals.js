@@ -7,11 +7,19 @@
     very_active: Object.freeze({ label: 'Very active', factor: 1.725, description: 'Hard exercise most days, or a physically demanding daily routine.' }),
   });
   const hasActivityLevel = value => typeof value === 'string' && Object.hasOwn(activityLevels, value);
+  const goalPreferences = Object.freeze({
+    maintenance: Object.freeze({ label: 'Maintain weight', adjustment: 1, description: 'An estimate of the calories needed to maintain your current weight.' }),
+    weight_loss: Object.freeze({ label: 'Lose weight', adjustment: .9, description: 'About 10% below your estimated maintenance calories for gradual weight loss.' }),
+    weight_gain: Object.freeze({ label: 'Gain weight', adjustment: 1.1, description: 'About 10% above your estimated maintenance calories for gradual weight gain.' }),
+  });
+  const hasGoalPreference = value => typeof value === 'string' && Object.hasOwn(goalPreferences, value);
 
-  function calculateTargets({ gender, age, weight, height, activityLevel }) {
+  function calculateTargets({ gender, age, weight, height, activityLevel, goalPreference = 'maintenance' }) {
     if (!hasActivityLevel(activityLevel)) throw new Error('Please choose your activity level.');
+    if (!hasGoalPreference(goalPreference)) throw new Error('Please choose your goal.');
     const bmr = (10 * weight) + (6.25 * height) - (5 * age) + (gender === 'male' ? 5 : -161);
-    const totalCalories = bmr * activityLevels[activityLevel].factor;
+    const adjustment = age < 18 ? 1 : goalPreferences[goalPreference].adjustment;
+    const totalCalories = bmr * activityLevels[activityLevel].factor * adjustment;
     // Preserve the existing age-based protein and fat estimates.
     const proteinMultiplier = age <= 3 ? 1.3 : age <= 13 ? 1.15 : age <= 25 ? 1.4 : age <= 45 ? 1 : 1.25;
     const targetProtein = weight * proteinMultiplier;
@@ -25,7 +33,7 @@
     };
   }
 
-  window.NutriGoals = Object.freeze({ activityLevels, hasActivityLevel, calculateTargets });
+  window.NutriGoals = Object.freeze({ activityLevels, hasActivityLevel, goalPreferences, hasGoalPreference, calculateTargets });
   document.addEventListener('DOMContentLoaded', () => {
     for (const prefix of ['onb', 'prof']) {
       const field = document.getElementById(`${prefix}-activity`);
@@ -35,6 +43,22 @@
         help.textContent = hasActivityLevel(field.value) ? activityLevels[field.value].description : 'Include your work, walking, and exercise in a typical week.';
       };
       field.addEventListener('change', describe);
+      describe();
+    }
+    for (const prefix of ['onb', 'prof']) {
+      const field = document.getElementById(`${prefix}-goal`);
+      const help = document.getElementById(`${prefix}-goal-help`);
+      const age = document.getElementById(`${prefix}-age`);
+      if (!field || !help || !age) continue;
+      const describe = () => {
+        const under18 = Number(age.value) > 0 && Number(age.value) < 18;
+        for (const option of field.options) option.disabled = under18 && option.value !== 'maintenance';
+        if (under18) field.value = 'maintenance';
+        help.textContent = under18 ? 'Under-18 profiles use maintenance estimates.' :
+          hasGoalPreference(field.value) ? goalPreferences[field.value].description : 'Choose the goal that fits you.';
+      };
+      field.addEventListener('change', describe);
+      age.addEventListener('input', describe);
       describe();
     }
   });

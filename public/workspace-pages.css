@@ -26,8 +26,8 @@
 #settings-page #profile-edit-form > div:nth-child(3),#settings-page #profile-edit-form > p,#settings-page #profile-edit-form > button { grid-column:1/-1; }
 #settings-page #profile-edit-form > .settings-activity { grid-column:1/-1; }
 #settings-page #profile-edit-form input:not([type=radio]),#settings-page #profile-edit-form select { border:1px solid var(--ws-line); padding:12px; min-height:44px; background:var(--ws-soft); }
-#prof-activity-help { line-height:1.8; }
-html.dark #prof-activity,body.dark #prof-activity { color-scheme:dark; }
+#prof-activity-help,#prof-goal-help { line-height:1.8; }
+html.dark #prof-activity,body.dark #prof-activity,html.dark #prof-goal,body.dark #prof-goal { color-scheme:dark; }
 #settings-page #profile-edit-form label { letter-spacing:.035em; }
 #settings-page #profile-edit-form input[type=radio]:focus-visible + div { outline:3px solid #059669; outline-offset:3px; }
 #settings-page #profile-edit-form > button { width:auto; justify-self:start; padding:12px 28px; min-width:170px; border-radius:12px; }

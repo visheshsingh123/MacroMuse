@@ -59,6 +59,17 @@ test('quotas, notification secrets, and unknown collections are server-only', as
   await assertFails(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice' }, admin: true }));
 });
 
+test('goal preferences accept only known values on the owner profile', async () => {
+  const db = env.authenticatedContext('alice').firestore();
+  for (const goalPreference of ['maintenance', 'weight_loss', 'weight_gain']) {
+    await assertSucceeds(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice', age: 28, goalPreference } }));
+  }
+  for (const goalPreference of ['', null, 'extreme_loss', 10, { admin: true }]) {
+    await assertFails(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice', goalPreference } }));
+  }
+  await assertFails(setDoc(doc(env.authenticatedContext('bob').firestore(), 'users/alice'), { profile: { name: 'Alice', goalPreference: 'maintenance' } }));
+});
+
 test('malformed nutrition and unrecognized profile fields cannot be persisted', async () => {
   const db = env.authenticatedContext('alice').firestore();
   await assertFails(setDoc(doc(db, 'users/alice/meals/bad'), { name: 'Bad', loggedAt: new Date().toISOString(), kcal: '<img onerror=alert(1)>' }));

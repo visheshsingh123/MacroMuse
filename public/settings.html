@@ -394,6 +394,15 @@
                 </select>
                 <p id="prof-activity-help" class="text-xs text-muted mt-2">Include your work, walking, and exercise in a typical week.</p>
               </div>
+              <div class="settings-activity">
+                <label for="prof-goal" class="block text-xs font-semibold text-charcoal uppercase tracking-wide mb-1.5">Your goal</label>
+                <select id="prof-goal" aria-describedby="prof-goal-help" class="w-full text-sm bg-slate-50 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand" required>
+                  <option value="maintenance" selected>Maintain weight</option>
+                  <option value="weight_loss">Lose weight</option>
+                  <option value="weight_gain">Gain weight</option>
+                </select>
+                <p id="prof-goal-help" class="text-xs text-muted mt-2">An estimate of the calories needed to maintain your current weight.</p>
+              </div>
 
               <p id="profile-edit-error" role="alert" class="hidden text-xs font-semibold text-red-500 -mb-1"></p>
 
@@ -557,7 +566,8 @@
       if (p) {
         document.getElementById('profile-meta-display').textContent =
           `${p.gender === 'female' ? '♀' : '♂'} · ${p.age} yrs · ${p.weight} kg · ${p.height} cm` +
-          (window.NutriGoals.hasActivityLevel(p.activityLevel) ? ` · ${window.NutriGoals.activityLevels[p.activityLevel].label}` : '');
+          (window.NutriGoals.hasActivityLevel(p.activityLevel) ? ` · ${window.NutriGoals.activityLevels[p.activityLevel].label}` : '') +
+          (window.NutriGoals.hasGoalPreference(p.goalPreference) ? ` · ${window.NutriGoals.goalPreferences[p.goalPreference].label}` : '');
       }
     }
 
@@ -574,6 +584,9 @@
       const activity = document.getElementById('prof-activity');
       activity.value = window.NutriGoals.hasActivityLevel(p.activityLevel) ? p.activityLevel : '';
       activity.dispatchEvent(new Event('change'));
+      const goal = document.getElementById('prof-goal');
+      goal.value = window.NutriGoals.hasGoalPreference(p.goalPreference) ? p.goalPreference : 'maintenance';
+      goal.dispatchEvent(new Event('change'));
     }
 
     updateAvatars();
@@ -592,6 +605,7 @@
       const height = parseFloat(document.getElementById('prof-height').value);
 
       const activityLevel = document.getElementById('prof-activity').value;
+      const goalPreference = document.getElementById('prof-goal').value;
 
       if (!name || name.length > 160) {
         profileEditError.textContent = 'Please enter your name.';
@@ -610,14 +624,20 @@
         document.getElementById('prof-activity').focus();
         return;
       }
+      if (!window.NutriGoals.hasGoalPreference(goalPreference) || (age < 18 && goalPreference !== 'maintenance')) {
+        profileEditError.textContent = 'Please choose a valid goal for your age.';
+        profileEditError.classList.remove('hidden');
+        document.getElementById('prof-goal').focus();
+        return;
+      }
       profileEditError.classList.add('hidden');
 
-      const targets = window.NutriGoals.calculateTargets({ gender, age, weight, height, activityLevel });
+      const targets = window.NutriGoals.calculateTargets({ gender, age, weight, height, activityLevel, goalPreference });
       const btn = profileEditForm.querySelector('button[type="submit"]');
       btn.disabled = true;
       btn.textContent = 'Saving…';
       try {
-        await saveProfile({ name, gender, age, weight, height, activityLevel, ...targets });
+        await saveProfile({ name, gender, age, weight, height, activityLevel, goalPreference, ...targets });
         updateAvatars();
         btn.textContent = '✅ Saved!';
         setTimeout(() => {
