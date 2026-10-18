@@ -6,6 +6,8 @@
   <script src="/security.js"></script>
   <link rel="stylesheet" href="/app-interactions.css" />
   <script src="/app-interactions.js"></script>
+  <script src="/chef-recipes.js"></script>
+  <link rel="stylesheet" href="/chef-recipes.css" />
   <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -473,7 +475,9 @@
     const GROQ_ENDPOINT = '/api/groq';
     const GROQ_MODEL    = 'openai/gpt-oss-120b';
 
-    const SYSTEM_PROMPT = `You are "AI Chef", a friendly, practical cooking assistant built into the NutriGlance app. The user will tell you which ingredients they currently have. Suggest 1 to 3 realistic recipes they could cook using mostly those ingredients (you may assume basic pantry staples like salt, pepper, cooking oil, and water are available). For each recipe give: a short title, an estimated calories per serving, and a brief numbered method in 3 to 6 steps. If the ingredients are unusual or insufficient for a full recipe, say so honestly and suggest the smallest addition that would make a meal possible. Keep your tone warm, encouraging, and concise. Reply in plain text with a blank line between recipes — do not use markdown asterisks, hashes, or bullet symbols.`;
+    const SYSTEM_PROMPT = `You are AI Chef, a friendly practical cooking assistant in NutriGlance. Suggest 1 or 2 realistic recipes using the user's ingredients plus basic pantry staples. If more ingredients are needed, say so honestly. Answer cooking questions conversationally in the message field, with an empty recipes array when a recipe is not appropriate. Return ONLY valid JSON, no markdown fences, using this exact shape:
+{"message":"A brief helpful introduction","recipes":[{"name":"Recipe title","perServing":{"kcal":400,"protein":25,"carbs":40,"fat":15},"ingredients":["Quantity and ingredient for ONE serving"],"steps":["A short preparation step"]}]}
+Nutrition values must be numeric, nonnegative estimates for ONE serving, not the entire batch. Include all four fields; kcal must be positive. Use at most 8 ingredients and 4 concise steps per recipe. Keep the message under 300 characters and each step under 140 characters. Never claim a recipe was logged; only the user's Log meal button can do that.`;
 
     // ── DOM references ────────────────────────────────────────────────────
     const chatLog    = document.getElementById('chat-log');
@@ -485,6 +489,7 @@
 
     // Running conversation sent to the API (system prompt is added at call time)
     let history = [];
+    let conversationVersion = 0;
 
     function scrollToBottom() {
       chatLog.scrollTop = chatLog.scrollHeight;
@@ -546,7 +551,7 @@
         },
         body: JSON.stringify({
           model: GROQ_MODEL,
-          max_tokens: 500,
+          max_tokens: 1024,
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             ...history.slice(-10).map(message => ({ ...message, content: message.content.slice(0, 1500) })),
@@ -567,7 +572,9 @@
     // ── Send flow ────────────────────────────────────────────────────────
     async function sendMessage(text) {
       const trimmed = text.trim();
-      if (!trimmed) return;
+      if (!trimmed || sendBtn.disabled) return;
+      const requestUid = window.nutriGlanceReminderAuth?.currentUser?.uid;
+      const version = conversationVersion;
 
       addMessage('user', trimmed);
       chatInput.value = '';
@@ -576,13 +583,20 @@
 
       try {
         const reply = await askAIChef(trimmed);
+        if (!window.NutriSecurity.isCurrent(requestUid) || version !== conversationVersion) return;
         removeTypingIndicator();
-        addMessage('assistant', reply);
+        let result;
+        try { result = window.NutriRecipes.parse(reply); }
+        catch { addMessage('assistant', 'I couldn’t finish formatting those recipes. Please ask me to try again.'); return; }
+        const wrapper = addMessage('assistant', result ? result.message : reply);
+        if (result?.recipes.length) window.NutriRecipes.render(wrapper.lastElementChild, result.recipes, requestUid);
         history.push({ role: 'user', content: trimmed });
         history.push({ role: 'assistant', content: reply });
       } catch (err) {
-        removeTypingIndicator();
-        addMessage('assistant', `Sorry, I ran into a problem: ${err.message}`);
+        if (version === conversationVersion && window.NutriSecurity.isCurrent(requestUid)) {
+          removeTypingIndicator();
+          addMessage('assistant', `Sorry, I ran into a problem: ${err.message}`);
+        }
       } finally {
         sendBtn.disabled = false;
         chatInput.focus();
@@ -599,6 +613,7 @@
     });
 
     clearBtn.addEventListener('click', () => {
+      conversationVersion++;
       history = [];
       chatLog.querySelectorAll('.chat-msg').forEach((el, i) => { if (i > 0) el.remove(); });
     });
@@ -821,7 +836,7 @@
   <script type="module">
     import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getAuth }         from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-    import { getFirestore, doc, getDoc, setDoc }
+    import { getFirestore, doc, getDoc, setDoc, Timestamp }
       from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -843,11 +858,17 @@
     auth.onAuthStateChanged(async user => {
       if (user && !window.NutriSecurity.bindSession(user)) return;
       if (!user) window.NutriSecurity.bindSession(null);
-      if (!user) { window.location.href = '/login'; return; }
+      if (!user) { window.NutriRecipes.setLogger(null);window.location.href = '/login'; return; }
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
       if (!profile || !window.NutriSecurity.isCurrent(user.uid)) return;
       if (typeof window.updateAvatars === 'function') window.updateAvatars();
+      const uid = user.uid;
+      window.NutriRecipes.setLogger({ uid, save: (id, meal) => {
+        if (!window.NutriSecurity.isCurrent(uid)) throw new Error('Your account changed.');
+        const { _id, createdAt, ...data } = meal;
+        return setDoc(doc(db, 'users', uid, 'meals', id), { ...data, createdAt: Timestamp.now() });
+      } });
     });
   </script>
 

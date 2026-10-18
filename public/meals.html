@@ -704,7 +704,7 @@ function renderHistory() {
         <div class="meal-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v5a3 3 0 0 0 6 0V3M7 3v18M10 6H4M20 3c-4 2-5 7-3 9h3M20 3v18"/></svg></div>
         <div class="meal-details">
           <p class="meal-name">${escapeHtml(meal.name || 'Untitled meal')}</p>
-          <p class="meal-time">${formatTime(meal.loggedAt)}</p>
+          <p class="meal-time">${formatTime(meal.loggedAt)}${meal.portionSize ? ` · ${escapeHtml(meal.portionSize)}` : ''}</p>
           ${meal.description ? `<p class="meal-description">${escapeHtml(meal.description)}</p>` : ''}
           <div class="meal-macros">
             ${macroPill('Protein', meal.protein || 0, 'meal-protein')}
