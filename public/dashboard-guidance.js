@@ -2,8 +2,18 @@
   const positive = value => typeof value === 'number' && Number.isFinite(value) ? Math.max(0, value) : 0;
   function greeting(date, name = '') {
     const hour = date.getHours();
-    const phrase = hour >= 5 && hour < 12 ? 'Good morning' : hour >= 12 && hour < 17 ? 'Good afternoon' : hour >= 17 && hour < 22 ? 'Good evening' : 'Good night';
-    return `${phrase}${name.trim() ? `, ${name.trim()}` : ''}!`;
+    const shared = ['Hello', 'Hey there', 'Good to see you', 'Welcome back'];
+    const timely = hour >= 5 && hour < 12 ? ['Good morning', 'Rise and shine', 'Ready for a fresh start?']
+      : hour >= 12 && hour < 17 ? ['Good afternoon', 'How’s your day going?']
+        : hour >= 17 && hour < 22 ? ['Good evening', 'How was your day?']
+          : ['Good night', 'Good to see you tonight'];
+    const choices = [...shared, ...timely];
+    // Stable through rerenders and refreshes; rotate every local half hour and vary by day.
+    const day = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+    const slot = Math.floor((hour * 60 + date.getMinutes()) / 30);
+    const phrase = choices[(day + slot) % choices.length];
+    const question = phrase.endsWith('?');
+    return `${question ? phrase.slice(0, -1) : phrase}${name.trim() ? `, ${name.trim()}` : ''}${question ? '?' : '!'}`;
   }
   function guidance({ totals, goals, mealCount, waterCount }) {
     const kcal = positive(totals.kcal), protein = positive(totals.protein);

@@ -7,11 +7,33 @@ vm.runInNewContext(readFileSync(new URL('../public/dashboard-guidance.js', impor
 const { greeting, guidance } = context.window.NutriGuidance;
 const base = { goals: { kcal: 2000, protein: 90 }, totals: { kcal: 1200, protein: 65 }, mealCount: 2, waterCount: 3, hour: 13 };
 
-test('greetings follow local morning, afternoon, evening and night boundaries and preserve the user name', () => {
-  for (const [hour, expected] of [[0, 'night'], [4, 'night'], [5, 'morning'], [11, 'morning'], [12, 'afternoon'], [16, 'afternoon'], [17, 'evening'], [21, 'evening'], [22, 'night'], [23, 'night']]) {
-    assert.equal(greeting(new Date(2026, 9, 19, hour), ' Taylor '), `Good ${expected}, Taylor!`);
+test('rotating greetings keep the user name and only use appropriate time-of-day phrases', () => {
+  const common = ['Hello', 'Hey there', 'Good to see you', 'Welcome back'];
+  const periods = [
+    [0, 5, ['Good night', 'Good to see you tonight']],
+    [5, 12, ['Good morning', 'Rise and shine', 'Ready for a fresh start?']],
+    [12, 17, ['Good afternoon', 'How’s your day going?']],
+    [17, 22, ['Good evening', 'How was your day?']],
+    [22, 24, ['Good night', 'Good to see you tonight']],
+  ];
+  for (const [start, end, timely] of periods) {
+    const allowed = [...common, ...timely].map(phrase => phrase.endsWith('?') ? `${phrase.slice(0, -1)}, Taylor?` : `${phrase}, Taylor!`);
+    for (let minute = start * 60; minute < end * 60; minute += 29) {
+      assert(allowed.includes(greeting(new Date(2026, 9, 19, 0, minute), ' Taylor ')));
+    }
   }
-  assert.equal(greeting(new Date(2026, 9, 19, 10)), 'Good morning!');
+  assert(!greeting(new Date(2026, 9, 19, 10)).includes(','));
+});
+
+test('greetings remain stable within a half hour and change with the next slot or day', () => {
+  const first = greeting(new Date(2026, 9, 19, 10, 1), 'Taylor');
+  assert.equal(greeting(new Date(2026, 9, 19, 10, 29), 'Taylor'), first);
+  assert.notEqual(greeting(new Date(2026, 9, 19, 10, 30), 'Taylor'), first);
+  assert.notEqual(greeting(new Date(2026, 9, 20, 10, 1), 'Taylor'), first);
+  const morning = Array.from({ length: 14 }, (_, slot) => greeting(new Date(2026, 9, 19, 5, slot * 30), 'Taylor'));
+  assert(morning.includes('Hello, Taylor!'));
+  assert(morning.includes('Good morning, Taylor!'));
+  assert(morning.includes('Ready for a fresh start, Taylor?'));
 });
 
 test('guidance uses actual logged totals, goal differences and hydration rather than fabricated progress', () => {
