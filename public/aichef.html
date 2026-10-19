@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/app-interactions.css" />
   <script src="/app-interactions.js"></script>
   <script src="/chef-recipes.js"></script>
+  <script src="/saved-recipes.js"></script>
   <link rel="stylesheet" href="/chef-recipes.css" />
   <script src="/nutrition-goals.js"></script>
   <meta charset="UTF-8" />
@@ -242,6 +243,8 @@
   <link rel="stylesheet" href="/workspace-pages.css" />
   <link rel="stylesheet" href="/onboarding.css" />
   <script src="/onboarding.js" defer></script>
+  <link rel="stylesheet" href="/design-system.css" />
+  <script src="/accessibility.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -367,6 +370,11 @@
   ════════════════════════════════════════════════════════════════ -->
   <main id="chef-page" class="workspace-page">
     <header class="workspace-page-heading"><p class="workspace-eyebrow">YOUR KITCHEN COMPANION</p><h1>What's in your kitchen?</h1><p>Turn the ingredients you have into your next favorite meal.</p></header>
+    <div class="chef-view-tabs" role="tablist" aria-label="AI Chef views">
+      <button id="chef-chat-tab" type="button" role="tab" aria-selected="true" aria-controls="chef-chat-panel">Chat & recipes</button>
+      <button id="chef-saved-tab" type="button" role="tab" aria-selected="false" aria-controls="chef-saved-panel" tabindex="-1">Saved recipes <span id="saved-recipe-count">0</span></button>
+    </div>
+    <div id="chef-chat-panel" role="tabpanel" aria-labelledby="chef-chat-tab">
     <div class="chef-layout">
       <aside class="workspace-sidebar chef-sidebar">
         <div class="chef-sidebar-icon" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5 5 0 0 1 9.18 0A4 4 0 0 1 18 13.87V21H6Z"/><path d="M6 17h12"/></svg></div>
@@ -443,6 +451,16 @@
 
     </div>
     </div>
+    </div><!-- /chef-chat-panel -->
+    <section id="chef-saved-panel" role="tabpanel" aria-labelledby="chef-saved-tab" hidden>
+      <header class="saved-recipes-heading"><div><h2 id="saved-recipes-heading" tabindex="-1">Your recipe collection</h2><p>Saved to your account. Ready for your next meal.</p></div><button id="saved-recipes-refresh" type="button" class="ng-button ng-button-secondary">Refresh</button></header>
+      <label class="saved-recipe-search-label" for="saved-recipe-search">Search recipes or ingredients</label>
+      <input id="saved-recipe-search" type="search" maxlength="160" placeholder="Try chickpeas or a favorite dish…" />
+      <p id="saved-recipes-error" role="alert" hidden></p>
+      <div id="saved-recipes-loading" role="status" aria-label="Loading saved recipes" hidden><span class="circular-loader" aria-hidden="true"></span></div>
+      <div id="saved-recipes-empty" class="saved-recipes-empty" hidden><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4V3Z"/></svg><h3 id="saved-recipes-empty-title">Keep your next favorite close</h3><p id="saved-recipes-empty-copy"></p><button id="saved-recipes-start-chat" type="button" class="ng-button ng-button-primary">Find a recipe</button><button id="saved-recipes-clear-search" type="button" class="ng-button ng-button-secondary" hidden>Clear search</button></div>
+      <div id="saved-recipe-grid" class="saved-recipe-grid"></div>
+    </section>
   </main>
 
   <!-- ════════════════════════════════════════════════════════════════

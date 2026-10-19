@@ -95,6 +95,8 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/design-system.css" />
+  <script src="/accessibility.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -317,7 +319,7 @@
         <p class="text-xs sm:text-sm text-muted mt-2">See how the Free Starter and NutriGlance Pro compare across every feature.</p>
       </div>
 
-      <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-card shadow-sm">
+      <div tabindex="0" role="region" aria-label="Plan feature comparison, scroll horizontally to see all columns" class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-card shadow-sm">
         <table class="w-full text-left text-sm">
           <thead>
             <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">

@@ -33,8 +33,8 @@
     if (content !== undefined) node.textContent = content;
     return node;
   }
-  function render(container, recipes, ownerUid) {
-    container.classList.add('chef-recipe-bubble');
+  function render(container, recipes, ownerUid, { library = false } = {}) {
+    if (!library) container.classList.add('chef-recipe-bubble');
     for (const recipe of recipes) {
       const id = crypto.randomUUID();
       const card = element('section', 'chef-recipe-card');
@@ -91,8 +91,9 @@
           saving = false;button.removeAttribute('aria-busy');button.classList.remove('inline-loading');button.disabled = logged;select.disabled = logged;
         }
       });
+      window.NutriSavedRecipes?.decorate(card, recipe, ownerUid);
       container.appendChild(card);
     }
   }
-  window.NutriRecipes = { parse, mealFromRecipe, render, setLogger: value => logger = value };
+  window.NutriRecipes = { parse, mealFromRecipe, render, setLogger: value => { logger = value;window.NutriSavedRecipes?.connect(value?.uid || null); } };
 })();

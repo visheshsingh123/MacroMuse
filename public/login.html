@@ -210,6 +210,8 @@
   <link rel="stylesheet" href="/site-shell.css" />
   <link rel="stylesheet" href="/login.css" />
   <script src="/login-events.js" defer></script>
+  <link rel="stylesheet" href="/design-system.css" />
+  <script src="/accessibility.js" defer></script>
 </head>
 
 <body class="auth-page bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -568,6 +570,7 @@
       const el = document.getElementById(id);
       el.textContent = msg;
       el.style.display = 'block';
+      document.querySelector(`#panel-${id.split('-')[0]} [aria-invalid="true"]`)?.focus();
     }
     function hideBanner(id) {
       document.getElementById(id).style.display = 'none';
@@ -586,7 +589,7 @@
         'auth/user-not-found':           'No account found with that email.',
         'auth/wrong-password':           'Incorrect password. Try again.',
         'auth/email-already-in-use':     'An account with this email already exists.',
-        'auth/weak-password':            'Password must be at least 6 characters.',
+        'auth/weak-password':            'Password must be at least 8 characters.',
         'auth/too-many-requests':        'Too many attempts. Please try again later.',
         'auth/popup-closed-by-user':     'Sign-in popup was closed. Please try again.',
         'auth/network-request-failed':   'Network error. Check your connection.',
@@ -603,10 +606,10 @@
       const btn      = document.getElementById('signin-btn');
 
       let valid = true;
-      markError('signin-email',    !email);
+      markError('signin-email', !email || !document.getElementById('signin-email').checkValidity());
       markError('signin-password', !password);
-      if (!email || !password) {
-        showBanner('signin-error', 'Please fill in all fields.');
+      if (!email || !password || !document.getElementById('signin-email').checkValidity()) {
+        showBanner('signin-error', !email || !password ? 'Please fill in all fields.' : 'Please enter a valid email address.');
         return;
       }
 
@@ -643,12 +646,12 @@
       const btn      = document.getElementById('signup-btn');
 
       markError('signup-name',     !name);
-      markError('signup-email',    !email);
+      markError('signup-email', !email || !document.getElementById('signup-email').checkValidity());
       markError('signup-password', !password);
       markError('signup-confirm',  !confirm);
 
-      if (!name || !email || !password || !confirm) {
-        showBanner('signup-error', 'Please fill in all fields.');
+      if (!name || !email || !password || !confirm || !document.getElementById('signup-email').checkValidity()) {
+        showBanner('signup-error', !name || !email || !password || !confirm ? 'Please fill in all fields.' : 'Please enter a valid email address.');
         return;
       }
       if (password !== confirm) {

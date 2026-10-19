@@ -243,6 +243,8 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/design-system.css" />
+  <script src="/accessibility.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal">
@@ -400,7 +402,7 @@
           </p>
 
           <!-- Stars -->
-          <div id="star-rating" class="flex items-center gap-1.5" role="radiogroup" aria-label="Star rating">
+          <div id="star-rating" class="flex items-center gap-1.5" role="radiogroup" aria-label="Star rating" aria-describedby="star-error">
             <button type="button" class="star-btn" data-value="1" role="radio" aria-checked="false" aria-label="1 star">
               <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </button>
@@ -418,7 +420,7 @@
             </button>
             <span id="star-rating-label" class="ml-2 text-sm font-semibold text-charcoal min-h-[1.25rem]"></span>
           </div>
-          <p id="star-error" class="hidden text-xs text-red-500 mt-2">Pick a star rating before submitting.</p>
+          <p id="star-error" role="alert" class="hidden text-xs text-red-500 mt-2">Pick a star rating before submitting.</p>
 
           <!-- Optional written review -->
           <div class="mt-5">
@@ -658,6 +660,7 @@
     submitBtn.addEventListener('click', () => {
       if (!selectedRating) {
         starErrorEl.classList.remove('hidden');
+        starButtons[0].focus();
         return;
       }
 

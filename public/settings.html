@@ -199,6 +199,8 @@
   <link rel="stylesheet" href="/workspace-pages.css" />
   <link rel="stylesheet" href="/onboarding.css" />
   <script src="/onboarding.js" defer></script>
+  <link rel="stylesheet" href="/design-system.css" />
+  <script src="/accessibility.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen pb-24 md:pb-8">
@@ -610,27 +612,31 @@
       const activityLevel = document.getElementById('prof-activity').value;
       const goalPreference = document.getElementById('prof-goal').value;
 
+      profileEditForm.querySelectorAll('[aria-invalid]').forEach(field => field.removeAttribute('aria-invalid'));
+      const invalidField = id => { const field = document.getElementById(id);field.setAttribute('aria-invalid','true');field.focus(); };
       if (!name || name.length > 160) {
-        profileEditError.textContent = 'Please enter your name.';
+        invalidField('prof-name');
+        profileEditError.textContent = 'Please enter your name (up to 160 characters).';
         profileEditError.classList.remove('hidden');
         return;
       }
       if (!Number.isInteger(age) || age < 10 || age > 100 || !Number.isFinite(weight) || weight < 20 || weight > 300 ||
           !document.getElementById('prof-weight').checkValidity() || !Number.isInteger(height) || height < 100 || height > 250) {
-        profileEditError.textContent = 'Please fill in age, weight, and height with valid numbers.';
+        invalidField(!Number.isInteger(age) || age < 10 || age > 100 ? 'prof-age' : !Number.isFinite(weight) || weight < 20 || weight > 300 || !document.getElementById('prof-weight').checkValidity() ? 'prof-weight' : 'prof-height');
+        profileEditError.textContent = 'Use an age from 10–100, weight from 20–300 kg, and height from 100–250 cm.';
         profileEditError.classList.remove('hidden');
         return;
       }
       if (!window.NutriGoals.hasActivityLevel(activityLevel)) {
         profileEditError.textContent = 'Please choose your activity level.';
         profileEditError.classList.remove('hidden');
-        document.getElementById('prof-activity').focus();
+        invalidField('prof-activity');
         return;
       }
       if (!window.NutriGoals.hasGoalPreference(goalPreference) || (age < 18 && goalPreference !== 'maintenance')) {
         profileEditError.textContent = 'Please choose a valid goal for your age.';
         profileEditError.classList.remove('hidden');
-        document.getElementById('prof-goal').focus();
+        invalidField('prof-goal');
         return;
       }
       profileEditError.classList.add('hidden');
