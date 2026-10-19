@@ -1,5 +1,5 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v34';
+const CACHE_NAME = 'nutriglance-v35';
 const PRECACHE = [
   '/',
   '/landing-session.js',

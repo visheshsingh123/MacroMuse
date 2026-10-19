@@ -105,7 +105,7 @@ html.dark .premium-lifetime-preview { box-shadow: 12px 12px 0 #d9f5b609; }
 }
 
 .premium-account-status{border:1px solid var(--ng-accent);background:var(--ng-surface);color:var(--ng-ink);border-radius:14px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.8}
-.pro-activation-dialog{width:min(440px,calc(100% - 32px));max-height:calc(100dvh - 40px);overflow:auto;padding:28px;border:1px solid var(--ng-line);border-radius:22px;background:var(--ng-surface);color:var(--ng-ink);font-family:'Inter',sans-serif}
+.pro-activation-dialog{position:fixed;inset:0;margin:auto;width:min(440px,calc(100% - 32px));max-height:calc(100dvh - 40px);overflow:auto;padding:28px;border:1px solid var(--ng-line);border-radius:22px;background:var(--ng-surface);color:var(--ng-ink);font-family:'Inter',sans-serif}
 .pro-activation-dialog::backdrop{background:#020617a6}
 .pro-activation-dialog [hidden]{display:none!important}
 .pro-activation-close{position:absolute;top:10px;right:10px;width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:var(--ng-muted);font-size:24px}
