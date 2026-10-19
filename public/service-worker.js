@@ -1,7 +1,8 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v20';
+const CACHE_NAME = 'nutriglance-v21';
 const PRECACHE = [
   '/',
+  '/landing-session.js',
   '/dashboard',
   '/meals',
   '/progress',
