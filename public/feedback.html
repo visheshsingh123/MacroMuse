@@ -127,7 +127,7 @@
 </head>
 <body class="feedback-page bg-bg min-h-screen font-body text-charcoal flex flex-col">
   <script>document.body.classList.toggle('dark', document.documentElement.classList.contains('dark'));</script>
-<nav class="site-nav bg-brand sticky top-0 z-40" aria-label="Primary navigation">
+<nav class="site-nav bg-brand sticky top-0 z-40" aria-label="Site header">
     <div class="site-nav-container">
       <div class="site-nav-row">
         <a href="/?view=home" class="flex items-center gap-2">
@@ -136,7 +136,6 @@
           </span>
           <span class="hidden sm:inline text-charcoal/70 font-medium text-xs">Your personal AI dietitian</span>
         </a>
-        <div class="site-nav-links"><a href="/#how-it-works" class="nav-link">How it works</a><a href="/#features" class="nav-link">Features</a><a href="/aichef" class="nav-link">AI Chef</a><a href="/#faq" class="nav-link">FAQ</a><a href="/about" class="nav-link">About</a></div>
         <div class="site-nav-actions"><button id="dark-toggle" aria-label="Toggle dark mode"
           class="w-8 h-8 rounded-lg flex items-center justify-center text-white/80
                  hover:bg-white/20 transition-colors duration-150">
@@ -154,15 +153,8 @@
             <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
-        </button><a href="/dashboard" class="site-nav-cta">Open Dashboard</a>
-          <button id="hamburger" data-site-menu-toggle aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" class="site-menu-toggle">
-            <span id="ham-top" class="ham-bar"></span><span id="ham-mid" class="ham-bar"></span><span id="ham-bot" class="ham-bar"></span>
-          </button>
-        </div>
+        </button></div>
       </div>
-    </div>
-    <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
-      <div class="site-mobile-links"><a href="/#how-it-works">How it works</a><a href="/#features">Features</a><a href="/aichef">AI Chef</a><a href="/#faq">FAQ</a><a href="/about">About</a><a href="/dashboard" class="site-nav-cta">Open Dashboard</a></div>
     </div>
   </nav>
 
