@@ -7,7 +7,7 @@ vm.runInNewContext(readFileSync(new URL('../public/dashboard-guidance.js', impor
 const { greeting, guidance } = context.window.NutriGuidance;
 const base = { goals: { kcal: 2000, protein: 90 }, totals: { kcal: 1200, protein: 65 }, mealCount: 2, waterCount: 3, hour: 13 };
 
-test('rotating greetings keep the user name and only use appropriate time-of-day phrases', () => {
+test('rotating greetings use only the first name and only use appropriate time-of-day phrases', () => {
   const common = ['Hello', 'Hey there', 'Good to see you', 'Welcome back'];
   const periods = [
     [0, 5, ['Good night', 'Good to see you tonight']],
@@ -19,7 +19,7 @@ test('rotating greetings keep the user name and only use appropriate time-of-day
   for (const [start, end, timely] of periods) {
     const allowed = [...common, ...timely].map(phrase => phrase.endsWith('?') ? `${phrase.slice(0, -1)}, Taylor?` : `${phrase}, Taylor!`);
     for (let minute = start * 60; minute < end * 60; minute += 29) {
-      assert(allowed.includes(greeting(new Date(2026, 9, 19, 0, minute), ' Taylor ')));
+      assert(allowed.includes(greeting(new Date(2026, 9, 19, 0, minute), ' Taylor  Morgan Smith ')));
     }
   }
   assert(!greeting(new Date(2026, 9, 19, 10)).includes(','));
