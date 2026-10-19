@@ -27,6 +27,7 @@
 #dashboard-page .dashboard-recent { display:flex; flex-direction:column; padding:22px; }
 #dashboard-page #meals-container { flex:1; }
 #dashboard-page .dashboard-recent h2 { font-size:19px; letter-spacing:-.025em; }
+#dashboard-page #clear-btn { min-height:28px; padding:4px 8px; font-size:11px; line-height:18px; border-radius:8px; white-space:nowrap; }
 #dashboard-page .meal-item { padding-block:16px; gap:10px; }
 #dashboard-page .meal-item .truncate { white-space:normal; overflow-wrap:anywhere; }
 #dashboard-page .meal-item > div:nth-child(2) > p:last-child { line-height:1.8; font-size:11px; }
