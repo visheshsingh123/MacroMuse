@@ -301,57 +301,12 @@
           </a>
         </div>
 
-        <!-- Hamburger (mobile) -->
-        <button
-          id="hamburger"
-          aria-label="Toggle navigation menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-          class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-[5px] rounded-lg hover:bg-white/20 transition-colors"
-        >
-          <span id="ham-top" class="ham-bar block w-5 h-0.5 bg-charcoal rounded-full origin-center"></span>
-          <span id="ham-mid" class="ham-bar block w-5 h-0.5 bg-charcoal rounded-full origin-center"></span>
-          <span id="ham-bot" class="ham-bar block w-5 h-0.5 bg-charcoal rounded-full origin-center"></span>
-        </button>
+        <!-- Mobile profile: open Settings -->
+        <a id="profile-btn-mobile" href="/settings" aria-label="Open settings" title="Settings"
+           class="md:hidden flex items-center justify-center w-11 h-11 flex-shrink-0 rounded-full bg-charcoal/20 text-charcoal font-bold text-sm hover:bg-charcoal/30 transition-colors">
+          <span id="avatar-initial-mobile">?</span>
+        </a>
 
-      </div>
-    </div>
-
-    <!-- Mobile collapsible menu -->
-    <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
-      <div class="max-w-5xl mx-auto px-4 pb-4 flex flex-col gap-1">
-        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/70 hover:bg-white/20 hover:text-charcoal transition-colors">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Dashboard
-        </a>
-        <a href="/meals" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/70 hover:bg-white/20 hover:text-charcoal transition-colors">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-          Meals
-        </a>
-        <a href="/progress" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/70 hover:bg-white/20 hover:text-charcoal transition-colors">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Progress
-        </a>
-        <a href="/aichef" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-charcoal bg-white/25">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
-          AI Chef
-        </a>
-        <a href="/settings"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/70 hover:bg-white/20 hover:text-charcoal transition-colors w-full text-left">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-          Settings
-        </a>
-        <div class="border-t border-white/20 mt-1 pt-3 flex items-center gap-3 px-3">
-          <button id="profile-btn-mobile"
-                  class="w-8 h-8 rounded-full bg-charcoal/20 flex items-center justify-center text-charcoal font-bold text-sm hover:bg-charcoal/30 transition-colors"
-                  aria-label="Edit Profile">
-            <span id="avatar-initial-mobile">?</span>
-          </button>
-          <div>
-            <p class="text-sm font-semibold text-charcoal" id="mobile-profile-name">Profile</p>
-            <p class="text-xs text-charcoal/60">Tap to edit profile</p>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -481,27 +436,6 @@
     </section>
   </main>
 
-  <!-- ════════════════════════════════════════════════════════════════
-       NAVBAR TOGGLE SCRIPT
-  ════════════════════════════════════════════════════════════════ -->
-  <script>
-    const hamburger  = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    hamburger.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('open');
-      hamburger.setAttribute('aria-expanded', isOpen);
-      document.body.classList.toggle('menu-open', isOpen);
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
-        mobileMenu.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('menu-open');
-      }
-    });
-  </script>
 
   <!-- ════════════════════════════════════════════════════════════════
        AI CHEF — chat logic
@@ -752,7 +686,6 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
       const initial = p?.name ? getInitial(p.name) : '?';
       document.getElementById('avatar-initial').textContent = window.NutriAvatar?.symbol(initial) || initial;
       document.getElementById('avatar-initial-mobile').textContent = window.NutriAvatar?.symbol(initial) || initial;
-      document.getElementById('mobile-profile-name').textContent = p?.name || 'Profile';
     }
     updateAvatars();
 
@@ -824,7 +757,6 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
     }
 
     document.getElementById('profile-btn').addEventListener('click', openProfileModal);
-    document.getElementById('profile-btn-mobile').addEventListener('click', openProfileModal);
     document.getElementById('profile-modal-close').addEventListener('click', closeProfileModal);
     document.getElementById('profile-cancel-btn').addEventListener('click', closeProfileModal);
     profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfileModal(); });
