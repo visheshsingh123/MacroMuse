@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 // Run with npm run test:rules; this suite only talks to the local emulator.
 import { after, before, test } from 'node:test';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import { doc, setDoc, getDoc, collection, getDocs, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { initializeApp, deleteApp } from 'firebase-admin/app';
@@ -116,6 +117,25 @@ test('server meal transactions enforce the three-meal limit and Undo on real Fir
   assert.equal((await call('fourth')).code, 429);
   assert.equal((await call(id)).code, 200);
   assert.equal((await getUsage(db, uid)).meals.used, 3);
+});
+
+test('meal saves commit request quotas and meal limits together on real Firestore, including rejected attempts and retries', async () => {
+  const db = getFirestore(adminApp), uid = 'atomic-meal-save-owner', now = Date.parse('2026-10-20T20:00:00Z');
+  const handler = createMealsHandler({ getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), clock: () => now });
+  const call = async id => {
+    const res = { code: 200, setHeader() {}, status(code) { this.code = code;return this; }, json(body) { this.body = body;return this; } };
+    await handler({ method: 'POST', headers: { authorization: 'Bearer emulator-fixture' }, body: { meal: { _id: id, name: 'Lunch', kcal: 400, protein: 25, carbs: 40, fat: 12 } } }, res);return res;
+  };
+  const first = await Promise.all([call('first'), call('second')]);
+  assert(first.every(result => result.code === 200));assert.equal((await call('third')).code, 200);
+  const denied = await call('fourth');
+  assert.equal(denied.code, 429);assert.equal(denied.body.error.code, 'FREE_QUOTA_EXCEEDED');
+  const hash = createHash('sha256').update(uid).digest('hex');
+  assert.equal((await db.collection('serverQuotas').doc(`meal-writes-user-minute-${hash}`).get()).data().count, 4);
+  assert.equal((await call('first')).body.usage.meals.used, 3);
+  await db.collection('users').doc(uid).collection('meals').doc('first').delete();
+  assert.equal((await call('first')).body.usage.meals.used, 3);
+  assert.equal((await getUsage(db, uid, now)).meals.used, 3);
 });
 
 test('Chef reservations serialize on real Firestore and failed requests release their slot', async () => {

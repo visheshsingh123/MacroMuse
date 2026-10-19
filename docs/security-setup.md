@@ -48,7 +48,10 @@ Browser storage and caller-supplied Pro flags never grant more usage.
 
 New meals (including recipes logged from AI Chef or Saved recipes) use the
 Firebase-authenticated `/api/meals` endpoint. It saves the meal and increments the
-private daily counter in one transaction. Existing meals from today count when
+private daily counter, request-rate counters and retry receipt in one transaction,
+using the entitlement read in that same transaction. Independent reads run in
+parallel. A daily-quota rejection still commits the request-rate counters without
+saving a meal. Existing meals from today count when
 the daily counter is first initialized. Retries use the same meal ID. A private
 receipt allows Undo to restore the original record without charging again;
 deleting meals or clearing the diary does not refund daily usage. Client edits,

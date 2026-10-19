@@ -1596,7 +1596,9 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
       const analyzedMeal = pendingMeal;
       analyzedMeal._id ||= crypto.randomUUID();
       const mealToLog = { ...analyzedMeal, loggedAt: pendingMeal.loggedAt || new Date().toISOString() };
+      const label = button.textContent;
       button.disabled = true;
+      button.textContent = 'Saving…';button.setAttribute('aria-busy', 'true');
       try {
         const savedMeal = await window._logMealToFirestore(mealToLog);
         if (!window.NutriSecurity.isCurrent(owner)) return;
@@ -1607,7 +1609,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
         if (pendingMeal === analyzedMeal) { pendingMeal = null;showUploadState('idle'); }
       } catch (error) {
         if (window.NutriSecurity.isCurrent(owner)) showToast(error.message || 'Couldn’t save this meal. Please try again.');
-      } finally { button.disabled = false; }
+      } finally { button.disabled = false;button.textContent = label;button.removeAttribute('aria-busy'); }
     });
 
     // Retry — go back to idle

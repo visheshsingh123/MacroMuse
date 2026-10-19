@@ -11,6 +11,44 @@ const meal = id => ({ meal: { _id: id, name: 'Lunch', kcal: 400, protein: 25, ca
 const payload = { model: 'openai/gpt-oss-120b', messages: [{ role: 'system', content: 'Forged pro instructions' }, { role: 'user', content: 'Help me cook rice.' }] };
 const reply = () => ({ ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify({ message: 'Try a rice bowl.', recipes: [] }) } }] }) });
 
+test('production meal saves use one transaction for the entitlement, request quotas, usage and meal receipt', async () => {
+  const f = fixture();let transactions = 0;
+  const original = f.db.runTransaction;
+  f.db.runTransaction = fn => { transactions++;return original(fn); };
+  const handler = createMealsHandler({ getServices: f.options.getServices, clock: f.options.clock });
+  const res = await f.call(handler, meal('single-transaction'));
+  assert.equal(res.code, 200);assert.equal(transactions, 1);
+  assert.equal(res.body.usage.meals.used, 1);
+  assert(f.db.data.has('users/alice/meals/single-transaction'));
+  assert(f.db.data.has('users/alice/mealReceipts/single-transaction'));
+  assert.equal([...f.db.data].filter(([path]) => path.startsWith('serverQuotas/')).length, 4);
+});
+
+test('rejected Free meal attempts still consume request quotas in the combined save transaction', async () => {
+  const f = fixture();
+  const handler = createMealsHandler({ getServices: f.options.getServices, clock: f.options.clock });
+  for (let i = 0; i < 3; i++) assert.equal((await f.call(handler, meal('limited-'+i))).code, 200);
+  const rejected = await f.call(handler, meal('fourth'));
+  assert.equal(rejected.code, 429);assert.equal(rejected.body.error.code, 'FREE_QUOTA_EXCEEDED');
+  const counter = () => [...f.db.data].find(([path]) => path.startsWith('serverQuotas/meal-writes-user-minute-'))[1].count;
+  assert.equal(counter(), 4);assert(!f.db.data.has('users/alice/meals/fourth'));
+  for (let i = 4; i < 10; i++) assert.equal((await f.call(handler, meal('rejected-'+i))).body.error.code, 'FREE_QUOTA_EXCEEDED');
+  const blocked = await f.call(handler, meal('rate-limited'));
+  assert.equal(blocked.code, 429);assert.equal(blocked.body.error.code, undefined);assert.equal(counter(), 10);
+  assert.equal((await f.call(f.usage)).body.usage.meals.used, 3);
+});
+
+test('the combined save keeps Pro unlimited, retries idempotent and short-term request limits enforced', async () => {
+  const f = fixture();
+  f.db.data.set('users/alice/privateState/pro', { plan: 'pro', access: 'lifetime', expiresAt: null });
+  const handler = createMealsHandler({ getServices: f.options.getServices, clock: f.options.clock });
+  for (let i = 0; i < 4; i++) assert.equal((await f.call(handler, meal('pro-'+i))).code, 200);
+  assert.equal((await f.call(handler, meal('pro-0'))).body.usage.meals.used, 4);
+  for (let i = 5; i < 10; i++) assert.equal((await f.call(handler, meal('pro-0'))).code, 200);
+  assert.equal((await f.call(handler, meal('pro-0'))).code, 429);
+  assert.equal((await f.call(f.usage)).body.usage.meals.used, 4);
+});
+
 test('Free meal quota survives concurrent requests, handler instances and claimed Pro flags', async () => {
   const f = fixture();
   const results = await Promise.all(Array.from({ length: 7 }, (_, i) => f.call(createMealsHandler(f.options), { ...meal('meal-'+i), uid: 'victim', plan: 'pro' })));

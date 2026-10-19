@@ -1,4 +1,4 @@
-import { authenticated, consumeQuota, HttpError, sendError } from '../lib/api-security.js';
+import { authenticated, prepareQuota, HttpError, sendError } from '../lib/api-security.js';
 import { getPlan } from '../lib/pro.js';
 import { FREE_LIMITS, readDaily, usageSummary, quotaExceeded } from '../lib/free-usage.js';
 
@@ -21,20 +21,36 @@ export function validateMeal(body) {
   }
   return { id: meal._id, data };
 }
-export function createMealsHandler({ getServices, quota = consumeQuota, clock = Date.now } = {}) {
+export function createMealsHandler({ getServices, quota, clock = Date.now } = {}) {
   return async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     if (req.method !== 'POST') { res.setHeader('Allow', 'POST');return res.status(405).json({ error: { message: 'Method not allowed.' } }); }
     try {
       const { db, uid } = await authenticated(req, getServices);
       const { id, data } = validateMeal(req.body);
-      const now = clock(), plan = await getPlan(db, uid, now);
-      await quota(db, uid, plan.plan === 'pro' ? 'pro-meal-writes' : 'meal-writes');
+      const now = clock();
+      // Custom quota providers retain their standalone contract. The production
+      // limiter participates in the save, avoiding two extra database transactions.
+      if (quota) {
+        const plan = await getPlan(db, uid, now);
+        await quota(db, uid, plan.plan === 'pro' ? 'pro-meal-writes' : 'meal-writes');
+      }
       const owner = db.collection('users').doc(uid);
       const mealRef = owner.collection('meals').doc(id), receiptRef = owner.collection('mealReceipts').doc(id);
       const result = await db.runTransaction(async transaction => {
-        const existing = await transaction.get(mealRef), receipt = await transaction.get(receiptRef);
-        const { ref, state, plan } = await readDaily(transaction, db, uid, now);
+        const [existing, receipt, daily] = await Promise.all([
+          transaction.get(mealRef), transaction.get(receiptRef), readDaily(transaction, db, uid, now),
+        ]);
+        const { ref, state, plan } = daily;
+        const writeQuota = !quota
+          ? await prepareQuota(transaction, db, uid, plan.plan === 'pro' ? 'pro-meal-writes' : 'meal-writes', now)
+          : () => {};
+        // A Free-limit rejection still consumes the anti-abuse request quota.
+        // Return it after committing those counters instead of rolling them back.
+        if (!existing.exists && !receipt.exists && plan.plan !== 'pro' && state.meals >= FREE_LIMITS.meals) {
+          writeQuota();return { error: quotaExceeded('meals', state, now) };
+        }
+        writeQuota();
         // Retries and Undo use the original canonical record, without another charge.
         if (existing.exists || receipt.exists) {
           const record = existing.exists ? existing.data() : receipt.data().meal;
@@ -43,7 +59,6 @@ export function createMealsHandler({ getServices, quota = consumeQuota, clock = 
           transaction.set(ref, state);
           return { meal: { ...record, createdAt: undefined, _id: id }, usage: usageSummary(state, now, plan) };
         }
-        if (plan.plan !== 'pro' && state.meals >= FREE_LIMITS.meals) throw quotaExceeded('meals', state, now);
         const record = { ...data, loggedAt: new Date(now).toISOString(), createdAt: new Date(now) };
         state.meals += 1;
         transaction.set(mealRef, record);
@@ -51,6 +66,7 @@ export function createMealsHandler({ getServices, quota = consumeQuota, clock = 
         transaction.set(ref, state);
         return { meal: { ...data, _id: id, loggedAt: record.loggedAt }, usage: usageSummary(state, now, plan) };
       });
+      if (result.error) throw result.error;
       return res.status(200).json(result);
     } catch (error) { return sendError(res, error); }
   };
