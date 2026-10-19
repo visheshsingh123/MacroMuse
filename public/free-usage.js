@@ -5,6 +5,9 @@
   function render(error) {
     const plan = current() && usage ? usage.plan : 'unknown';
     document.documentElement.dataset.usagePlan = plan;
+    document.querySelectorAll('[data-pro-profile]').forEach(badge => {
+      badge.hidden = plan !== 'pro';
+    });
     document.querySelectorAll('[data-usage-feature]').forEach(section => {
       // Wait for the server's plan so Pro members never see a Free upsell flash.
       section.hidden = plan !== 'free';

@@ -20,6 +20,9 @@
 #settings-page .section-card > div:first-child:not(:only-child) { padding:20px 24px; }
 .settings-section-heading { font-family:'Space Grotesk',sans-serif; font-size:18px; font-weight:700; color:var(--ws-ink); letter-spacing:-.025em; }
 .settings-section-description { font-size:13px; line-height:1.7; color:var(--ws-muted); margin-bottom:20px; }
+.profile-pro-badge { display:inline-block; max-width:100%; padding:3px 8px; border:1px solid #a7f3d0; border-radius:999px; color:#047857; font-size:11px; line-height:1.4; font-weight:600; }
+.profile-pro-badge[hidden] { display:none; }
+html.dark .profile-pro-badge,body.dark .profile-pro-badge { color:#6ee7b7; border-color:#245b49; }
 #settings-profile > div:nth-child(2) { padding:24px; }
 #settings-profile > div:nth-child(2) > div:first-of-type { background:var(--ws-soft); border:1px solid var(--ws-line); padding:16px; border-radius:16px; }
 #settings-page #profile-edit-form { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
