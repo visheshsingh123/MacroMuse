@@ -167,6 +167,7 @@
       const profile = snapshot.exists() ? snapshot.data()?.profile : null;
       if (isCompleteProfile(profile)) {
         localStorage.setItem('nutriglance_profile', JSON.stringify(profile));
+        window.NutriSecurity.writeCache(current.uid, 'profile', profile);
         settle(current, profile);
         return;
       }
@@ -190,6 +191,11 @@
   function ensureProfile(options) {
     if (!window.NutriSecurity.isCurrent(options.user.uid)) return Promise.resolve(null);
     if (context?.uid === options.user.uid) return context.promise;
+    const cached = window.NutriSecurity.readCache(options.user.uid, 'profile');
+    if (isCompleteProfile(cached)) {
+      localStorage.setItem('nutriglance_profile', JSON.stringify(cached));
+      return Promise.resolve(cached);
+    }
     if (context) settle(context, null);
     let resolve;
     const promise = new Promise(done => { resolve = done; });
@@ -248,6 +254,7 @@
       await current.setDoc(current.doc(current.db, 'users', current.uid), { profile }, { merge: true });
       if (!isCurrent(current)) { settle(current, null); return; }
       localStorage.setItem('nutriglance_profile', JSON.stringify(profile));
+      window.NutriSecurity.writeCache(current.uid, 'profile', profile);
       settle(current, profile);
     } catch {
       if (!isCurrent(current)) { settle(current, null); return; }

@@ -7,9 +7,14 @@ const initial=()=>{try {const profile=JSON.parse(localStorage.getItem('nutriglan
 const status=(message,error=false)=>{const node=document.getElementById('avatar-picker-status');if(node){node.setAttribute('role',error?'alert':'status');node.textContent=message;}};
 function cached(owner){try{const item=JSON.parse(localStorage.getItem(cacheKey)||'null');return item?.uid===owner && avatarOption(item.choice) ? item : null;}catch{return null;}}
 function remember(owner,value){try{localStorage.setItem(cacheKey,JSON.stringify({uid:owner,choice:value,updatedAt:Date.now()}));}catch{}}
-function symbol(fallback){return current(uid) ? avatarOption(choice)?.emoji || fallback : fallback;}
+function visibleChoice(){
+ if(current(uid))return choice;
+ const owner=window.NutriSecurity?.resumeOwner?.();
+ return owner ? cached(owner)?.choice||'initial' : 'initial';
+}
+function symbol(fallback){return avatarOption(visibleChoice())?.emoji || fallback;}
 function render(){
- const option=avatarOption(current(uid)?choice:'initial');
+ const option=avatarOption(visibleChoice());
  for(const id of ids){const node=document.getElementById(id);if(!node)continue;node.textContent=option.emoji||initial();node.classList.toggle('emoji-avatar',Boolean(option.emoji));node.setAttribute('role','img');node.setAttribute('aria-label',option.emoji?`${option.label} profile picture`:'Profile picture: your initial');}
  if(!picker)return;
  picker.querySelectorAll('input[name=avatar-choice]').forEach(input=>{input.checked=input.value===draft;input.disabled=!current(uid)||busy||loading;});
@@ -32,10 +37,10 @@ async function load(){
  finally{if(current(owner)&&generation===version){loading=false;render();}}
 }
 function connect(owner){
- if(uid===owner)return;
+ if(uid===owner&&owner)return;
  uid=owner;version++;busy=false;loading=false;loadFailed=false;
  const cache=owner&&cached(owner);choice=cache?.choice||'initial';draft=choice;render();
- if(current(owner)&&(picker||!cache||Date.now()-cache.updatedAt>5*60*1000))load();
+ if(current(owner)&&(!cache||!Number.isFinite(cache.updatedAt)||Date.now()-cache.updatedAt<0||Date.now()-cache.updatedAt>5*60*1000))load();
 }
 if(picker){
  const grid=document.getElementById('avatar-options');
@@ -64,4 +69,6 @@ window.addEventListener('storage',event=>{
  if(event.key===cacheKey&&current(uid)){const item=cached(uid);if(item){const dirty=draft!==choice;choice=item.choice;if(!dirty)draft=choice;render();}}
 });
 window.NutriAvatar={connect,symbol};
-render();
+const owner=window.NutriSecurity?.resumeOwner?.();
+if(window.NutriSecurity?.isCurrent(owner))connect(owner);
+else render();

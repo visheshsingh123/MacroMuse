@@ -727,6 +727,7 @@
       await setDoc(doc(db, 'users', uid), { profile }, { merge: true });
       if (!window.NutriSecurity.isCurrent(uid)) throw new Error('Account changed');
       localStorage.setItem('nutriglance_profile', JSON.stringify(profile));
+      window.NutriSecurity.writeCache(uid, 'profile', profile);
     }
 
     auth.onAuthStateChanged(async user => {

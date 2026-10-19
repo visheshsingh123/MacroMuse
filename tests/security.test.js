@@ -193,3 +193,47 @@ test('service worker never caches API responses, Firebase traffic or authenticat
   }
   assert.deepEqual(cached, ['https://example.com/app.css']);
 });
+
+test('account data cache requires current auth, validates age, and cannot cross accounts', () => {
+  const fixture = client({ nutriglance_session_uid: 'alice' });
+  const { security, data } = fixture;
+  const profile = { name: 'Taylor', targetKcal: 2100 };
+  assert.equal(security.writeCache('alice', 'profile', profile), false);
+  fixture.context.window.nutriGlanceReminderAuth = { currentUser: { uid: 'alice' } };
+  security.bindSession({ uid: 'alice' });
+  assert.equal(security.writeCache('alice', 'profile', profile), true);
+  assert.equal(security.readCache('alice', 'profile').name, 'Taylor');
+  assert.equal(security.readCache('bob', 'profile'), null);
+  assert.equal(security.writeCache('bob', 'profile', profile), false);
+  assert.equal(security.writeCache('alice', '../other', profile), false);
+  for (const updatedAt of [Date.now() - 300001, Date.now() + 60000, 'invalid']) {
+    data.nutriglance_cache_profile = JSON.stringify({ uid: 'alice', updatedAt, data: profile });
+    assert.equal(security.readCache('alice', 'profile'), null);
+  }
+  data.nutriglance_cache_profile = JSON.stringify({ uid: 'bob', updatedAt: Date.now(), data: profile });
+  assert.equal(security.readCache('alice', 'profile'), null);
+  data.nutriglance_cache_profile = 'broken-json';
+  assert.equal(security.readCache('alice', 'profile'), null);
+});
+
+test('logout removes profile and recipe caches and stale writes cannot restore them', () => {
+  const fixture = client({ nutriglance_session_uid: 'alice' });
+  fixture.context.window.nutriGlanceReminderAuth = { currentUser: { uid: 'alice' } };
+  fixture.security.bindSession({ uid: 'alice' });
+  fixture.security.writeCache('alice', 'profile', { name: 'Taylor' });
+  fixture.security.writeCache('alice', 'saved_recipes', [{ name: 'Salad' }]);
+  fixture.security.bindSession(null);
+  assert.equal(fixture.data.nutriglance_cache_profile, undefined);
+  assert.equal(fixture.data.nutriglance_cache_saved_recipes, undefined);
+  assert.equal(fixture.security.writeCache('alice', 'profile', {}), false);
+});
+
+test('avatar previews use only a recent same-account session and do not authorize cached data', () => {
+  const fixture = client({ nutriglance_session_uid: 'alice' }, '/meals', {
+    nutriglance_recent_session: JSON.stringify({ uid: 'alice', verifiedAt: Date.now() }),
+  });
+  assert.equal(fixture.security.resumeOwner(), 'alice');
+  assert.equal(fixture.security.readCache('alice', 'profile'), null);
+  fixture.events.storage({ key: 'nutriglance_session_uid', newValue: 'bob' });
+  assert.equal(fixture.security.resumeOwner(), null);
+});

@@ -14,6 +14,7 @@
     if (!item || !/^[a-f0-9]{64}$/.test(item.id)) throw new Error('Couldn’t load this saved recipe.');
     return { id: item.id, savedAt: typeof item.savedAt === 'string' ? item.savedAt : '', recipe: window.NutriRecipes.parse(JSON.stringify({ message: 'Saved recipe', recipes: [item.recipe] })).recipes[0] };
   }
+  function remember() { if (current(uid)) window.NutriSecurity.writeCache(uid, 'saved_recipes', [...saved.values()]); }
   function syncButtons() {
     for (const binding of bindings) {
       const { button, key, owner } = binding;
@@ -33,7 +34,7 @@
     const query = (byId('saved-recipe-search')?.value || '').trim().toLowerCase();
     const items = [...saved.values()].filter(item => `${item.recipe.name} ${item.recipe.ingredients.join(' ')}`.toLowerCase().includes(query)).sort((a, b) => b.savedAt.localeCompare(a.savedAt));
     byId('saved-recipes-empty').hidden = loading || items.length > 0;
-    byId('saved-recipes-loading').hidden = !loading;
+    byId('saved-recipes-loading').hidden = !loading || saved.size > 0;
     byId('saved-recipes-empty-title').textContent = query ? 'No recipes match your search' : 'Keep your next favorite close';
     byId('saved-recipes-empty-copy').textContent = query ? 'Try another ingredient or clear your search.' : 'Save a recipe from your conversation. Its ingredients, method, and nutrition will be here when you return.';
     byId('saved-recipes-clear-search').hidden = !query;
@@ -50,7 +51,7 @@
       if (!current(owner) || generation !== version) return;
       if (!Array.isArray(data.recipes)) throw new Error('Couldn’t load your saved recipes.');
       const items = data.recipes.map(validateItem);
-      saved.clear();items.forEach(item => saved.set(keyOf(item.recipe), item));
+      saved.clear();items.forEach(item => saved.set(keyOf(item.recipe), item));remember();
     } catch (error) {
       if (current(owner) && generation === version) { byId('saved-recipes-error').textContent = error.message;byId('saved-recipes-error').hidden = false; }
     } finally {
@@ -73,6 +74,7 @@
         const data = await request(existing ? { action: 'remove', id: existing.id } : { action: 'save', recipe });
         if (!current(owner) || generation !== version) return;
         if (existing) saved.delete(key);else { const item = validateItem(data.item);saved.set(key, item); }
+        remember();
         const inLibrary = Boolean(button.closest('#saved-recipe-grid'));
         status.textContent = existing ? 'Removed from saved recipes.' : 'Saved to your recipe collection.';
         renderLibrary();
@@ -86,7 +88,17 @@
   function connect(owner) {
     if (uid === owner) return;
     uid = owner;version++;loading = false;saved.clear();pending.clear();renderLibrary();
-    if (uid) load();
+    if (current(owner)) {
+      const cache = window.NutriSecurity.readCache(owner, 'saved_recipes', 24 * 60 * 60 * 1000);
+      try {
+        if (Array.isArray(cache) && cache.length <= 50) {
+          const items = cache.map(validateItem);
+          items.forEach(item => saved.set(keyOf(item.recipe), item));
+          renderLibrary();
+        }
+      } catch { saved.clear();renderLibrary(); }
+      load(); // Revalidate in the background, retaining cached recipes on failure.
+    }
   }
   function activate(name, focus = false) {
     for (const view of ['chat', 'saved']) {

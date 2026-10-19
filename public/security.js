@@ -53,6 +53,7 @@
       if (key.startsWith('nutriglance_') && !['nutriglance_darkmode', 'nutriglance_reminder_owner'].includes(key)) localStorage.removeItem(key);
     }
     currentUid = null;
+    window.NutriAvatar?.connect(null);
   }
   if (!bootOwner) clearAccount(); // Retire legacy shared caches with unknown ownership.
   // A recent Firebase-verified identity can paint its own cache during navigation.
@@ -69,6 +70,7 @@
       if (protectedPage && bootOwner) { location.reload(); return false; }
     }
     currentUid = user.uid;
+    window.NutriAvatar?.connect(user.uid);
     tabStorage?.setItem(hintKey, JSON.stringify({ uid: user.uid, verifiedAt: Date.now() }));
     document.documentElement.classList.remove('session-pending');
     document.documentElement.classList.remove('session-loader-mounted');
@@ -117,7 +119,25 @@
     if (uid !== currentUid || uid !== auth.currentUser?.uid || uid !== localStorage.getItem(ownerKey)) throw new Error('Your account changed. Please try again.');
     return response;
   }
+  const cacheKeys = new Set(['profile', 'saved_recipes']);
+  function readCache(owner, key, maxAge = 5 * 60 * 1000) {
+    if (!cacheKeys.has(key) || !window.NutriSecurity.isCurrent(owner)) return null;
+    try {
+      const item = JSON.parse(localStorage.getItem(`nutriglance_cache_${key}`) || 'null');
+      const age = Date.now() - item?.updatedAt;
+      return item?.uid === owner && Number.isFinite(age) && age >= 0 && age < maxAge ? item.data : null;
+    } catch { return null; }
+  }
+  function writeCache(owner, key, data) {
+    if (!cacheKeys.has(key) || !window.NutriSecurity.isCurrent(owner)) return false;
+    try {
+      localStorage.setItem(`nutriglance_cache_${key}`, JSON.stringify({ uid: owner, updatedAt: Date.now(), data }));
+      return true;
+    } catch { return false; }
+  }
   window.NutriSecurity = { bindSession, clearAccount, number, escapeHtml, normalizeMeal, readMeals, apiFetch,
+    readCache, writeCache,
+    resumeOwner: () => window.NutriSecurity.isCurrent(currentUid) ? currentUid : localStorage.getItem(ownerKey) === bootOwner && canResume(bootOwner) ? bootOwner : null,
     isCurrent: uid => Boolean(uid && uid === currentUid && uid === localStorage.getItem(ownerKey) && uid === window.nutriGlanceReminderAuth?.currentUser?.uid),
   };
   window.addEventListener('storage', event => {
