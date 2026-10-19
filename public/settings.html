@@ -214,6 +214,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/profile-avatar.css" />
+  <script type="module" src="/profile-avatar.js"></script>
 </head>
 
 <body class="bg-bg min-h-screen pb-24 md:pb-8">
@@ -353,6 +355,14 @@
                 Sign Out
               </button>
             </div>
+
+            <fieldset id="avatar-picker" aria-describedby="avatar-picker-description">
+              <legend>Profile picture</legend>
+              <p id="avatar-picker-description" class="avatar-picker-description">Pick a little personality for your profile. Your choice appears throughout NutriGlance.</p>
+              <div id="avatar-options"></div>
+              <div class="avatar-picker-actions"><button id="avatar-save" type="button" class="ng-button ng-button-primary" disabled>Save picture</button><button id="avatar-retry" type="button" class="ng-button ng-button-secondary" hidden>Retry</button></div>
+              <p id="avatar-picker-status" role="status" aria-live="polite">Loading profile pictures…</p>
+            </fieldset>
 
             <form id="profile-edit-form" class="flex flex-col gap-4" novalidate>
 
@@ -577,10 +587,10 @@
     function updateAvatars() {
       const p = loadProfile();
       const initial = p?.name ? p.name.trim()[0].toUpperCase() : '?';
-      document.getElementById('avatar-initial').textContent = initial;
-      document.getElementById('avatar-initial-mobile').textContent = initial;
+      document.getElementById('avatar-initial').textContent = window.NutriAvatar?.symbol(initial) || initial;
+      document.getElementById('avatar-initial-mobile').textContent = window.NutriAvatar?.symbol(initial) || initial;
       document.getElementById('mobile-profile-name').textContent = p?.name || 'Profile';
-      document.getElementById('profile-avatar-display').textContent = initial;
+      document.getElementById('profile-avatar-display').textContent = window.NutriAvatar?.symbol(initial) || initial;
       document.getElementById('profile-name-display').textContent = p?.name || '—';
       if (p) {
         document.getElementById('profile-meta-display').textContent =
@@ -773,6 +783,7 @@
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
       if (!profile || !window.NutriSecurity.isCurrent(_uid)) return;
+      window.NutriAvatar?.connect(user.uid);
       window.updateAvatars();
       window.prefillProfileForm();
 

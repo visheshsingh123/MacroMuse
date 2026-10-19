@@ -258,6 +258,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/profile-avatar.css" />
+  <script type="module" src="/profile-avatar.js"></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -746,8 +748,8 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
     function updateAvatars() {
       const p = loadProfile();
       const initial = p?.name ? getInitial(p.name) : '?';
-      document.getElementById('avatar-initial').textContent = initial;
-      document.getElementById('avatar-initial-mobile').textContent = initial;
+      document.getElementById('avatar-initial').textContent = window.NutriAvatar?.symbol(initial) || initial;
+      document.getElementById('avatar-initial-mobile').textContent = window.NutriAvatar?.symbol(initial) || initial;
       document.getElementById('mobile-profile-name').textContent = p?.name || 'Profile';
     }
     updateAvatars();
@@ -894,6 +896,7 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
       if (!profile || !window.NutriSecurity.isCurrent(user.uid)) return;
+      window.NutriAvatar?.connect(user.uid);
       if (typeof window.updateAvatars === 'function') window.updateAvatars();
       const uid = user.uid;
       window.NutriRecipes.setLogger({ uid, save: (id, meal) => {

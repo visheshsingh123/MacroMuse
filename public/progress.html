@@ -226,6 +226,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/profile-avatar.css" />
+  <script type="module" src="/profile-avatar.js"></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -764,8 +766,8 @@ function showToast(msg = 'Saved!') {
 function updateAvatar() {
   const p = loadProfile();
   const initial = p?.name ? p.name[0].toUpperCase() : '?';
-  document.getElementById('avatar-initial').textContent = initial;
-  document.getElementById('avatar-initial-mobile').textContent = initial;
+  document.getElementById('avatar-initial').textContent = window.NutriAvatar?.symbol(initial) || initial;
+  document.getElementById('avatar-initial-mobile').textContent = window.NutriAvatar?.symbol(initial) || initial;
   if (p?.name) document.getElementById('mobile-profile-name').textContent = p.name;
 }
 updateAvatar();
@@ -1342,6 +1344,7 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
       if (!profile || !window.NutriSecurity.isCurrent(_uid)) return;
+      window.NutriAvatar?.connect(user.uid);
       if (typeof window.updateAvatar === 'function') window.updateAvatar();
 
       // Load meals and manual progress from Firestore

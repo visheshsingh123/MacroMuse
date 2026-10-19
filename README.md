@@ -37,3 +37,11 @@ Every page loads `design-system.css` and `accessibility.js` for shared colors,
 control sizing, focus rings, skip links, and keyboard behavior. Keep page-specific
 layouts in their existing stylesheets. Check both themes and mobile widths when
 changing these foundations; errors should identify the field and move focus to it.
+
+## Emoji profile pictures
+
+Settings → Profile picture offers 12 emoji avatars and an option to keep your
+initial. Save the selection to show it in the desktop and mobile profile buttons
+on all five app pages. `/api/avatar` stores the allowlisted choice in
+`users/{uid}/preferences/avatar` through the existing authenticated Admin SDK.
+No new credentials or client Firestore rules are required.

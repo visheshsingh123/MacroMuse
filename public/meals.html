@@ -234,6 +234,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/profile-avatar.css" />
+  <script type="module" src="/profile-avatar.js"></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal overflow-x-hidden">
@@ -770,8 +772,8 @@ function getInitial(name) { return name ? name.trim()[0].toUpperCase() : '?'; }
 function updateAvatars() {
   const p = loadProfile();
   const initial = p?.name ? getInitial(p.name) : '?';
-  document.getElementById('avatar-initial').textContent = initial;
-  document.getElementById('avatar-initial-mobile').textContent = initial;
+  document.getElementById('avatar-initial').textContent = window.NutriAvatar?.symbol(initial) || initial;
+  document.getElementById('avatar-initial-mobile').textContent = window.NutriAvatar?.symbol(initial) || initial;
   document.getElementById('mobile-profile-name').textContent = p?.name || 'Profile';
 }
 updateAvatars();
@@ -873,6 +875,7 @@ refreshAll();
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
       if (!profile || !window.NutriSecurity.isCurrent(_uid)) return;
+      window.NutriAvatar?.connect(user.uid);
       window.applyProfileGoals(profile);
       if (typeof window.updateAvatars === 'function') window.updateAvatars();
 
