@@ -234,6 +234,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/dialogs.css" />
+  <script src="/dialogs.js" defer></script>
   <link rel="stylesheet" href="/profile-avatar.css" />
   <script type="module" src="/profile-avatar.js"></script>
 </head>
@@ -760,8 +762,12 @@ document.getElementById('reset-meal-filters').addEventListener('click', () => {
   searchInput.focus();
 });
 
-clearAllBtn.addEventListener('click', () => {
-  if (!confirm('Delete all logged meals? This cannot be undone.')) return;
+clearAllBtn.addEventListener('click', async () => {
+  const owner = localStorage.getItem('nutriglance_session_uid');
+  if (!await window.NutriDialog.confirm('Delete all logged meals? This cannot be undone.', { title: 'Clear meal history?', confirmLabel: 'Delete meals', danger: true })) return;
+  if (!window.NutriSecurity.isCurrent(owner)) return;
+  try { await window._clearAllMealsFromFirestore?.(owner); } catch { await window.NutriDialog.alert('Couldn’t clear your meal history. Please try again.', { title: 'Meals weren’t cleared' });return; }
+  if (!window.NutriSecurity.isCurrent(owner)) return;
   localStorage.removeItem(MEALS_KEY);
   refreshAll();
   showToast('Meal history cleared.');
@@ -864,8 +870,10 @@ refreshAll();
         const batch = writeBatch(db);
         snap.forEach(d => batch.delete(d.ref));
         await batch.commit();
-      } catch (e) { console.warn('Clear all meals error:', e); }
+      } catch (e) { console.warn('Clear all meals error:', e); throw e; }
     }
+
+    window._clearAllMealsFromFirestore = clearAllMealsFromFirestore;
 
     auth.onAuthStateChanged(async user => {
       if (user && !window.NutriSecurity.bindSession(user)) return;
@@ -893,21 +901,6 @@ refreshAll();
         refresh: () => window.refreshAll(),
       });
       if (typeof window.refreshAll === 'function') window.refreshAll();
-
-      // Patch clearAllBtn to also delete from Firestore
-      const clearBtn = document.getElementById('clear-all-btn');
-      if (clearBtn) {
-        const origHandler = clearBtn.onclick;
-        clearBtn.addEventListener('click', async () => {
-          // The existing handler (set in the inline script) shows confirm and clears localStorage.
-          // We hook in after a small delay to also purge Firestore.
-          setTimeout(() => {
-            if (!localStorage.getItem('nutriglance_meals') || localStorage.getItem('nutriglance_meals') === '[]') {
-              clearAllMealsFromFirestore(_uid);
-            }
-          }, 300);
-        }, true); // capture phase runs before the inline handler
-      }
     });
   </script>
 

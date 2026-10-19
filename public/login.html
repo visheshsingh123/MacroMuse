@@ -225,6 +225,8 @@
   <script src="/login-events.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/dialogs.css" />
+  <script src="/dialogs.js" defer></script>
 </head>
 
 <body class="auth-page bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -706,7 +708,7 @@
         if (window._signInGoogle) {
           await window._signInGoogle();
         } else {
-          alert('⚠️ Firebase not configured yet. Add your config to login.html to enable Google sign-in.');
+          await window.NutriDialog.alert('Google sign-in isn’t ready yet. Please try again later.', { title: 'Sign-in unavailable' });
         }
       } catch (err) {
         showBanner('signin-error',  friendlyError(err.code));

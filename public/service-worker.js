@@ -1,5 +1,5 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v15';
+const CACHE_NAME = 'nutriglance-v16';
 const PRECACHE = [
   '/',
   '/dashboard',
@@ -28,6 +28,8 @@ const PRECACHE = [
   '/accessibility.js',
   '/chef-recipes.css',
   '/app.css',
+  '/dialogs.js',
+  '/dialogs.css',
 ];
 
 // Install: pre-cache core pages

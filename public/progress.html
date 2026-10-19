@@ -226,6 +226,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/dialogs.css" />
+  <script src="/dialogs.js" defer></script>
   <link rel="stylesheet" href="/profile-avatar.css" />
   <script type="module" src="/profile-avatar.js"></script>
 </head>
@@ -1223,8 +1225,10 @@ document.getElementById('log-form').addEventListener('submit', e => {
 });
 
 // ─── Clear all ──────────────────────────────────────────────────
-document.getElementById('clear-all-btn').addEventListener('click', () => {
-  if (confirm('Delete all manually-logged entries? This cannot be undone. (Days tracked automatically from your scanned meals on the Dashboard will still appear — clear those from the Dashboard instead.)')) {
+document.getElementById('clear-all-btn').addEventListener('click', async () => {
+  const owner = localStorage.getItem('nutriglance_session_uid');
+  if (await window.NutriDialog.confirm('Delete all manually-logged entries? This cannot be undone. Days tracked from scanned meals will still appear.', { title: 'Clear manual entries?', confirmLabel: 'Delete entries', danger: true })) {
+    if (!window.NutriSecurity.isCurrent(owner)) return;
     localStorage.removeItem(PROGRESS_KEY);
     renderAll();
     showToast('Manual entries cleared.');

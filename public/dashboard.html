@@ -268,6 +268,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/dialogs.css" />
+  <script src="/dialogs.js" defer></script>
   <link rel="stylesheet" href="/profile-avatar.css" />
   <script type="module" src="/profile-avatar.js"></script>
 </head>
@@ -1645,8 +1647,10 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
 
     // 3. Clear all meals (today only — history in meals.html is preserved)
-    clearBtn.addEventListener('click', () => {
-      if (!confirm('Clear all of today\'s logged meals?')) return;
+    clearBtn.addEventListener('click', async () => {
+      const owner = localStorage.getItem('nutriglance_session_uid');
+      if (!await window.NutriDialog.confirm('Clear all of today\'s logged meals?', { title: 'Clear today’s meals?', confirmLabel: 'Clear meals', danger: true })) return;
+      if (!window.NutriSecurity.isCurrent(owner)) return;
       const todayStr = new Date().toDateString();
       const remaining = loadAllMeals().filter(m => {
         if (!m.loggedAt) return true; // keep undated meals

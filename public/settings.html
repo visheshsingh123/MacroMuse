@@ -214,6 +214,8 @@
   <script src="/onboarding.js" defer></script>
   <link rel="stylesheet" href="/design-system.css" />
   <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/dialogs.css" />
+  <script src="/dialogs.js" defer></script>
   <link rel="stylesheet" href="/profile-avatar.css" />
   <script type="module" src="/profile-avatar.js"></script>
 </head>
@@ -710,8 +712,11 @@
 
     // ── Reset app data ──
     document.getElementById('reset-app-btn').addEventListener('click', async () => {
-      if (confirm('This will clear your profile, meals, and all saved data. Are you sure?')) {
-        try { await window.nutriGlanceDisableReminders?.(); } catch { alert('Couldn’t disable reminders. Please try again before resetting.'); return; }
+      const owner = localStorage.getItem('nutriglance_session_uid');
+      if (await window.NutriDialog.confirm('This will clear your profile, meals, and all saved data. Are you sure?', { title: 'Reset app data?', confirmLabel: 'Reset data', danger: true })) {
+        if (!window.NutriSecurity.isCurrent(owner)) return;
+        try { await window.nutriGlanceDisableReminders?.(); } catch { await window.NutriDialog.alert('Couldn’t disable reminders. Please try again before resetting.', { title: 'Couldn’t reset data' }); return; }
+        if (!window.NutriSecurity.isCurrent(owner)) return;
         localStorage.clear();
         location.href = '/login';
       }
@@ -793,7 +798,9 @@
 
     // Sign out
     document.getElementById('signout-btn')?.addEventListener('click', async () => {
-      if (!confirm('Are you sure you want to sign out?')) return;
+      const owner = auth.currentUser?.uid;
+      if (!await window.NutriDialog.confirm('You can sign back in whenever you’re ready.', { title: 'Sign out of NutriGlance?', confirmLabel: 'Sign out' })) return;
+      if (!window.NutriSecurity.isCurrent(owner)) return;
       try {
         try { await window.nutriGlanceDisableReminders?.(); } catch { console.warn('Could not remove the push subscription.'); }
         await signOut(auth);

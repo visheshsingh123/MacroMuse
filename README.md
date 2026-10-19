@@ -45,3 +45,10 @@ avatar keep their initial as a fallback. Save the selection to show it in the de
 on all five app pages. `/api/avatar` stores the allowlisted choice in
 `users/{uid}/preferences/avatar` through the existing authenticated Admin SDK.
 No new credentials or client Firestore rules are required.
+
+## In-app messages
+
+Use `await NutriDialog.alert(message, { title })` for site alerts and
+`await NutriDialog.confirm(message, { title, confirmLabel, danger })` for choices.
+Always await confirmation before changing data. Shared native HTML dialogs handle
+centering, keyboard focus, cancellation, and queued messages in the current theme.
