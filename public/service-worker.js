@@ -1,5 +1,5 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v18';
+const CACHE_NAME = 'nutriglance-v19';
 const PRECACHE = [
   '/',
   '/dashboard',

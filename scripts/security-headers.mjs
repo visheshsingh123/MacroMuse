@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hashes = new Set();
-for (const file of readdirSync(`${root}public`).filter(file => file.endsWith('.html')).sort()) {
+for (const file of readdirSync(`${root}public`, { recursive: true }).filter(file => file.endsWith('.html')).sort()) {
   const html = readFileSync(`${root}public/${file}`, 'utf8');
   for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     if (!/\bsrc\s*=/.test(match[1])) hashes.add(`'sha256-${createHash('sha256').update(match[2]).digest('base64')}'`);

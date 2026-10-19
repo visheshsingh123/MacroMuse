@@ -118,14 +118,6 @@
       "destination": "/public/blogs.html"
     },
     {
-      "source": "/blogs/build-a-balanced-plate",
-      "destination": "/public/blog-balanced-plate.html"
-    },
-    {
-      "source": "/blogs/make-meal-tracking-stick",
-      "destination": "/public/blog-meal-tracking.html"
-    },
-    {
       "source": "/(.*)",
       "destination": "/public/$1"
     }

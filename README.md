@@ -65,7 +65,7 @@ and retain the existing `1 star` through `5 star` rating choices.
 ## Blog
 
 `/blogs` lists two articles, with full pages at `/blogs/build-a-balanced-plate` and
-`/blogs/make-meal-tracking-stick`. Edit the corresponding `public/blog-*.html`
+`/blogs/make-meal-tracking-stick`. Edit the corresponding `public/blogs/<slug>.html`
 files for article content; shared reading layouts and theme behavior are in
 `blogs.css` and `blogs.js`. Keep the index previews, reading times, dates, and
 article metadata in sync when updating a post.
