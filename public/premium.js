@@ -23,11 +23,11 @@
     document.getElementById('pro-price').textContent = annual ? '₹1,500' : '₹200';
     document.getElementById('pro-period').textContent = annual ? ' / year' : ' / month';
     document.getElementById('pro-billing-note').textContent = annual
-      ? '₹125/month equivalent, billed ₹1,500 yearly. Save ₹900 a year.'
-      : 'Billed ₹200 monthly. Or save 37.5% with ₹1,500/year.';
+      ? '₹125/month equivalent, billed yearly. Or choose ₹200/month.'
+      : 'Or ₹1,500/year — save ₹900 (37.5%) compared with monthly.';
   };
   buttons.forEach(button => button.addEventListener('click', () => setBilling(button.dataset.billing)));
-  setBilling('annual');
+  setBilling('monthly');
   if (billing) billing.hidden = false;
 
   const launchButton = document.getElementById('pro-launch-details');

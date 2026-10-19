@@ -23,6 +23,7 @@ body { font-family: 'Inter', sans-serif; }
 .premium-preview-price { font-family: 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 700; letter-spacing: -.05em; margin-top: 28px; }
 .premium-preview-price span { font: 11px 'Inter', sans-serif; letter-spacing: 0; }
 .premium-preview-bottom { border-top: 1px solid #173c2a30; margin-top: 20px; padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 11px; }
+.premium-yearly-preview .premium-preview-alternative { font: 12px/1.8 'Inter', sans-serif; letter-spacing: 0; margin-top: 16px; }
 .premium-preview-bottom strong { background: #173c2a; color: #d9f5b6; padding: 6px 10px; border-radius: 6px; }
 .premium-plan-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-top: 1px solid var(--ng-line); padding-top: 36px; margin-bottom: 24px; scroll-margin-top: 100px; }
 .premium-plan-intro h2, .premium-section-heading h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 3vw, 34px); font-weight: 700; letter-spacing: -.04em; line-height: 1.25; margin-top: 10px; }
