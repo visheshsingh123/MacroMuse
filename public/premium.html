@@ -3,6 +3,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Restore the saved theme before stylesheets or account scripts can delay paint. -->
+  <script>
+    (() => {
+      let dark = false;
+      try { dark = localStorage.getItem('nutriglance_darkmode') === '1'; } catch {}
+      document.documentElement.classList.toggle('dark', dark);
+    })();
+  </script>
+  <style>
+    html { background:#eff7f4; color-scheme:light; }
+    html.dark { background:#0f172a; color-scheme:dark; }
+    html.dark body { background-color:#0f172a!important; color:#e2e8f0!important; }
+  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Premium Plans & Pricing – NutriGlance</title>
 
@@ -100,6 +113,7 @@
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
+  <script>document.body.classList.toggle('dark', document.documentElement.classList.contains('dark'));</script>
 
   <!-- Decorative background blobs -->
   <div class="blob w-96 h-96 bg-brand top-[-80px] right-[-80px]" style="position:fixed;"></div>

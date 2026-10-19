@@ -2,13 +2,26 @@
 <!-- Originally developed by Vishesh Singh — June 2026 -->
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <!-- Restore the saved theme before stylesheets or account scripts can delay paint. -->
+  <script>
+    (() => {
+      let dark = false;
+      try { dark = localStorage.getItem('nutriglance_darkmode') === '1'; } catch {}
+      document.documentElement.classList.toggle('dark', dark);
+    })();
+  </script>
+  <style>
+    html { background:#eff7f4; color-scheme:light; }
+    html.dark { background:#0f172a; color-scheme:dark; }
+    html.dark body { background-color:#0f172a!important; color:#e2e8f0!important; }
+  </style>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
   <link rel="stylesheet" href="/app-interactions.css" />
   <script src="/app-interactions.js"></script>
   <script src="/nutrition-goals.js"></script>
   <script src="/weekly-insights.js"></script>
-  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriGlance</title>
     <!-- PWA: manifest + service worker -->
@@ -216,6 +229,7 @@
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
+  <script>document.body.classList.toggle('dark', document.documentElement.classList.contains('dark'));</script>
 
 <!-- ══════════════════════════════════════════════════════════════
      NAVBAR
