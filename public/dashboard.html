@@ -405,6 +405,7 @@
 
     <header class="dashboard-greeting">
       <h1 id="dashboard-greeting">Welcome!</h1>
+      <p id="dashboard-guidance" role="status" aria-live="polite"></p>
       <div class="dashboard-guidance-metrics" aria-label="Today at a glance">
         <span id="guidance-protein"></span>
         <span id="guidance-calories"></span>
@@ -1068,6 +1069,7 @@
       document.getElementById('dashboard-greeting').textContent = window.NutriGuidance.greeting(now, name);
       const meals = loadMeals();
       const insight = window.NutriGuidance.guidance({ totals: computeTotals(meals), goals: GOALS, mealCount: meals.length, waterCount: loadWater().count });
+      document.getElementById('dashboard-guidance').textContent = insight.message;
       for (const key of ['protein', 'calories', 'water']) document.getElementById(`guidance-${key}`).textContent = insight[key];
     }
 
