@@ -6,15 +6,20 @@
     document.querySelectorAll('[data-usage-feature]').forEach(section => {
       const feature = section.dataset.usageFeature, item = usage?.[feature];
       const label = feature === 'meals' ? 'meal logs' : 'AI Chef replies';
-      const exhausted = item && item.remaining === 0;
+      const pro = usage?.plan === 'pro';
+      const exhausted = !pro && item && item.remaining === 0;
+      const title = section.querySelector('.daily-usage-title');
+      if (title) title.textContent = pro ? 'NutriGlance Pro' : feature === 'meals' ? 'Free meal logs' : 'Free AI Chef';
       section.classList.toggle('daily-usage-exhausted', Boolean(exhausted));
       section.querySelector('[data-usage-status]').textContent = error || (!item
         ? 'Checking your daily allowance…'
-        : exhausted ? `Daily quota used up · ${item.used}/${item.limit} ${label}`
+        : pro ? `Pro · Unlimited ${label}`
+        : exhausted ? `Daily quota used up · ${Math.min(item.used, item.limit)}/${item.limit} ${label}`
           : `${item.used}/${item.limit} ${label} used · ${item.remaining} left today`);
-      section.querySelector('[data-usage-note]').textContent = exhausted
-        ? 'Free allowance resets at 00:00 UTC. Pro will include unlimited usage; upgrades are coming soon.'
-        : 'Free plan · Resets at 00:00 UTC. Pro will include unlimited usage.';
+      section.querySelector('[data-usage-note]').textContent = pro
+        ? `Pro active until ${new Date(usage.expiresAt).toLocaleString()}.`
+        : exhausted ? 'Free allowance resets at 00:00 UTC. Activate Pro with a code for unlimited usage.'
+        : 'Free plan · Resets at 00:00 UTC. Pro includes unlimited usage.';
     });
   }
   function update(next) {
@@ -30,7 +35,7 @@
     const owner = uid;
     try {
       const label = feature === 'meals' ? '3 meal logs' : '5 AI Chef replies';
-      const message = `You’ve used your Free allowance of ${label} today. It resets at 00:00 UTC. NutriGlance Pro will include unlimited meal logs and AI Chef replies. Paid upgrades are coming soon.`;
+      const message = `You’ve used your Free allowance of ${label} today. It resets at 00:00 UTC. Activate NutriGlance Pro with a code for unlimited meal logs and AI Chef replies.`;
       const view = await window.NutriDialog.confirm(message, { title: 'Daily Free quota used up', confirmLabel: 'View Pro plans', cancelLabel: 'Wait for reset' });
       if (view && uid === owner && current()) window.location.href = '/premium';
     } finally { promptOpen = false; }
@@ -46,6 +51,10 @@
       const error = new Error(data.error?.message || 'Couldn’t check your daily allowance. Please try again.');
       error.code = data.error?.code;
       if (error.code === 'FREE_QUOTA_EXCEEDED') await showLimit(data.error.feature);
+      if (error.code === 'PRO_REQUIRED') {
+        const view = await window.NutriDialog.confirm('PDF exports are included with NutriGlance Pro. Activate Pro with a code to download your progress report.', { title: 'Pro required', confirmLabel: 'Activate Pro', cancelLabel: 'Keep Free' });
+        if (view && current() && owner === uid) window.location.href = '/premium';
+      }
       throw error;
     }
     return data;

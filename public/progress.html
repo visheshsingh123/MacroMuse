@@ -18,6 +18,7 @@
   </style>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <script src="/free-usage.js"></script>
   <link rel="stylesheet" href="/app-interactions.css" />
   <script src="/app-interactions.js"></script>
   <script src="/nutrition-goals.js"></script>
@@ -1286,9 +1287,10 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
 
     auth.onAuthStateChanged(async user => {
       if (user && !window.NutriSecurity.bindSession(user)) return;
-      if (!user) window.NutriSecurity.bindSession(null);
+      if (!user) { window.NutriSecurity.bindSession(null);window.NutriUsage.connect(null); }
       if (!user) { window.location.href = '/login'; return; }
       _uid = user.uid;
+      window.NutriUsage.connect(_uid);
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
       if (!profile || !window.NutriSecurity.isCurrent(_uid)) return;

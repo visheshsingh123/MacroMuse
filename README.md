@@ -23,8 +23,8 @@ and the [Android APK guide](docs/android-apk.md) for configuration instructions.
 ## Saved recipes
 
 In AI Chef, choose **Save recipe**, then open **Saved recipes** to search by name
-or ingredient, read the method, change servings, or log a meal. Each account can
-save up to 50 recipes. Saving and removing require an internet connection.
+or ingredient, read the method, change servings, or log a meal. Free accounts can
+save one recipe; active Pro accounts have no collection cap. Saving and removing require an internet connection.
 
 The authenticated `/api/saved-recipes` endpoint uses the existing Firebase Admin
 configuration. Recipes live in `users/{uid}/savedRecipes`; a private transaction

@@ -4,10 +4,10 @@
   const keyOf = recipe => JSON.stringify(recipe);
   const current = owner => Boolean(owner && owner === uid && window.NutriSecurity.isCurrent(owner));
   const byId = id => document.getElementById(id);
-  async function request(body) {
-    const response = await window.NutriSecurity.apiFetch('/api/saved-recipes', body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { method: 'GET' });
+  async function request(body, after) {
+    const response = await window.NutriSecurity.apiFetch('/api/saved-recipes' + (after ? '?after=' + encodeURIComponent(after) : ''), body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { method: 'GET' });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error?.message || 'Couldn’t update saved recipes. Please try again.');
+    if (!response.ok) { const error = new Error(data.error?.message || 'Couldn’t update saved recipes. Please try again.');error.code = data.error?.code;throw error; }
     return data;
   }
   function validateItem(item) {
@@ -47,7 +47,15 @@
     const generation = ++version;loading = true;
     byId('saved-recipes-error').hidden = true;renderLibrary();syncButtons();
     try {
-      const data = await request();
+      const data = { recipes: [] };let cursor;
+      do {
+        const page = await request(null, cursor);
+        if (!current(owner) || generation !== version) return;
+        if (!Array.isArray(page.recipes)) throw new Error('Couldn’t load your saved recipes.');
+        data.recipes.push(...page.recipes);
+        if (page.nextCursor && page.nextCursor === cursor) throw new Error('Couldn’t load the next recipe page.');
+        cursor = page.nextCursor;
+      } while (cursor);
       if (!current(owner) || generation !== version) return;
       if (!Array.isArray(data.recipes)) throw new Error('Couldn’t load your saved recipes.');
       const items = data.recipes.map(validateItem);
@@ -80,7 +88,12 @@
         renderLibrary();
         if (inLibrary) { const target = byId('saved-recipe-grid').querySelector('button') || byId('saved-recipes-heading');target.focus({ preventScroll: true }); }
         window.NutriFeedback?.show(existing ? 'Recipe removed from your collection.' : 'Recipe saved. Find it in Saved recipes.');
-      } catch (error) { if (current(owner) && generation === version) status.textContent = error.message; }
+      } catch (error) {
+        if (current(owner) && generation === version) {
+          status.textContent = error.message;
+          if (error.code === 'PRO_REQUIRED') { const link = document.createElement('a');link.href = '/premium';link.className = 'chef-recipe-view';link.textContent = 'Activate Pro →';status.appendChild(link); }
+        }
+      }
       finally { if (current(owner) && generation === version) { pending.delete(key);syncButtons(); } }
     });
     const status = document.createElement('p');status.className = 'chef-recipe-status chef-recipe-save-status';status.setAttribute('role', 'status');card.appendChild(status);

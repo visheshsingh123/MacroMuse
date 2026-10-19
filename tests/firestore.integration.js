@@ -7,6 +7,8 @@ import { doc, setDoc, getDoc, collection, getDocs, deleteDoc, serverTimestamp } 
 import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { createMealsHandler } from '../api/meals.js';
+import { createProHandler } from '../api/pro.js';
+import { createSavedRecipesHandler } from '../api/saved-recipes.js';
 import { getUsage, reserveChef, finishChef } from '../lib/free-usage.js';
 
 let env, adminApp;
@@ -60,7 +62,7 @@ test('only valid lifestyle choices can be saved by the profile owner', async () 
 
 test('quotas, notification secrets, and unknown collections are server-only', async () => {
   const db = env.authenticatedContext('alice').firestore();
-  for (const path of ['serverQuotas/global', 'reminderSubscriptions/device', 'unknown/data', 'users/alice/privateState/freeUsage-2026-10-20', 'users/alice/mealReceipts/receipt']) {
+  for (const path of ['serverQuotas/global', 'reminderSubscriptions/device', 'unknown/data', 'users/alice/privateState/freeUsage-2026-10-20', 'users/alice/privateState/pro', 'users/alice/privateState/pro-code-fixture', 'users/alice/mealReceipts/receipt']) {
     await assertFails(getDoc(doc(db, path)));
     await assertFails(setDoc(doc(db, path), { count: 0, enabled: true }));
     await assertFails(deleteDoc(doc(db, path)));
@@ -127,4 +129,30 @@ test('Chef reservations serialize on real Firestore and failed requests release 
   for (const reservation of [...reservations.slice(1), replacement]) await finishChef(db, uid, reservation, true);
   const usage = await getUsage(db, uid, now);
   assert.equal(usage.chef.used, 5);assert.equal(usage.chef.remaining, 0);
+});
+
+
+test('code activation, Pro meal access and expiry persist on real Firestore', async () => {
+  const db = getFirestore(adminApp), uid = 'pro-activation-owner';let now = Date.parse('2026-10-31T08:00:00Z');
+  const options = { getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), quota: async () => {}, clock: () => now };
+  const activate = createProHandler({ ...options, getCode: () => 'emulator-code-fixture' });
+  const call = async (handler, body, query) => {
+    const res = { code: 200, setHeader() {}, status(code) { this.code = code;return this; }, json(body) { this.body = body;return this; } };
+    await handler({ method: body ? 'POST' : 'GET', headers: { authorization: 'Bearer emulator-fixture' }, body, query }, res);return res;
+  };
+  const results = await Promise.all(Array.from({ length: 4 }, () => call(activate, { code: 'emulator-code-fixture' })));
+  assert(results.every(result => result.code === 200));assert(results.every(result => result.body.expiresAt === '2026-11-30T08:00:00.000Z'));
+  const meals = createMealsHandler(options);
+  for (let i = 0; i < 5; i++) assert.equal((await call(meals, { meal: { _id: 'pro-meal-'+i, name: 'Lunch', kcal: 400, protein: 25, carbs: 40, fat: 12 } })).code, 200);
+  const usage = await getUsage(db, uid, now);assert.equal(usage.plan, 'pro');assert.equal(usage.meals.limit, null);
+  const recipes = createSavedRecipesHandler({ ...options, clock: () => new Date(now) });
+  const recipe = { name: 'Recipe', perServing: { kcal: 400, protein: 25, carbs: 40, fat: 12 }, ingredients: ['One cup rice'], steps: ['Warm and serve.'] };
+  for (let i = 0; i < 51; i++) assert.equal((await call(recipes, { action: 'save', recipe: { ...recipe, name: 'Recipe '+i } })).code, 200);
+  const first = await call(recipes);assert.equal(first.body.recipes.length, 50);assert(first.body.nextCursor);
+  const second = await call(recipes, null, { after: first.body.nextCursor });assert.equal(second.body.recipes.length, 1);
+  now = Date.parse('2026-11-30T08:00:00Z');
+  assert.equal((await getUsage(db, uid, now)).plan, 'free');
+  assert.equal((await call(activate, null, { feature: 'pdf' })).code, 403);
+  assert.equal((await call(activate, { code: 'emulator-code-fixture' })).code, 409);
+  assert.equal((await call(recipes, { action: 'save', recipe: { ...recipe, name: 'Expired account recipe' } })).code, 403);
 });

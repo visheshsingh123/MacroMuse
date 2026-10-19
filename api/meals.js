@@ -1,4 +1,5 @@
 import { authenticated, consumeQuota, HttpError, sendError } from '../lib/api-security.js';
+import { getPlan } from '../lib/pro.js';
 import { FREE_LIMITS, readDaily, usageSummary, quotaExceeded } from '../lib/free-usage.js';
 
 export function validateMeal(body) {
@@ -27,27 +28,28 @@ export function createMealsHandler({ getServices, quota = consumeQuota, clock = 
     try {
       const { db, uid } = await authenticated(req, getServices);
       const { id, data } = validateMeal(req.body);
-      await quota(db, uid, 'meal-writes');
-      const now = clock(), owner = db.collection('users').doc(uid);
+      const now = clock(), plan = await getPlan(db, uid, now);
+      await quota(db, uid, plan.plan === 'pro' ? 'pro-meal-writes' : 'meal-writes');
+      const owner = db.collection('users').doc(uid);
       const mealRef = owner.collection('meals').doc(id), receiptRef = owner.collection('mealReceipts').doc(id);
       const result = await db.runTransaction(async transaction => {
         const existing = await transaction.get(mealRef), receipt = await transaction.get(receiptRef);
-        const { ref, state } = await readDaily(transaction, db, uid, now);
+        const { ref, state, plan } = await readDaily(transaction, db, uid, now);
         // Retries and Undo use the original canonical record, without another charge.
         if (existing.exists || receipt.exists) {
           const record = existing.exists ? existing.data() : receipt.data().meal;
           if (!existing.exists) transaction.set(mealRef, record);
           if (!receipt.exists) transaction.set(receiptRef, { meal: record });
           transaction.set(ref, state);
-          return { meal: { ...record, createdAt: undefined, _id: id }, usage: usageSummary(state, now) };
+          return { meal: { ...record, createdAt: undefined, _id: id }, usage: usageSummary(state, now, plan) };
         }
-        if (state.meals >= FREE_LIMITS.meals) throw quotaExceeded('meals', state, now);
+        if (plan.plan !== 'pro' && state.meals >= FREE_LIMITS.meals) throw quotaExceeded('meals', state, now);
         const record = { ...data, loggedAt: new Date(now).toISOString(), createdAt: new Date(now) };
         state.meals += 1;
         transaction.set(mealRef, record);
         transaction.set(receiptRef, { meal: record });
         transaction.set(ref, state);
-        return { meal: { ...data, _id: id, loggedAt: record.loggedAt }, usage: usageSummary(state, now) };
+        return { meal: { ...data, _id: id, loggedAt: record.loggedAt }, usage: usageSummary(state, now, plan) };
       });
       return res.status(200).json(result);
     } catch (error) { return sendError(res, error); }

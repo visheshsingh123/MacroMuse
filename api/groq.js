@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { authenticated, consumeQuota, HttpError, sendError } from '../lib/api-security.js';
 import { validatePayload } from '../lib/ai-payload.js';
+import { getPlan } from '../lib/pro.js';
 import { modePayload, validateReply } from '../lib/ai-modes.js';
 import { reserveChef, finishChef } from '../lib/free-usage.js';
 
@@ -58,7 +59,8 @@ export function createGroqHandler({ getServices, quota = consumeQuota, request =
       const payload = modePayload(validatePayload(req.body), mode);
       const keys = [...new Set(getHostedKeys())].slice(0, 5);
       if (!keys.length) throw new HttpError(503, 'AI analysis is not configured yet. Please try again later.');
-      await quota(db, uid, 'ai');
+      const plan = mode === 'generic' ? { plan: 'free' } : await getPlan(db, uid, clock());
+      await quota(db, uid, plan.plan === 'pro' ? 'pro-ai' : 'ai');
       if (mode === 'chef') reservation = await reserveChef(db, uid, clock());
       const initial = crypto.createHash('sha256').update(uid).digest().readUInt32BE(0) % keys.length;
       const signal = AbortSignal.timeout(25000);
@@ -71,7 +73,7 @@ export function createGroqHandler({ getServices, quota = consumeQuota, request =
         if (response.ok) {
           const data = validateReply(await response.json(), mode);
           if (reservation) {
-            data.usage = await finishChef(db, uid, reservation, true);
+            data.usage = await finishChef(db, uid, reservation, true, clock());
             reservation = null;
           }
           return res.status(200).json(data);
@@ -81,7 +83,7 @@ export function createGroqHandler({ getServices, quota = consumeQuota, request =
       throw new HttpError(502, 'AI analysis is temporarily unavailable. Please try again.');
     } catch (error) { return sendError(res, error); }
     finally {
-      if (reservation) await finishChef(owner.db, owner.uid, reservation, false).catch(() => {});
+      if (reservation) await finishChef(owner.db, owner.uid, reservation, false, clock()).catch(() => {});
     }
   };
 }

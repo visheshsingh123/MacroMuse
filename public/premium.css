@@ -67,7 +67,7 @@ html body .premium-card-pro .premium-cta.ng-button-primary:hover { background: #
 .premium-comparison tbody tr:last-child > * { border-bottom: 0; }
 .premium-table-note { max-width: 800px; font-size: 11px; color: var(--ng-muted); line-height: 1.8; margin-top: 16px; }
 .premium-faq { display: grid; grid-template-columns: 1fr 1.4fr; column-gap: 60px; margin-top: 76px; }
-.premium-faq .premium-section-heading { grid-row: 1 / span 6; }
+.premium-faq .premium-section-heading { grid-row: 1 / span 7; }
 .premium-faq details { grid-column: 2; border-bottom: 1px solid var(--ng-line); }
 .premium-faq summary { cursor: pointer; padding: 20px 0; min-height: 58px; font-size: 13px; font-weight: 600; }
 .premium-faq details p { font-size: 12px; color: var(--ng-muted); line-height: 1.85; margin-bottom: 20px; }
@@ -103,3 +103,19 @@ html.dark .premium-yearly-preview { box-shadow: 12px 12px 0 #d9f5b609; }
   .premium-closing > div { flex: 1; }
   .premium-closing a { margin-left: 0; width: 100%; }
 }
+
+.premium-account-status{border:1px solid var(--ng-accent);background:var(--ng-surface);color:var(--ng-ink);border-radius:14px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.8}
+.pro-activation-dialog{width:min(440px,calc(100% - 32px));max-height:calc(100dvh - 40px);overflow:auto;padding:28px;border:1px solid var(--ng-line);border-radius:22px;background:var(--ng-surface);color:var(--ng-ink);font-family:'Inter',sans-serif}
+.pro-activation-dialog::backdrop{background:#020617a6}
+.pro-activation-dialog [hidden]{display:none!important}
+.pro-activation-close{position:absolute;top:10px;right:10px;width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:var(--ng-muted);font-size:24px}
+.pro-activation-dialog>.premium-eyebrow{margin:12px 30px 18px 0}
+.pro-activation-dialog h2{font:700 26px/1.2 'Space Grotesk',sans-serif;letter-spacing:-.04em;margin-bottom:12px}
+.pro-activation-dialog>p,.pro-active-message{font-size:13px;line-height:1.8;color:var(--ng-muted)}
+.pro-activation-form{display:grid;gap:12px;margin-top:22px}
+.pro-activation-form label{font-size:12px;font-weight:600}
+.pro-activation-form input{width:100%;padding:10px 12px;border:1px solid var(--ng-line);background:var(--ng-surface);color:var(--ng-ink)}
+#pro-activation-feedback{font-size:12px;line-height:1.7;color:#b91c1c}
+html.dark #pro-activation-feedback{color:#fca5a5}
+.pro-active-message{padding:16px;margin-top:16px;border:1px solid var(--ng-accent);border-radius:12px;color:var(--ng-ink)}
+.pro-activation-dashboard{display:inline-flex;align-items:center;min-height:44px;font-size:12px;font-weight:600;color:var(--ng-accent);margin-top:12px}

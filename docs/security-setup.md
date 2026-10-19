@@ -41,8 +41,9 @@ Local API/rendering/session tests and browser checks do not certify the deployed
 
 Free accounts can create 3 meal logs and receive 5 successful AI Chef replies per
 UTC calendar day. The UI shows remaining usage and the midnight UTC reset. Pro
-plans are advertised but cannot be purchased or activated yet; every account uses
-the Free allowance until a verified billing/entitlement backend is implemented.
+can be activated for one calendar month with a server-verified activation code.
+Active Pro accounts have no daily meal or Chef cap, unlimited saved recipes, and
+PDF export. Free accounts can save one recipe and cannot use PDF export.
 Browser storage and caller-supplied Pro flags never grant more usage.
 
 New meals (including recipes logged from AI Chef or Saved recipes) use the
@@ -62,7 +63,7 @@ still apply separately. `/api/usage` returns the authenticated account's counter
 without consuming a daily allowance.
 
 Deployment requires the existing `FIREBASE_SERVICE_ACCOUNT_JSON` and Groq
-credentials; no additional keys are needed. Deploy the updated Vercel application,
+credentials. Code activation also needs `PRO_ACTIVATION_CODE` as described below. Deploy the updated Vercel application,
 then publish the complete updated `firestore.rules` in Firebase Console →
 Firestore Database → Rules (or with your authorized Firebase CLI). The new rules
 require meal creation/restoration through the server and deny direct client
@@ -75,3 +76,33 @@ Validate with `npm test`, `npm run build`, and `npm run test:rules`. On the depl
 app, check the fourth meal and sixth Chef reply, reload/cross-device persistence,
 Undo, failed AI requests and the reset boundary. Existing meals and conversations
 must remain readable after reaching a quota.
+
+
+## One-month Pro activation
+
+Set `PRO_ACTIVATION_CODE` as a server-only environment variable in Vercel for the
+required deployment environment, then redeploy. Enter the intended activation
+code securely in Vercel; never put it in browser code, Git, URLs, or logs. Existing
+Firebase Admin configuration is also required. No payment gateway is involved.
+
+On `/premium`, choose Activate Pro and enter the code while signed in. `/api/pro`
+verifies the Firebase session, rate-limits activation attempts, and compares the
+code on the server. It writes the entitlement to `users/{uid}/privateState/pro`
+and a per-account redemption receipt containing only a code digest identifier
+and timestamps. Clients cannot write either document under the existing rules.
+Each code is usable once per account. Repeated/concurrent activation returns the
+same expiry and cannot stack months. After expiry, the same code cannot renew;
+rotate the environment value to issue a new code when needed.
+
+Expiry is one calendar month in UTC, with month-end dates clamped (January 31 →
+February 28 or 29). Every protected operation checks current server time; there
+is no cron requirement and no browser Pro flag. Usage continues to be recorded
+while Pro is active, so expiry restores the normal Free allowances without
+removing existing meals or recipes. Short-term and global service protections
+still apply; Pro has no per-user daily request cap.
+
+Saved recipes are returned in pages of 50 without a total collection cap for
+Pro. Free accounts that downgrade keep access to their full collection but must
+remove excess recipes before saving a new one. The PDF button verifies active
+Pro before generating the local print report; browser printing of a user's own
+visible information cannot be prevented as a form of copy protection.

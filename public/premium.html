@@ -40,6 +40,8 @@
   <script src="/dialogs.js" defer></script>
   <link rel="stylesheet" href="/premium.css" />
   <script src="/premium.js" defer></script>
+  <script src="/security.js"></script>
+  <script src="/pro-activation.js" defer></script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">
@@ -104,10 +106,11 @@
           <button type="button" data-billing="monthly" aria-pressed="true">Monthly</button>
           <button type="button" data-billing="annual" aria-pressed="false">Yearly <span>−37.5%</span></button>
         </div>
-        <p class="premium-pricing-note">Prices in INR · Pro launching soon</p>
+        <p class="premium-pricing-note">Prices in INR · Activate with a code</p>
       </div>
     </section>
 
+    <p id="pro-account-status" class="premium-account-status" role="status" aria-live="polite" hidden></p>
     <section class="premium-plans" aria-label="Choose your plan">
       <article class="premium-card" aria-labelledby="free-title">
         <div class="premium-card-heading"><span class="premium-plan-icon" aria-hidden="true">○</span><span class="premium-tag">A great place to start</span></div>
@@ -135,8 +138,8 @@
           <p class="premium-price"><span id="pro-price">₹200</span><span id="pro-period"> / month</span></p>
           <p class="premium-billing-note" id="pro-billing-note">Or ₹1,500/year — save ₹900 (37.5%) compared with monthly.</p>
         </div>
-        <button type="button" id="pro-launch-details" class="ng-button ng-button-primary premium-cta" aria-describedby="pro-launch-note" hidden>Meet your Pro plan <span aria-hidden="true">→</span></button>
-        <p class="premium-launch-note" id="pro-launch-note">Coming soon. Paid upgrades are not available yet.</p>
+        <button type="button" id="pro-activate-btn" class="ng-button ng-button-primary premium-cta" aria-describedby="pro-launch-note" hidden>Activate Pro</button>
+        <p class="premium-launch-note" id="pro-launch-note">Have an activation code? Unlock one month of Pro. No payment is taken.</p>
         <h3>Everything in Free, with more</h3>
         <ul class="premium-features">
           <li><strong>Unlimited meal logs</strong></li>
@@ -152,7 +155,7 @@
     <section class="premium-comparison" id="compare-plans" aria-labelledby="comparison-title">
       <div class="premium-section-heading"><span class="premium-eyebrow">THE DETAILS, SIDE BY SIDE</span><h2 id="comparison-title">Find your everyday fit.</h2><p>The essentials in both. Extra room with Pro.</p></div>
       <table>
-        <caption class="premium-sr-only">Planned Free and Pro feature allowances</caption>
+        <caption class="premium-sr-only">Free and Pro feature allowances</caption>
         <thead><tr><th scope="col">What’s included</th><th scope="col">Free</th><th scope="col">Pro</th></tr></thead>
         <tbody>
           <tr><th scope="row">Meal logging</th><td>3 per day</td><td>Unlimited</td></tr>
@@ -164,20 +167,37 @@
           <tr><th scope="row">Progress tracking</th><td>Included</td><td>Included</td></tr>
         </tbody>
       </table>
-      <p class="premium-table-note">Planned allowances for the Pro launch. Unlimited AI Chef has no daily reply cap; short-term rate limits may apply to keep the service available.</p>
+      <p class="premium-table-note">Daily allowances reset at 00:00 UTC. Unlimited AI Chef has no daily reply cap; short-term rate limits may apply to keep the service available.</p>
     </section>
 
     <section class="premium-faq" aria-labelledby="premium-faq-title">
       <div class="premium-section-heading"><span class="premium-eyebrow">GOOD TO KNOW</span><h2 id="premium-faq-title">A few things you might be wondering.</h2></div>
-      <details><summary>Can I buy Pro today?</summary><p>Not yet. Pro is launching soon at ₹200/month or ₹1,500/year. You can keep using Free while we prepare paid upgrades.</p></details>
+      <details><summary>How do I activate Pro?</summary><p>Choose Activate Pro, sign in, and enter your activation code. A valid code unlocks one calendar month on your account. Each code can be redeemed once per account. Paid checkout is not available yet.</p></details>
+      <details><summary>What happens after my month ends?</summary><p>Your account automatically returns to Free limits. Your saved meals and recipes remain accessible. Re-entering a used code does not extend Pro.</p></details>
       <details><summary>How much do I save with yearly Pro?</summary><p>Monthly Pro is ₹200/month, or ₹2,400 across 12 months. Yearly Pro costs ₹1,500, saving you ₹900 (37.5%). That works out to ₹125/month, paid as one yearly amount.</p></details>
-      <details><summary>What happens when I reach a Free limit?</summary><p>The planned Free tier allows 3 meal logs and 5 AI Chef replies per day. Once you reach either allowance, you’ll be prompted to upgrade or return when that daily allowance resets. Your existing meals remain accessible.</p></details>
-      <details><summary>What does unlimited AI Chef mean?</summary><p>Pro will have no daily cap on AI Chef replies. Short-term rate limits may apply to prevent misuse and keep conversations available for everyone.</p></details>
-      <details><summary>Can I replace my saved recipe on Free?</summary><p>Yes. The planned Free tier has one saved-recipe slot. Remove the saved recipe to make room for another, or choose Pro to keep an unlimited collection.</p></details>
+      <details><summary>What happens when I reach a Free limit?</summary><p>The Free tier allows 3 meal logs and 5 AI Chef replies per day. Once you reach either allowance, you’ll be prompted to upgrade or return when that daily allowance resets. Your existing meals remain accessible.</p></details>
+      <details><summary>What does unlimited AI Chef mean?</summary><p>Pro has no daily cap on AI Chef replies. Short-term rate limits may apply to prevent misuse and keep conversations available for everyone.</p></details>
+      <details><summary>Can I replace my saved recipe on Free?</summary><p>Yes. The Free tier has one saved-recipe slot. Remove the saved recipe to make room for another, or choose Pro to keep an unlimited collection.</p></details>
       <details><summary>Is progress tracking only for Pro?</summary><p>No. Both plans include progress tracking. Pro adds PDF exports so you can download a copy of your progress.</p></details>
     </section>
     <aside class="premium-closing"><span class="premium-plan-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg></span><div><h2>Your next healthy habit starts here.</h2><p>Pick your pace. We’ll help with the rest.</p></div><a href="/dashboard" class="ng-button ng-button-secondary">Open dashboard <span aria-hidden="true">→</span></a></aside>
   </main>
+
+  <dialog id="pro-activation-dialog" class="pro-activation-dialog" aria-labelledby="pro-activation-title" aria-describedby="pro-activation-description">
+    <button type="button" id="pro-activation-close" class="pro-activation-close" aria-label="Close activation">×</button>
+    <span class="premium-eyebrow">NUTRIGLANCE PRO</span>
+    <h2 id="pro-activation-title">Activate your month of Pro.</h2>
+    <p id="pro-activation-description">Enter your activation code to unlock Pro on your signed-in account for one calendar month. This activation does not charge you.</p>
+    <form id="pro-activation-form" class="pro-activation-form">
+      <label for="pro-activation-code">Activation code</label>
+      <input id="pro-activation-code" name="code" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="128" required />
+      <p id="pro-activation-feedback" role="alert"></p>
+      <a id="pro-activation-signin" href="/login" class="ng-button ng-button-secondary" hidden>Sign in</a>
+      <button type="submit" id="pro-activation-submit" class="ng-button ng-button-primary">Activate for one month</button>
+    </form>
+    <div id="pro-active-message" class="pro-active-message" role="status" hidden></div>
+    <a href="/dashboard" class="pro-activation-dashboard">Open Dashboard →</a>
+  </dialog>
 
   <!-- ── Footer (Same as privacy.html) ── -->
   <footer class="site-footer bg-charcoal text-white">
