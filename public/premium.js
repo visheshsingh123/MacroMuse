@@ -35,7 +35,7 @@
     launchButton.hidden = false;
     launchButton.addEventListener('click', async () => {
       await window.NutriDialog.alert(
-        'Pro will include 10 meal logs a day, unlimited AI Chef replies, unlimited saved recipes, and PDF exports. Pricing is ₹200/month or ₹1,500/year. Paid upgrades are not available yet.',
+        'Pro will include unlimited meal logs, unlimited AI Chef replies, unlimited saved recipes, and PDF exports. Pricing is ₹200/month or ₹1,500/year. Paid upgrades are not available yet.',
         { title: 'NutriGlance Pro is coming soon' }
       );
     });
