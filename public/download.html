@@ -239,90 +239,26 @@
   <!-- ════════════════════════════════════════════════════════════════
        NAVBAR
   ════════════════════════════════════════════════════════════════ -->
-  <nav aria-label="Primary navigation" class="site-nav bg-brand shadow-sm sticky top-0 z-40">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6">
-      <div class="flex items-center justify-between h-14">
-
-         <!-- Logo -->
-      <a href="/?view=home" class="flex items-center gap-2 flex-shrink-0">
+  <nav class="site-nav bg-brand sticky top-0 z-40" aria-label="Site header">
+    <div class="site-nav-container">
+      <div class="site-nav-row">
+        <a href="/?view=home" class="flex items-center gap-2 flex-shrink-0">
         <span class="font-display text-xl font-extrabold tracking-tight">
           <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand"></span>
         </span>
         <span class="hidden sm:inline text-charcoal/70 font-medium text-xs">Your personal AI dietitian</span>
       </a>
-
-        <!-- Desktop nav links -->
-        <div class="hidden md:flex items-center gap-1">
-          <a href="/#how-it-works" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">How it works</a>
-          <a href="/#features" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">Features</a>
-          <a href="/#ai-chef" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">AI Chef</a>
-          <a href="/#faq" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">FAQ</a>
-          <a href="/about" class="nav-link px-4 py-1.5 text-sm text-charcoal/80 hover:text-charcoal transition-colors">About</a>
-        </div>
-
-        <!-- Desktop right: dark mode toggle + CTA into the app -->
-        <div class="hidden md:flex items-center gap-3">
-          <button
+        <div class="site-nav-actions"><button
             id="dark-mode-toggle"
             role="switch" aria-checked="false"
             aria-label="Toggle dark mode"
-            class="w-9 h-9 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center text-charcoal/80 hover:text-charcoal"
+            class="w-11 h-11 rounded-lg hover:bg-white/20 transition-colors flex items-center justify-center text-charcoal/80 hover:text-charcoal"
           >
             <svg id="dark-mode-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             <svg id="dark-mode-icon-sun" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-          </button>
-          <a href="/dashboard"
-             class="bg-charcoal text-white text-sm font-semibold px-4 py-1.5 rounded-lg
-                    hover:bg-charcoal/90 active:scale-95 transition-all duration-150">
-            Open Dashboard
-          </a>
-        </div>
-
-        <!-- Hamburger (mobile) -->
-        <button
-          id="hamburger"
-          aria-label="Toggle navigation menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-          class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-[5px] rounded-lg hover:bg-white/20 transition-colors"
-        >
-          <span id="ham-top" class="ham-bar block w-5 h-0.5 bg-charcoal rounded-full origin-center"></span>
-          <span id="ham-mid" class="ham-bar block w-5 h-0.5 bg-charcoal rounded-full origin-center"></span>
-          <span id="ham-bot" class="ham-bar block w-5 h-0.5 bg-charcoal rounded-full origin-center"></span>
-        </button>
-
-      </div><!-- /inner row -->
-    </div><!-- /max-w -->
-
-    <!-- Mobile collapsible menu -->
-    <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
-      <div class="max-w-5xl mx-auto px-4 pb-4 flex flex-col gap-1">
-        <a href="/#how-it-works" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">How it works</a>
-        <a href="/#features" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">Features</a>
-        <a href="/#ai-chef" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">AI Chef</a>
-        <a href="/#faq" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">FAQ</a>
-        <a href="/about" class="px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80 hover:bg-white/20 hover:text-charcoal transition-colors">About</a>
-
-        <!-- Dark Mode toggle (mobile) -->
-        <div class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-charcoal/80">
-          <span>Dark Mode</span>
-          <button id="dark-mode-toggle-mobile"
-                  role="switch" aria-checked="false"
-                  class="relative inline-flex w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none bg-white/30"
-                  aria-label="Toggle dark mode">
-            <span id="dark-mode-thumb-mobile"
-                  class="inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-200 translate-x-0.5 mt-0.5"></span>
-          </button>
-        </div>
-
-        <a href="/dashboard"
-           class="mt-2 bg-charcoal text-white text-sm font-semibold text-center px-4 py-2.5 rounded-xl
-                  hover:bg-charcoal/90 active:scale-95 transition-all duration-150">
-          Open Dashboard
-        </a>
+          </button></div>
       </div>
-    </div><!-- /mobile-menu -->
-
+    </div>
   </nav>
 
   <!-- ════════════════════════════════════════════════════════════════
@@ -459,37 +395,9 @@
        SCRIPTS
   ════════════════════════════════════════════════════════════════ -->
   <script>
-    // ── Navbar toggle ──────────────────
-    const hamburger  = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    hamburger.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('open');
-      hamburger.setAttribute('aria-expanded', isOpen);
-      document.body.classList.toggle('menu-open', isOpen);
-    });
-
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('menu-open');
-      });
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
-        mobileMenu.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('menu-open');
-      }
-    });
-
     // ── Dark Mode (shares the same preference key as the dashboard) ──────
     const DARK_KEY = 'nutriglance_darkmode';
     const dmToggleDesktop = document.getElementById('dark-mode-toggle');
-    const dmToggleMobile  = document.getElementById('dark-mode-toggle-mobile');
-    const dmThumbMobile   = document.getElementById('dark-mode-thumb-mobile');
     const dmIconMoon      = document.getElementById('dark-mode-icon-moon');
     const dmIconSun       = document.getElementById('dark-mode-icon-sun');
 
@@ -501,18 +409,11 @@
       dmIconMoon.classList.toggle('hidden', on);
       dmIconSun.classList.toggle('hidden', !on);
 
-      dmToggleMobile.setAttribute('aria-checked', on);
-      dmToggleMobile.classList.toggle('bg-emerald-600', on);
-      dmToggleMobile.classList.toggle('bg-white/30', !on);
-      dmThumbMobile.classList.toggle('translate-x-5', on);
-      dmThumbMobile.classList.toggle('translate-x-0.5', !on);
-
       localStorage.setItem(DARK_KEY, on ? '1' : '0');
     }
 
     applyDark(localStorage.getItem(DARK_KEY) === '1');
     dmToggleDesktop.addEventListener('click', () => applyDark(!document.body.classList.contains('dark')));
-    dmToggleMobile.addEventListener('click', () => applyDark(!document.body.classList.contains('dark')));
   </script>
 
 </body>
