@@ -82,3 +82,7 @@ html.dark .site-nav,body.dark .site-nav{--ng-nav-ink:#e2e8f0}
 html body .site-nav #mobile-menu :is(a,button,[class*="text-charcoal"]){color:var(--ng-nav-ink)!important}
 html body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta){color:#fff!important}
 html.dark body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta),body.dark .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta){color:#0f172a!important}
+
+/* Keep bottom navigation icons uniform across every mobile page. */
+#bottom-nav .bottom-nav-link{min-width:0;gap:4px;line-height:1.2;padding:9px 2px 8px;text-align:center;white-space:nowrap}
+#bottom-nav .bottom-nav-link>svg{display:block;width:22px;height:22px;flex:0 0 22px;stroke-width:2;overflow:visible}
