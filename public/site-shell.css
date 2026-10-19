@@ -24,6 +24,12 @@
 .site-nav-links,.site-nav-actions { display:flex; align-items:center; gap:4px; }
 .site-nav-actions { gap:12px; }
 .site-nav button { cursor:pointer; }
+.site-nav .nav-pro-link { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px; padding:8px 12px; border:1px solid #0f172a33; border-radius:10px; color:#0f172a; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap; }
+.site-nav .nav-pro-link:hover { background:#ffffff33; }
+.site-nav .nav-pro-link::after { display:none; }
+.site-nav .nav-pro-link svg { flex-shrink:0; }
+.nav-mobile-account { display:none; }
+html.dark .site-nav .nav-pro-link,body.dark .site-nav .nav-pro-link { color:#e2e8f0; border-color:#e2e8f066; }
 .site-nav a:focus-visible,.site-nav button:focus-visible,.site-footer a:focus-visible { outline:3px solid #064e3b; outline-offset:4px; }
 .site-nav .site-menu-toggle { display:none; background:none; border:0; padding:8px; width:40px; height:40px; flex-direction:column; justify-content:center; align-items:center; gap:5px; }
 .site-menu-toggle .ham-bar { display:block; width:20px; height:2px; border-radius:2px; background:#0f172a; transition:transform .25s,opacity .25s; }
@@ -58,11 +64,16 @@ html.dark .site-footer,body.dark .site-footer { background:#020617!important; }
 }
 @media(min-width:768px) { .site-nav #mobile-menu { display:none; } body:has(#bottom-nav) .site-footer { padding-bottom:0; } }
 @media(max-width:767px) {
+  .site-nav .nav-mobile-account { display:flex; align-items:center; gap:10px; margin-left:auto; }
   .site-nav .h-14,.site-nav-row { height:64px; min-height:64px; }
   .site-nav-container { padding-inline:16px; }
   .site-nav-links,.site-nav-actions > .site-nav-cta { display:none; }
   .site-nav .site-menu-toggle { display:flex; }
   .site-footer > div { padding:36px 16px; }
+}
+@media(min-width:768px) and (max-width:1100px) {
+  .landing-page .site-nav .nav-link { padding-inline:6px; font-size:11px; }
+  .landing-page .site-nav .h-14 { gap:8px; }
 }
 @media(prefers-reduced-motion:reduce) { .site-nav *,.site-nav *::after { transition:none!important; } .site-footer .animate-pulse { animation:none; } }
 .site-nav .nav-link { position:relative; display:inline-flex; align-items:center; justify-content:center; }

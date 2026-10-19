@@ -79,4 +79,20 @@ html.dark .landing-page #ham-top,html.dark .landing-page #ham-mid,html.dark .lan
 html.dark .landing-page #mobile-menu a,html.dark .landing-page #mobile-menu > div > div { color:#e2e8f0; }
 
 html:has(body.landing-page) { scroll-behavior:smooth; }
+.landing-pro { display:grid; grid-template-columns:1.4fr 1fr; gap:48px; align-items:center; width:min(100% - 48px, 976px); margin:24px auto 0; padding:40px; background:#173c2a; color:#f2f7f3; border:1px solid #466355; border-radius:24px; }
+.landing-pro-eyebrow { font-size:10px; font-weight:700; letter-spacing:.12em; color:#d9f5b6; }
+.landing-pro h2 { font:700 clamp(28px,4vw,40px)/1.2 'Space Grotesk',sans-serif; letter-spacing:-.04em; margin:14px 0; }
+.landing-pro h2 span { color:#d9f5b6; }
+.landing-pro-copy>p,.landing-pro-pricing>p:not(.landing-pro-price) { font-size:12px; line-height:1.85; color:#bdcfc6; }
+.landing-pro-features { display:grid; grid-template-columns:1fr 1fr; gap:12px; list-style:none; margin:22px 0; padding:0; font-size:11px; line-height:1.7; }
+.landing-pro-features li::before { content:'✓'; color:#d9f5b6; margin-right:6px; }
+.landing-pro .landing-pro-cta { background:#d9f5b6; color:#173c2a; font-size:12px; gap:20px; }
+.landing-pro .landing-pro-cta:hover { background:#c6eca0; }
+.landing-pro-pricing { padding:26px; border:1px solid #466355; border-radius:18px; }
+.landing-pro-price { font:700 clamp(38px,5vw,52px)/1.4 'Space Grotesk',sans-serif; letter-spacing:-.05em; margin-top:16px; }
+.landing-pro-price span { font:12px 'Inter',sans-serif; letter-spacing:0; color:#bdcfc6; margin-left:6px; }
+.landing-pro-annual { display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:13px; margin:10px 0; }
+.landing-pro-annual strong { font-size:10px; background:#d9f5b6; color:#173c2a; padding:4px 7px; border-radius:5px; }
+.landing-pro-status { display:block; margin-top:18px; color:#bdcfc6; font-size:10px; line-height:1.8; }
+@media(max-width:767px) { .landing-pro { grid-template-columns:1fr; width:calc(100% - 32px); padding:24px; gap:28px; } .landing-pro-pricing { padding:22px; } }
 @media(prefers-reduced-motion:reduce) { html:has(body.landing-page) { scroll-behavior:auto; } }
