@@ -25,6 +25,18 @@
   ],
   "rewrites": [
     {
+      "source": "/api/saved-recipes",
+      "destination": "/api/saved-recipes"
+    },
+    {
+      "source": "/api/avatar",
+      "destination": "/api/avatar"
+    },
+    {
+      "source": "/api/feedback",
+      "destination": "/api/feedback"
+    },
+    {
       "source": "/api/reminders",
       "destination": "/api/reminders"
     },
@@ -91,6 +103,10 @@
     {
       "source": "/",
       "destination": "/public/index.html"
+    },
+    {
+      "source": "/feedback",
+      "destination": "/public/feedback.html"
     },
     {
       "source": "/(.*)",

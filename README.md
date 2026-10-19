@@ -52,3 +52,12 @@ Use `await NutriDialog.alert(message, { title })` for site alerts and
 `await NutriDialog.confirm(message, { title, confirmLabel, danger })` for choices.
 Always await confirmation before changing data. Shared native HTML dialogs handle
 centering, keyboard focus, cancellation, and queued messages in the current theme.
+
+## Feedback
+
+`/feedback` collects a star rating, name, email, and review. The page submits to
+`/api/feedback`, which validates the fields, applies durable quotas through the
+existing Firebase Admin setup, and forwards them to the QR page’s Google Form.
+The form URL and Google entry IDs live in `lib/feedback.js`. No new credentials
+or client Firestore rules are needed. The Google Form must accept public responses
+and retain the existing `1 star` through `5 star` rating choices.
