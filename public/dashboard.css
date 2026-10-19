@@ -74,13 +74,13 @@ html.dark #dashboard-page #water-drops button.bg-white,body.dark #dashboard-page
   #dashboard-page #scan-btn > div,#dashboard-page #ai-chef-btn > div { flex-wrap:wrap; font-size:16px; }
 }
 
-/* Keep the recent-meal preview within the surrounding dashboard columns. */
+/* Let the three-meal preview size naturally so wheel scrolling stays on the page. */
 @media(min-width:768px) {
   #dashboard-page .dashboard-grid { align-items:stretch; }
-  #dashboard-page .dashboard-meal-column { contain:size; min-height:0; }
+  #dashboard-page .dashboard-meal-column { min-height:0; }
   #dashboard-page #upload-outer { flex-shrink:0; }
   #dashboard-page .dashboard-recent { min-height:0; }
-  #dashboard-page #meals-container { min-height:0; overflow-y:auto; overscroll-behavior:contain; }
+  #dashboard-page #meals-container { min-height:0; overflow:visible; }
   #dashboard-page .dashboard-quick-actions > div:last-child { flex:1; }
 }
 html.dark #dashboard-page .dashboard-empty-icon,body.dark #dashboard-page .dashboard-empty-icon { background:#064e3b; color:#6ee7b7; }
