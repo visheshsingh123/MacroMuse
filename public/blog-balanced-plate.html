@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Restore the saved theme before stylesheets or account scripts can delay paint. -->
+  <script>
+    (() => {
+      let dark = false;
+      try { dark = localStorage.getItem('nutriglance_darkmode') === '1'; } catch {}
+      document.documentElement.classList.toggle('dark', dark);
+    })();
+  </script>
+  <style>
+    html { background:#eff7f4; color-scheme:light; }
+    html.dark { background:#0f172a; color-scheme:dark; }
+    html.dark body { background-color:#0f172a!important; color:#e2e8f0!important; }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to build a balanced plate without overthinking it – NutriGlance</title>
+  <meta name="description" content="A practical way to put together satisfying meals with familiar ingredients, flexible portions, and plenty of flavor." />
+  <link rel="canonical" href="https://nutriglance.vercel.app/blogs/build-a-balanced-plate" />
+  <meta property="og:title" content="How to build a balanced plate without overthinking it – NutriGlance" />
+  <meta property="og:description" content="A practical way to put together satisfying meals with familiar ingredients, flexible portions, and plenty of flavor." />
+  <meta property="og:url" content="https://nutriglance.vercel.app/blogs/build-a-balanced-plate" />
+  <meta property="og:type" content="article" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
+  <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
+  <link rel="stylesheet" href="/app.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site-shell.css" />
+  <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/design-system.css" />
+  <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/dialogs.css" />
+  <script src="/dialogs.js" defer></script>
+  <link rel="stylesheet" href="/blogs.css" />
+  <script src="/blogs.js" defer></script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "How to build a balanced plate without overthinking it", "description": "A practical way to put together satisfying meals with familiar ingredients, flexible portions, and plenty of flavor.", "author": {"@type": "Organization", "name": "NutriGlance", "url": "https://nutriglance.vercel.app/"}, "publisher": {"@type": "Organization", "name": "NutriGlance"}, "datePublished": "2026-10-19", "dateModified": "2026-10-19", "mainEntityOfPage": "https://nutriglance.vercel.app/blogs/build-a-balanced-plate", "articleSection": "Everyday nutrition", "wordCount": 492}</script>
+</head>
+<body class="blog-page bg-bg min-h-screen font-body text-charcoal flex flex-col">
+  <script>document.body.classList.toggle('dark', document.documentElement.classList.contains('dark'));</script>
+<nav class="site-nav bg-brand sticky top-0 z-40" aria-label="Primary navigation">
+    <div class="site-nav-container">
+      <div class="site-nav-row">
+        <a href="/" class="flex items-center gap-2">
+          <span class="font-display text-xl font-extrabold tracking-tight">
+            <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand"></span>
+          </span>
+          <span class="hidden sm:inline text-charcoal/70 font-medium text-xs">Your personal AI dietitian</span>
+        </a>
+        <div class="site-nav-links"><a href="/#how-it-works" class="nav-link">How it works</a><a href="/#features" class="nav-link">Features</a><a href="/aichef" class="nav-link">AI Chef</a><a href="/#faq" class="nav-link">FAQ</a><a href="/about" class="nav-link">About</a></div>
+        <div class="site-nav-actions"><button id="dark-toggle" aria-label="Toggle dark mode"
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-white/80
+                 hover:bg-white/20 transition-colors duration-150">
+          <!-- Moon (light mode) -->
+          <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <!-- Sun (dark mode) -->
+          <svg id="icon-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button><a href="/dashboard" class="site-nav-cta">Open Dashboard</a>
+          <button id="hamburger" data-site-menu-toggle aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" class="site-menu-toggle">
+            <span id="ham-top" class="ham-bar"></span><span id="ham-mid" class="ham-bar"></span><span id="ham-bot" class="ham-bar"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+      <div class="site-mobile-links"><a href="/#how-it-works">How it works</a><a href="/#features">Features</a><a href="/aichef">AI Chef</a><a href="/#faq">FAQ</a><a href="/about">About</a><a href="/dashboard" class="site-nav-cta">Open Dashboard</a></div>
+    </div>
+  </nav>
+<main id="blog-article-page" class="blog-main">
+<nav class="blog-breadcrumb" aria-label="Breadcrumb">
+<a href="/">Home</a>
+<span aria-hidden="true">/</span>
+<a href="/blogs">Blog</a>
+<span aria-hidden="true">/</span>
+<span aria-current="page">Everyday nutrition</span>
+</nav>
+<article>
+<header class="blog-article-header">
+<span class="blog-category">Everyday nutrition</span>
+<h1>How to build a balanced plate without overthinking it</h1>
+<p class="blog-article-lead">A practical way to put together satisfying meals with familiar ingredients, flexible portions, and plenty of flavor.</p>
+<p class="blog-byline">By NutriGlance <span aria-hidden="true">·</span> <time datetime="2026-10-19">19 October 2026</time> <span aria-hidden="true">·</span> 3 min read</p>
+</header>
+<div class="blog-article-layout">
+<div class="blog-prose">
+<div class="blog-visual blog-article-visual blog-visual-plate">
+<svg viewBox="0 0 480 240" fill="none" aria-hidden="true" focusable="false">
+<ellipse cx="242" cy="206" rx="122" ry="13" fill="currentColor" opacity=".08"/>
+<circle cx="240" cy="120" r="94" class="blog-plate-rim"/>
+<circle cx="240" cy="120" r="75" class="blog-plate-center"/>
+<path d="M181 98c11-26 36-42 63-37l-9 61-54-24Z" fill="#059669"/>
+<path d="M197 78l32 33M186 92l31 9M211 68l8 32" stroke="#6ee7b7" stroke-width="5" stroke-linecap="round"/>
+<path d="M251 70c31 4 53 31 51 61l-54-7 3-54Z" fill="#fbbf24"/>
+<path d="m261 85 28 30m-31-13 24 26" stroke="#fef3c7" stroke-width="5" stroke-linecap="round"/>
+<path d="M185 136c7 29 41 48 69 35l-16-40-53 5Z" fill="#c4a57b"/>
+<path d="m200 143 33 12m-23-20 27 9" stroke="#f5e8d3" stroke-width="4" stroke-linecap="round"/>
+<circle cx="270" cy="151" r="19" fill="#fb7185"/>
+<circle cx="269" cy="149" r="9" fill="#fecdd3"/>
+<path d="M114 63v37m-9-37v26a9 9 0 0 0 18 0V63m-9 37v76M366 65v111m0-111c-14 13-18 30-18 44h18" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="m83 43 4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1 4-8Z" fill="#6ee7b7"/>
+<circle cx="400" cy="178" r="7" fill="#6ee7b7"/>
+</svg>
+</div>
+<section aria-labelledby="start-with-your-meal">
+<h2 id="start-with-your-meal" tabindex="-1">Start with a meal you already enjoy</h2>
+<p>A balanced meal can begin with the food you already like to eat. A bowl of rice, a sandwich, or a plate of roti gives you a starting point. Look at what is already there, then consider what might make the meal more varied and satisfying.</p>
+<p>One useful approach is to include a source of carbohydrate, a protein-rich food, some fruit or vegetables, and a little fat or dressing for flavor. These categories overlap: beans and lentils, for example, provide both carbohydrate and protein. You can adapt the combination to your appetite, preferences, budget, and available ingredients.</p>
+</section>
+<section aria-labelledby="add-protein">
+<h2 id="add-protein" tabindex="-1">Choose a protein source you enjoy</h2>
+<p>Think about the protein component while you put the meal together. Eggs, tofu, beans, lentils, fish, chicken, yogurt, and paneer can all play this role. Pick something that fits the dish and the way you like to cook.</p>
+<p>If you are assembling a salad, try chickpeas, tofu, or an egg alongside the vegetables. If you are making rice and vegetables, add a serving of dal or another protein-rich food. Keeping a few easy options in the fridge or cupboard makes this decision simpler on busy days.</p>
+</section>
+<section aria-labelledby="add-produce">
+<h2 id="add-produce" tabindex="-1">Make room for fruit and vegetables</h2>
+<p>Produce adds variety, texture, and fiber. Choose a combination that feels manageable: a handful of chopped cucumber, some cooked greens, a bowl of mixed vegetables, or a piece of fruit alongside your meal.</p>
+<p>Fresh, frozen, and canned options can all be useful. Use what you have and what you are likely to eat. A bag of frozen vegetables can make a quick dinner easier, while leftover roasted vegetables can become tomorrow’s lunch.</p>
+</section>
+<section aria-labelledby="keep-the-flavor">
+<h2 id="keep-the-flavor" tabindex="-1">Keep the flavor</h2>
+<p>Dressings, spices, herbs, nuts, seeds, and cooking oils help make a meal enjoyable. Lemon juice, a spoonful of tahini, or a few toasted seeds can turn a basic bowl into something you look forward to eating again.</p>
+<p>When you log a meal, include the additions you used. A photo may not reveal oil mixed into a dish or dressing underneath the vegetables. A short written description can help you capture those details in your meal log.</p>
+</section>
+<section aria-labelledby="everyday-examples">
+<h2 id="everyday-examples" tabindex="-1">Three combinations to try</h2>
+<ul>
+<li>
+<strong>A chickpea salad bowl:</strong> cooked chickpeas, rice or another grain, cucumber, tomatoes, greens, and a dressing you enjoy.</li>
+<li>
+<strong>Dal and roti:</strong> dal, roti, a vegetable dish, and a side of yogurt or cucumber.</li>
+<li>
+<strong>Eggs on toast:</strong> eggs, toast, tomatoes or spinach, and fruit on the side.</li>
+</ul>
+<p>Use these as starting points. Swap ingredients based on what you have, your dietary preferences, and your appetite. A useful meal routine leaves room for different cuisines and different kinds of days.</p>
+</section>
+<section aria-labelledby="try-one-change">
+<h2 id="try-one-change" tabindex="-1">Try one small change at your next meal</h2>
+<p>Choose a meal you make often and look for one addition that would make it more varied. You might add beans to a salad, vegetables to a rice bowl, or fruit alongside breakfast. Repeat the version you enjoy and adjust it as your routine changes.</p>
+<p>In NutriGlance, you can log a meal with a photo or a short description, then review the estimated nutrition. Treat the estimate as information to learn from: portion sizes, recipes, and ingredients all affect the result.</p>
+</section>
+<p class="blog-further-reading">Further reading: <a href="https://www.myplate.gov/" target="_blank" rel="noopener noreferrer">USDA MyPlate <svg class="blog-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 11 11 5M5 5h6v6"/></svg>
+</a>
+</p>
+<div class="blog-article-cta">
+<h2>Put one idea into practice.</h2>
+<p>Log your next meal and explore your daily nutrition in NutriGlance.</p>
+<a href="/dashboard" class="ng-button ng-button-primary">Start tracking <svg class="blog-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 11 11 5M5 5h6v6"/></svg>
+</a>
+</div>
+<a href="/blogs" class="blog-back-link">← All articles</a>
+</div>
+<aside class="blog-article-sidebar">
+<nav class="blog-toc" aria-label="In this article">
+<details open>
+<summary>In this article</summary>
+<ol>
+<li>
+<a href="#start-with-your-meal">Start with a meal you already enjoy</a>
+</li>
+<li>
+<a href="#add-protein">Choose a protein source you enjoy</a>
+</li>
+<li>
+<a href="#add-produce">Make room for fruit and vegetables</a>
+</li>
+<li>
+<a href="#keep-the-flavor">Keep the flavor</a>
+</li>
+<li>
+<a href="#everyday-examples">Three combinations to try</a>
+</li>
+<li>
+<a href="#try-one-change">Try one small change at your next meal</a>
+</li>
+</ol>
+</details>
+</nav>
+<a class="blog-next" href="/blogs/make-meal-tracking-stick">
+<span>Read next</span>
+<h2>A simple way to make meal tracking stick</h2>
+<p>3 min read <svg class="blog-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 11 11 5M5 5h6v6"/></svg>
+</p>
+</a>
+</aside>
+</div>
+</article>
+</main>
+<footer class="site-footer bg-charcoal text-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+
+      <!-- Top row: brand + nav columns -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 pb-8 border-b border-white/10">
+
+        <!-- Brand col -->
+        <div class="col-span-2 sm:col-span-1">
+          <span class="font-display text-lg font-extrabold">
+            <span class="text-brand">Nutri</span><span class="text-white">Glance</span>
+          </span>
+          <p class="text-xs text-white/50 mt-2 leading-relaxed">
+            Your personal AI dietitian.<br/>
+            Track meals, macros, and habits — all in one place.
+          </p>
+          <!-- Social icons -->
+          <div class="flex gap-3 mt-4">
+            <a href="https://instagram.com/nutriglanceai" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-brand transition-colors flex items-center justify-center">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://github.com/visheshsingh123/NutriGlance" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-brand transition-colors flex items-center justify-center">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Product links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Product</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="/dashboard" class="footer-link text-sm text-white/70 transition-colors">Dashboard</a></li>
+            <li><a href="/dashboard" class="footer-link text-sm text-white/70 transition-colors">Meal Scanner</a></li>
+            <li><a href="/aichef" class="footer-link text-sm text-white/70 transition-colors">AI Chef</a></li>
+            <li><a href="/progress" class="footer-link text-sm text-white/70 transition-colors">Progress Tracker</a></li>
+            </ul>
+        </div>
+
+        <!-- Company links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Company</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="/about" class="footer-link text-sm text-white/70 transition-colors">About Us</a></li>
+            <li><a href="/blogs" class="footer-link text-sm text-white/70 transition-colors">Blog</a></li>
+          </ul>
+        </div>
+
+        <!-- Support links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Support</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="mailto:nutriglanceai@gmail.com" class="footer-link text-sm text-white/70 transition-colors">Help</a></li>
+            <li><a href="/privacy" class="footer-link text-sm text-white/70 transition-colors">Privacy Policy</a></li>
+            <li><a href="/feedback" class="footer-link text-sm text-white/70 transition-colors">Feedback</a></li>
+          </ul>
+        </div>
+
+      </div><!-- /top row -->
+
+      <!-- Bottom row: copyright + badge -->
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <p>© 2026 NutriGlance. All rights reserved.</p>
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
+          <span>All systems operational</span>
+        </div>
+      </div>
+
+      <div class="pt-4 text-center text-xs text-white/40">
+        <p>Made with <span class="text-red-500">♥</span> by <a href="https://visheshsingh.vercel.app" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand transition-colors underline underline-offset-2">Vishesh Singh</a></p>
+      </div>
+
+    </div>
+  </footer>
+</body>
+</html>
