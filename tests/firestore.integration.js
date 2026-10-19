@@ -199,8 +199,25 @@ test('lifetime code activation, Pro meal access and cancellation persist on real
   assert.equal((await getUsage(db, uid, now)).plan, 'free');
   assert.equal((await call(activate, null, { feature: 'pdf' })).code, 403);
   assert.equal((await call(recipes, { action: 'save', recipe: { ...recipe, name: 'Expired account recipe' } })).code, 403);
+  assert.equal((await call(recipes, { action: 'save', recipe: { ...recipe, name: 'Recipe 0' } })).code, 403);
+  assert.equal((await call(recipes)).body.recipes.length, 50);
   assert.equal((await call(activate, { code: 'emulator-code-fixture' })).body.access, 'lifetime');
   assert.equal((await call(activate, null, { feature: 'pdf' })).code, 200);
+});
+
+test('Free accounts cannot save their first recipe through the API or directly in Firestore', async () => {
+  const db = getFirestore(adminApp), uid = 'free-recipe-owner';
+  const handler = createSavedRecipesHandler({ getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), quota: async () => {} });
+  const recipe = { name: 'Rice bowl', perServing: { kcal: 400, protein: 25, carbs: 40, fat: 12 }, ingredients: ['One cup rice'], steps: ['Warm and serve.'] };
+  const call = async () => {
+    const res = { code: 200, setHeader() {}, status(code) { this.code = code;return this; }, json(body) { this.body = body;return this; } };
+    await handler({ method: 'POST', headers: { authorization: 'Bearer emulator-fixture' }, body: { action: 'save', recipe, plan: 'pro' } }, res);return res;
+  };
+  const denied = await Promise.all([call(), call()]);
+  assert(denied.every(result => result.code === 403 && result.body.error.code === 'PRO_REQUIRED'));
+  assert.equal((await db.collection('users').doc(uid).collection('savedRecipes').get()).size, 0);
+  const client = env.authenticatedContext(uid).firestore();
+  await assertFails(setDoc(doc(client, `users/${uid}/savedRecipes/direct`), { recipe, savedAt: new Date().toISOString() }));
 });
 
 test('cancelling Pro persists Free access and the same code can reactivate it without deleting user data', async () => {

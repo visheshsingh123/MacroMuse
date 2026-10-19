@@ -40,13 +40,10 @@ export function createSavedRecipesHandler({ getServices = adminServices, quota =
       const item = await db.runTransaction(async transaction => {
         // A shared write serializes additions, including an initially empty collection.
         const entitlement = planFromRecord((await transaction.get(proRef(db, uid))).data(), clock());
+        requirePro(entitlement);
         const state = await transaction.get(lock);
         const existing = await transaction.get(ref);
         if (existing.exists) return { id, recipe, savedAt: existing.data().savedAt };
-        if (entitlement.plan !== 'pro') {
-          const entries = await transaction.get(collection.limit(1));
-          if (entries.size >= 1) requirePro(entitlement);
-        }
         const savedAt = clock().toISOString();
         transaction.set(ref, { recipe, savedAt });
         transaction.set(lock, { revision: (Number(state.data()?.revision) || 0) + 1 });

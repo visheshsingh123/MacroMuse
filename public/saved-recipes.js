@@ -16,11 +16,12 @@
   }
   function remember() { if (current(uid)) window.NutriSecurity.writeCache(uid, 'saved_recipes', [...saved.values()]); }
   function syncButtons() {
+    const free = window.NutriPlan.read(uid)?.plan === 'free';
     for (const binding of bindings) {
       const { button, key, owner } = binding;
       if (!button.isConnected) { bindings.delete(binding);continue; }
       const on = saved.has(key) && current(owner);
-      button.textContent = on ? 'Remove saved' : 'Save recipe';
+      button.textContent = on ? 'Remove saved' : free ? 'Save recipe · Pro' : 'Save recipe';
       button.setAttribute('aria-pressed', String(on));
       button.disabled = !current(owner) || loading || pending.has(key);
       button.classList.toggle('inline-loading', pending.has(key));
@@ -36,7 +37,7 @@
     byId('saved-recipes-empty').hidden = loading || items.length > 0;
     byId('saved-recipes-loading').hidden = !loading || saved.size > 0;
     byId('saved-recipes-empty-title').textContent = query ? 'No recipes match your search' : 'Keep your next favorite close';
-    byId('saved-recipes-empty-copy').textContent = query ? 'Try another ingredient or clear your search.' : 'Save a recipe from your conversation. Its ingredients, method, and nutrition will be here when you return.';
+    byId('saved-recipes-empty-copy').textContent = query ? 'Try another ingredient or clear your search.' : 'Save recipes with NutriGlance Pro. Their ingredients, method, and nutrition will be here when you return.';
     byId('saved-recipes-clear-search').hidden = !query;
     byId('saved-recipes-start-chat').hidden = Boolean(query);
     for (const item of items) window.NutriRecipes.render(grid, [item.recipe], uid, { library: true });
@@ -91,7 +92,12 @@
       } catch (error) {
         if (current(owner) && generation === version) {
           status.textContent = error.message;
-          if (error.code === 'PRO_REQUIRED') { const link = document.createElement('a');link.href = '/premium';link.className = 'chef-recipe-view';link.textContent = 'Activate Pro →';status.appendChild(link); }
+          if (error.code === 'PRO_REQUIRED') {
+            status.textContent = 'Saving recipes requires NutriGlance Pro.';
+            const link = document.createElement('a');link.href = '/premium';link.className = 'chef-recipe-view';link.textContent = 'Explore Pro →';status.appendChild(link);
+            const view = await window.NutriDialog.confirm('Save unlimited recipes to your collection with NutriGlance Pro.', { title: 'Saving recipes is a Pro feature', confirmLabel: 'Explore Pro', cancelLabel: 'Keep Free' });
+            if (view && current(owner) && generation === version) window.location.href = '/premium';
+          }
         }
       }
       finally { if (current(owner) && generation === version) { pending.delete(key);syncButtons(); } }
@@ -137,4 +143,5 @@
     activate('chat');renderLibrary();
   });
   window.NutriSavedRecipes = { connect, decorate };
+  window.addEventListener('nutriglance:plan', syncButtons);
 })();

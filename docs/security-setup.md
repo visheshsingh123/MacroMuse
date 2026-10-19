@@ -43,7 +43,9 @@ Free accounts can create 3 meal logs and receive 5 successful AI Chef replies pe
 UTC calendar day. The UI shows remaining usage and the midnight UTC reset. Pro
 can be activated for lifetime access with a server-verified activation code.
 Active Pro accounts have no daily meal or Chef cap, unlimited saved recipes, and
-PDF export. Free accounts can save one recipe and cannot use PDF export.
+PDF export. Free accounts cannot save recipes or use PDF export. Previously saved
+recipes remain readable and removable; every save, including repeat saves, requires
+an active Pro entitlement checked inside the write transaction.
 Browser storage and caller-supplied Pro flags never grant more usage.
 
 New meals (including recipes logged from AI Chef or Saved recipes) use the
