@@ -1,20 +1,29 @@
+import assert from 'node:assert/strict';
 // Run with npm run test:rules; this suite only talks to the local emulator.
 import { after, before, test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import { doc, setDoc, getDoc, collection, getDocs, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { initializeApp, deleteApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import { createMealsHandler } from '../api/meals.js';
+import { getUsage, reserveChef, finishChef } from '../lib/free-usage.js';
 
-let env;
+let env, adminApp;
 before(async () => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error('Run using npm run test:rules');
   env = await initializeTestEnvironment({ projectId: 'demo-nutriglance', firestore: { rules: readFileSync('firestore.rules', 'utf8') } });
+  adminApp = initializeApp({ projectId: 'demo-nutriglance' }, 'quota-emulator-tests');
 });
-after(async () => { await env?.cleanup(); });
+after(async () => { await env?.cleanup();if (adminApp) await deleteApp(adminApp); });
 
 test('users can save, read and delete their own legitimate app records', async () => {
   const db = env.authenticatedContext('alice').firestore();
   await assertSucceeds(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice', gender: 'female', age: 28, weight: 68, height: 172, targetKcal: 2100 } }));
-  await assertSucceeds(setDoc(doc(db, 'users/alice/meals/lunch'), { name: 'Lunch', kcal: 400, protein: 20, carbs: 40, fat: 12, loggedAt: new Date().toISOString(), createdAt: serverTimestamp() }));
+  await env.withSecurityRulesDisabled(async context => {
+    await setDoc(doc(context.firestore(), 'users/alice/meals/lunch'), { name: 'Lunch', kcal: 400, protein: 20, carbs: 40, fat: 12, loggedAt: new Date().toISOString(), createdAt: serverTimestamp() });
+  });
+  await assertSucceeds(setDoc(doc(db, 'users/alice/meals/lunch'), { name: 'Edited lunch' }, { merge: true }));
   await assertSucceeds(setDoc(doc(db, 'users/alice/progress/2026-10-18'), { water: 3 }));
   await assertSucceeds(setDoc(doc(db, 'users/alice/progress/2026-10-18'), { kcal: 400, protein: 20, carbs: 40, fat: 12, notes: 'Good day', source: 'manual' }, { merge: true }));
   await assertSucceeds(getDocs(collection(db, 'users/alice/meals')));
@@ -51,7 +60,7 @@ test('only valid lifestyle choices can be saved by the profile owner', async () 
 
 test('quotas, notification secrets, and unknown collections are server-only', async () => {
   const db = env.authenticatedContext('alice').firestore();
-  for (const path of ['serverQuotas/global', 'reminderSubscriptions/device', 'unknown/data']) {
+  for (const path of ['serverQuotas/global', 'reminderSubscriptions/device', 'unknown/data', 'users/alice/privateState/freeUsage-2026-10-20', 'users/alice/mealReceipts/receipt']) {
     await assertFails(getDoc(doc(db, path)));
     await assertFails(setDoc(doc(db, path), { count: 0, enabled: true }));
     await assertFails(deleteDoc(doc(db, path)));
@@ -76,4 +85,46 @@ test('malformed nutrition and unrecognized profile fields cannot be persisted', 
   await assertFails(setDoc(doc(db, 'users/alice/progress/2026-10-18'), { kcal: -10 }));
   await assertFails(setDoc(doc(db, 'users/alice'), { profile: { name: 'Alice', admin: true } }));
   await assertFails(setDoc(doc(db, 'users/alice/progress/not-a-date'), { water: 1 }));
+});
+
+// Meal creation and restore must pass through the server's atomic daily quota.
+test('owners cannot bypass the daily limit by creating meals directly', async () => {
+  const db = env.authenticatedContext('quota-owner').firestore();
+  const record = { name: 'Lunch', kcal: 400, protein: 20, carbs: 40, fat: 12, loggedAt: new Date().toISOString() };
+  await assertFails(setDoc(doc(db, 'users/quota-owner/meals/direct'), record));
+  await assertFails(setDoc(doc(db, 'users/quota-owner/meals/direct'), record, { merge: true }));
+});
+
+
+test('server meal transactions enforce the three-meal limit and Undo on real Firestore', async () => {
+  const db = getFirestore(adminApp), uid = 'quota-server-owner';
+  const handler = createMealsHandler({ getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), quota: async () => {} });
+  const call = async id => {
+    const res = { code: 200, setHeader() {}, status(code) { this.code = code;return this; }, json(body) { this.body = body;return this; } };
+    await handler({ method: 'POST', headers: { authorization: 'Bearer emulator-fixture' }, body: { meal: { _id: id, name: 'Lunch', kcal: 400, protein: 25, carbs: 40, fat: 12 } } }, res);
+    return res;
+  };
+  const results = await Promise.all(Array.from({ length: 6 }, (_, index) => call('meal-'+index)));
+  assert.equal(results.filter(result => result.code === 200).length, 3);
+  assert.equal(results.filter(result => result.code === 429).length, 3);
+  const meals = db.collection('users').doc(uid).collection('meals');
+  assert.equal((await meals.get()).size, 3);
+  const id = results.find(result => result.code === 200).body.meal._id;
+  await meals.doc(id).delete();
+  assert.equal((await call('fourth')).code, 429);
+  assert.equal((await call(id)).code, 200);
+  assert.equal((await getUsage(db, uid)).meals.used, 3);
+});
+
+test('Chef reservations serialize on real Firestore and failed requests release their slot', async () => {
+  const db = getFirestore(adminApp), uid = 'quota-chef-owner', now = Date.now();
+  const results = await Promise.allSettled(Array.from({ length: 6 }, () => reserveChef(db, uid, now)));
+  assert.equal(results.filter(result => result.status === 'fulfilled').length, 5);
+  assert.equal(results.filter(result => result.status === 'rejected' && result.reason.code === 'FREE_QUOTA_EXCEEDED').length, 1);
+  const reservations = results.filter(result => result.status === 'fulfilled').map(result => result.value);
+  await finishChef(db, uid, reservations[0], false);
+  const replacement = await reserveChef(db, uid, now);
+  for (const reservation of [...reservations.slice(1), replacement]) await finishChef(db, uid, reservation, true);
+  const usage = await getUsage(db, uid, now);
+  assert.equal(usage.chef.used, 5);assert.equal(usage.chef.remaining, 0);
 });

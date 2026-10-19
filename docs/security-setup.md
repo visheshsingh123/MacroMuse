@@ -36,3 +36,42 @@ The `jwks-rsa` dependency has a scoped override to `jose` 5.10.0, which supports
 When changing inline JavaScript, run **`npm run security:headers`** and commit `vercel.json`; the build rejects stale CSP hashes. When changing utility classes, run `npm run build` and commit `public/app.css`. Vercel runs the build as well. Static generated files remain in Git so previews and plain static servers work.
 
 Local API/rendering/session tests and browser checks do not certify the deployed website. Confirm the environment variables, published database rules, HTTPS response headers, email/Google login, meal scans, and notifications on the real deployment. Keep Firebase Authentication's authorized domains restricted to the domains you actually use, and remove old server keys if they were ever exposed.
+
+## Free daily allowances
+
+Free accounts can create 3 meal logs and receive 5 successful AI Chef replies per
+UTC calendar day. The UI shows remaining usage and the midnight UTC reset. Pro
+plans are advertised but cannot be purchased or activated yet; every account uses
+the Free allowance until a verified billing/entitlement backend is implemented.
+Browser storage and caller-supplied Pro flags never grant more usage.
+
+New meals (including recipes logged from AI Chef or Saved recipes) use the
+Firebase-authenticated `/api/meals` endpoint. It saves the meal and increments the
+private daily counter in one transaction. Existing meals from today count when
+the daily counter is first initialized. Retries use the same meal ID. A private
+receipt allows Undo to restore the original record without charging again;
+deleting meals or clearing the diary does not refund daily usage. Client edits,
+reads and deletes remain protected by the owner rules.
+
+AI Chef uses `/api/chef`. A transactional reservation prevents concurrent requests
+from exceeding five; failed or malformed provider replies release the slot, and
+abandoned reservations expire after two minutes. `/api/groq` now returns only
+validated meal nutrition using a server-owned prompt, so it cannot be used as an
+unmetered conversation endpoint. Existing short-term/global AI safety limits
+still apply separately. `/api/usage` returns the authenticated account's counters
+without consuming a daily allowance.
+
+Deployment requires the existing `FIREBASE_SERVICE_ACCOUNT_JSON` and Groq
+credentials; no additional keys are needed. Deploy the updated Vercel application,
+then publish the complete updated `firestore.rules` in Firebase Console →
+Firestore Database → Rules (or with your authorized Firebase CLI). The new rules
+require meal creation/restoration through the server and deny direct client
+creates, private counters, and meal receipts. A Git push alone does not publish
+these rules. Until they are published, legacy/direct Firestore writes can bypass
+the meal allowance. Older cached app versions cannot create meals after the rules
+update; reload to pick up the new service-worker version.
+
+Validate with `npm test`, `npm run build`, and `npm run test:rules`. On the deployed
+app, check the fourth meal and sixth Chef reply, reload/cross-device persistence,
+Undo, failed AI requests and the reset boundary. Existing meals and conversations
+must remain readable after reaching a quota.

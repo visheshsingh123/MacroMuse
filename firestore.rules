@@ -34,7 +34,8 @@ service cloud.firestore {
         && profile(request.resource.data.profile);
       match /meals/{mealId} {
         allow read, delete: if owner(uid);
-        allow create, update: if owner(uid)
+        allow create: if false;
+        allow update: if owner(uid)
           && request.resource.data.keys().hasOnly(['name','kcal','protein','carbs','fat','fibre','fiber','description','portionSize','loggedAt','source','createdAt','_id'])
           && request.resource.data.keys().hasAll(['name','kcal','protein','carbs','fat','loggedAt'])
           && request.resource.data.name is string && request.resource.data.name.size() <= 160

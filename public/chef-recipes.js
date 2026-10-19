@@ -76,17 +76,17 @@
         saving = true;button.disabled = true;select.disabled = true;button.setAttribute('aria-busy', 'true');button.classList.add('inline-loading');button.textContent = 'Logging…';
         try {
           const meal = { ...mealFromRecipe(recipe, Number(select.value)), _id: id };
-          await connection.save(id, meal);
+          const savedMeal = await connection.save(id, meal) || meal;
           if (!window.NutriSecurity.isCurrent(ownerUid) || logger !== connection) return;
           let meals;
           try { meals = window.NutriSecurity.readMeals(JSON.parse(localStorage.getItem('nutriglance_meals') || '[]')); } catch { meals = []; }
-          if (!meals.some(item => item._id === id)) meals.push(meal);
+          if (!meals.some(item => item._id === id)) meals.push(savedMeal);
           localStorage.setItem('nutriglance_meals', JSON.stringify(meals));
           logged = true;button.textContent = 'Logged ✓';
           status.textContent = `${meal.portionSize} added to today’s meals.`;
           const link = element('a', 'chef-recipe-view', 'View in Meals →');link.href = '/meals';status.appendChild(link);
-        } catch {
-          if (window.NutriSecurity.isCurrent(ownerUid)) { button.textContent = 'Try logging again';status.textContent = 'Couldn’t confirm this meal was saved. Retry safely with the same meal.'; }
+        } catch (error) {
+          if (window.NutriSecurity.isCurrent(ownerUid)) { button.textContent = 'Try logging again';status.textContent = error.message || 'Couldn’t confirm this meal was saved. Retry safely with the same meal.'; }
         } finally {
           saving = false;button.removeAttribute('aria-busy');button.classList.remove('inline-loading');button.disabled = logged;select.disabled = logged;
         }

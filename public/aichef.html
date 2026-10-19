@@ -18,6 +18,8 @@
   </style>
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
+  <script src="/free-usage.js"></script>
+  <link rel="stylesheet" href="/free-usage.css" />
   <link rel="stylesheet" href="/app-interactions.css" />
   <script src="/app-interactions.js"></script>
   <script src="/chef-recipes.js"></script>
@@ -382,6 +384,11 @@
         </div>
       </div>
 
+      <section class="daily-usage" data-usage-feature="chef" aria-label="Daily Free AI Chef allowance">
+        <div><p class="daily-usage-title">Free AI Chef</p><p data-usage-status role="status" aria-live="polite">Checking your daily allowance…</p><p data-usage-note>Resets at 00:00 UTC.</p></div>
+        <a href="/premium">Explore Pro <span aria-hidden="true">→</span></a>
+      </section>
+
       <!-- Message log -->
       <div id="chat-log" role="log" aria-label="AI Chef conversation" aria-live="polite" class="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
         <!-- Initial greeting -->
@@ -442,13 +449,10 @@
        AI CHEF — chat logic
   ════════════════════════════════════════════════════════════════ -->
   <script>
-    // API key is handled server-side via /api/groq proxy — no key needed in browser
-    const GROQ_ENDPOINT = '/api/groq';
+    // API key and reply quotas are handled server-side via /api/chef — no key needed in browser
+    const GROQ_ENDPOINT = '/api/chef';
     const GROQ_MODEL    = 'openai/gpt-oss-120b';
 
-    const SYSTEM_PROMPT = `You are AI Chef, a friendly practical cooking assistant in NutriGlance. Suggest 1 or 2 realistic recipes using the user's ingredients plus basic pantry staples. If more ingredients are needed, say so honestly. Answer cooking questions conversationally in the message field, with an empty recipes array when a recipe is not appropriate. Return ONLY valid JSON, no markdown fences, using this exact shape:
-{"message":"A brief helpful introduction","recipes":[{"name":"Recipe title","perServing":{"kcal":400,"protein":25,"carbs":40,"fat":15},"ingredients":["Quantity and ingredient for ONE serving"],"steps":["A short preparation step"]}]}
-Nutrition values must be numeric, nonnegative estimates for ONE serving, not the entire batch. Include all four fields; kcal must be positive. Use at most 8 ingredients and 4 concise steps per recipe. Keep the message under 300 characters and each step under 140 characters. Never claim a recipe was logged; only the user's Log meal button can do that.`;
 
     // ── DOM references ────────────────────────────────────────────────────
     const chatLog    = document.getElementById('chat-log');
@@ -515,7 +519,7 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
 
     // ── Call Groq chat completions ────────────────────────────────────────
     async function askAIChef(userText) {
-      const response = await window.NutriSecurity.apiFetch(GROQ_ENDPOINT, {
+      const data = await window.NutriUsage.request(GROQ_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -524,19 +528,12 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
           model: GROQ_MODEL,
           max_tokens: 1024,
           messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
             ...history.slice(-10).map(message => ({ ...message, content: message.content.slice(0, 1500) })),
             { role: 'user', content: userText },
           ],
         }),
       });
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `API error ${response.status}`);
-      }
-
-      const data = await response.json();
       return data.choices?.[0]?.message?.content?.trim() || "I couldn't think of anything that time — try rephrasing your ingredients?";
     }
 
@@ -553,6 +550,7 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
       addTypingIndicator();
 
       try {
+        await window.NutriUsage.requireAvailable('chef');
         const reply = await askAIChef(trimmed);
         if (!window.NutriSecurity.isCurrent(requestUid) || version !== conversationVersion) return;
         removeTypingIndicator();
@@ -566,7 +564,7 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
       } catch (err) {
         if (version === conversationVersion && window.NutriSecurity.isCurrent(requestUid)) {
           removeTypingIndicator();
-          addMessage('assistant', `Sorry, I ran into a problem: ${err.message}`);
+          addMessage('assistant', err.code === 'FREE_QUOTA_EXCEEDED' ? err.message : `Sorry, I ran into a problem: ${err.message}`);
         }
       } finally {
         sendBtn.disabled = false;
@@ -827,7 +825,7 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
 
     auth.onAuthStateChanged(async user => {
       if (user && !window.NutriSecurity.bindSession(user)) return;
-      if (!user) window.NutriSecurity.bindSession(null);
+      if (!user) { window.NutriSecurity.bindSession(null);window.NutriUsage.connect(null); }
       if (!user) { window.NutriRecipes.setLogger(null);window.location.href = '/login'; return; }
 
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
@@ -835,10 +833,10 @@ Nutrition values must be numeric, nonnegative estimates for ONE serving, not the
       window.NutriAvatar?.connect(user.uid);
       if (typeof window.updateAvatars === 'function') window.updateAvatars();
       const uid = user.uid;
+      window.NutriUsage.connect(uid);
       window.NutriRecipes.setLogger({ uid, save: (id, meal) => {
         if (!window.NutriSecurity.isCurrent(uid)) throw new Error('Your account changed.');
-        const { _id, createdAt, ...data } = meal;
-        return setDoc(doc(db, 'users', uid, 'meals', id), { ...data, createdAt: Timestamp.now() });
+        return window.NutriUsage.saveMeal({ ...meal, _id: id });
       } });
     });
   </script>

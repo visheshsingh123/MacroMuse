@@ -1,6 +1,8 @@
 import crypto from 'node:crypto';
 import { authenticated, consumeQuota, HttpError, sendError } from '../lib/api-security.js';
 import { validatePayload } from '../lib/ai-payload.js';
+import { modePayload, validateReply } from '../lib/ai-modes.js';
+import { reserveChef, finishChef } from '../lib/free-usage.js';
 
 /**
  * Returns the list of hosted AI API keys from environment variables.
@@ -38,8 +40,9 @@ export function getHostedKeys() {
   return [];
 }
 
-export function createGroqHandler({ getServices, quota = consumeQuota, request = fetch } = {}) {
+export function createGroqHandler({ getServices, quota = consumeQuota, request = fetch, mode = 'generic', clock = Date.now } = {}) {
   return async function handler(req, res) {
+    let reservation, owner;
     res.setHeader('Cache-Control', 'no-store');
     if (!['GET', 'POST'].includes(req.method)) {
       res.setHeader('Allow', 'GET, POST');
@@ -47,14 +50,16 @@ export function createGroqHandler({ getServices, quota = consumeQuota, request =
     }
     try {
       const { uid, db } = await authenticated(req, getServices);
+      owner = { uid, db };
       if (req.method === 'GET') {
         await quota(db, uid, 'ai');
         return res.status(200).json({ status: getHostedKeys().length ? 'configured' : 'unconfigured' });
       }
-      const payload = validatePayload(req.body);
+      const payload = modePayload(validatePayload(req.body), mode);
       const keys = [...new Set(getHostedKeys())].slice(0, 5);
       if (!keys.length) throw new HttpError(503, 'AI analysis is not configured yet. Please try again later.');
       await quota(db, uid, 'ai');
+      if (mode === 'chef') reservation = await reserveChef(db, uid, clock());
       const initial = crypto.createHash('sha256').update(uid).digest().readUInt32BE(0) % keys.length;
       const signal = AbortSignal.timeout(25000);
       for (let attempt = 0; attempt < keys.length; attempt++) {
@@ -63,12 +68,22 @@ export function createGroqHandler({ getServices, quota = consumeQuota, request =
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${keys[(initial + attempt) % keys.length]}` },
           body: JSON.stringify(payload),
         });
-        if (response.ok) return res.status(200).json(await response.json());
+        if (response.ok) {
+          const data = validateReply(await response.json(), mode);
+          if (reservation) {
+            data.usage = await finishChef(db, uid, reservation, true);
+            reservation = null;
+          }
+          return res.status(200).json(data);
+        }
         if (![401, 403, 429, 500, 502, 503, 504].includes(response.status)) break;
       }
       throw new HttpError(502, 'AI analysis is temporarily unavailable. Please try again.');
     } catch (error) { return sendError(res, error); }
+    finally {
+      if (reservation) await finishChef(owner.db, owner.uid, reservation, false).catch(() => {});
+    }
   };
 }
 
-export default createGroqHandler();
+export default createGroqHandler({ mode: 'meal' });
