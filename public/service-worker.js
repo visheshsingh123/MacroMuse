@@ -1,5 +1,5 @@
 // Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v29';
+const CACHE_NAME = 'nutriglance-v30';
 const PRECACHE = [
   '/',
   '/landing-session.js',
@@ -21,6 +21,7 @@ const PRECACHE = [
   '/meal-actions.js',
   '/free-usage.js',
   '/pro-activation.js',
+  '/pro-cancellation.js',
   '/free-usage.css',
   '/dashboard-guidance.js',
   '/chef-recipes.js',

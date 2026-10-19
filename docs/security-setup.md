@@ -94,6 +94,12 @@ Each code is usable once per account. Repeated/concurrent activation returns the
 same expiry and cannot stack months. After expiry, the same code cannot renew;
 rotate the environment value to issue a new code when needed.
 
+Settings → Account & data offers Cancel Pro to active members. Its confirmation
+button unlocks after five seconds. Confirming sends an authenticated, rate-limited
+`DELETE /api/pro`, which ends Pro immediately and restores Free limits without
+deleting user data. Cancellation is idempotent and retains the redemption receipt;
+the same activation code cannot reactivate a cancelled membership.
+
 Expiry is one calendar month in UTC, with month-end dates clamped (January 31 →
 February 28 or 29). Every protected operation checks current server time; there
 is no cron requirement and no browser Pro flag. Usage continues to be recorded

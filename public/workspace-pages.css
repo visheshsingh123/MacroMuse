@@ -42,6 +42,9 @@ html.dark #prof-activity,body.dark #prof-activity,html.dark #prof-goal,body.dark
 #settings-support a { overflow-wrap:anywhere; }
 #settings-account > div { padding:24px; }
 #settings-account .settings-section-heading { margin-bottom:16px; }
+.pro-cancel-row { padding-bottom:20px; margin-bottom:20px; border-bottom:1px solid var(--ws-line); }
+.pro-cancel-row[hidden] { display:none; }
+#cancel-pro-status:not(:empty) { margin-bottom:20px; }
 #settings-page #settings-account { border-color:#fecaca; }
 #chef-page .chef-chat-card { min-width:0; height:650px; max-height:calc(100dvh - 130px); min-height:480px; border:1px solid var(--ws-line); border-radius:24px; box-shadow:none; background:var(--ws-card); }
 .chef-sidebar-icon { display:flex; align-items:center; justify-content:center; width:56px; height:56px; background:#d1fae5; color:#047857; border-radius:18px; margin-bottom:24px; }

@@ -6,6 +6,7 @@
 .app-dialog-message{margin-top:12px;color:var(--ng-muted);font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
 .app-dialog-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:24px}
 .app-dialog-actions button{min-width:96px}
+.app-dialog-actions button:disabled{opacity:.5;cursor:not-allowed}
 .app-dialog-actions [hidden]{display:none!important}
 .app-dialog-actions .app-dialog-danger{background:#b91c1c!important;color:#fff!important}
 .app-dialog-actions .app-dialog-danger:hover{background:#991b1b!important}

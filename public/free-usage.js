@@ -5,7 +5,7 @@
   function render(error) {
     const plan = current() && usage ? usage.plan : 'unknown';
     document.documentElement.dataset.usagePlan = plan;
-    document.querySelectorAll('[data-pro-profile]').forEach(badge => {
+    document.querySelectorAll('[data-pro-profile], [data-pro-only]').forEach(badge => {
       badge.hidden = plan !== 'pro';
     });
     document.querySelectorAll('[data-usage-feature]').forEach(section => {

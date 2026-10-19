@@ -34,7 +34,7 @@ test('incorrect, malformed and unconfigured codes fail without granting Pro and 
   assert.equal((await f.call(missing,{code:'test-activation-code'})).code,503);
   const blocked=createProHandler({...f.options,getCode:()=> 'test-activation-code',quota:async()=>{throw new HttpError(429,'Try again later.',60);}});
   assert.equal((await f.call(blocked,{code:'test-activation-code'})).code,429);
-  assert.equal((await f.call(f.pro,null,'alice','DELETE')).code,405);
+  assert.equal((await f.call(f.pro,null,'alice','PATCH')).code,405);
 });
 test('concurrent/repeated activation cannot stack months or reuse an expired code; accounts are independent', async () => {
   const f=setup();
@@ -53,6 +53,42 @@ test('one-month expiry clamps month ends and handles leap years in UTC',()=>{
  assert.equal(oneMonthAfter(Date.parse('2026-01-31T23:20:00Z')),'2026-02-28T23:20:00.000Z');
  assert.equal(oneMonthAfter(Date.parse('2028-01-31T23:20:00Z')),'2028-02-29T23:20:00.000Z');
  assert.equal(oneMonthAfter(Date.parse('2026-10-31T08:00:00Z')),'2026-11-30T08:00:00.000Z');
+});
+test('cancellation is authenticated, account-scoped, immediate and idempotent without clearing usage or redemption receipts',async()=>{
+ const f=setup();
+ await f.call(f.pro,{code:'test-activation-code'});
+ await f.call(f.pro,{code:'test-activation-code'},'bob');
+ for(const uid of [null,'invalid','anonymous'])assert.equal((await f.call(f.pro,null,uid,'DELETE')).code,401);
+ assert.equal((await getPlan(f.db,'alice',f.now())).plan,'pro');
+ for(let i=0;i<4;i++)assert.equal((await f.call(f.meals,meal('before-cancel-'+i))).code,200);
+ const result=await f.call(f.pro,{uid:'bob'},'alice','DELETE');
+ assert.equal(result.code,200);assert.equal(result.headers['Cache-Control'],'no-store');
+ assert.equal(result.body.plan,'free');assert.equal(result.body.expiresAt,null);
+ assert.equal(result.body.usage.plan,'free');assert.equal(result.body.usage.meals.used,4);assert.equal(result.body.usage.meals.remaining,0);
+ assert.equal((await getPlan(f.db,'bob',f.now())).plan,'pro');
+ assert.equal((await f.call(f.meals,meal('after-cancel'))).code,429);
+ assert(f.db.data.has('users/alice/meals/before-cancel-0'));
+ const record=structuredClone(f.db.data.get('users/alice/privateState/pro'));
+ assert.equal(record.cancelledAt,new Date(f.now()).toISOString());
+ f.advance(1000);
+ assert.equal((await f.call(f.pro,null,'alice','DELETE')).code,200);
+ assert.deepEqual(f.db.data.get('users/alice/privateState/pro'),record);
+ assert.equal((await f.call(f.pro,{code:'test-activation-code'})).code,409);
+ const rotated=createProHandler({...f.options,getCode:()=> 'new-code-after-cancel'});
+ assert.equal((await f.call(rotated,{code:'new-code-after-cancel'})).body.plan,'pro');
+});
+test('cancellation works without an activation secret, handles Free accounts and respects rate limits',async()=>{
+ const f=setup();
+ const noSecret=createProHandler({...f.options,getCode:()=>undefined});
+ assert.equal((await f.call(noSecret,null,'alice','DELETE')).body.plan,'free');
+ assert(!f.db.data.has('users/alice/privateState/pro'));
+ await f.call(f.pro,{code:'test-activation-code'});
+ const blocked=createProHandler({...f.options,quota:async(_db,_uid,purpose)=>{
+  assert.equal(purpose,'pro-cancellation');throw new HttpError(429,'Try again later.',60);
+ }});
+ assert.equal((await f.call(blocked,null,'alice','DELETE')).code,429);
+ assert.equal((await getPlan(f.db,'alice',f.now())).plan,'pro');
+ assert.equal((await f.call(noSecret,null,'alice','DELETE')).body.plan,'free');
 });
 test('Pro removes daily meal/Chef caps, expiry restores Free limits, and old usage cannot grant entitlement',async()=>{
  const f=setup();await f.call(f.pro,{code:'test-activation-code'});

@@ -217,6 +217,7 @@
   <script src="/accessibility.js" defer></script>
   <link rel="stylesheet" href="/dialogs.css" />
   <script src="/dialogs.js" defer></script>
+  <script src="/pro-cancellation.js" defer></script>
   <link rel="stylesheet" href="/profile-avatar.css" />
   <script type="module" src="/profile-avatar.js"></script>
 </head>
@@ -528,6 +529,12 @@
         </section><section id="settings-account" aria-labelledby="settings-account-heading" class="bg-card rounded-2xl shadow-sm overflow-hidden border border-red-100 section-card">
 
           <div class="px-5 py-4"><h2 id="settings-account-heading" class="settings-section-heading">Account &amp; data</h2>
+            <div id="cancel-pro-row" class="pro-cancel-row" data-pro-only hidden>
+              <p class="text-sm font-semibold text-charcoal">Cancel Pro</p>
+              <p class="text-xs text-muted mt-0.5 mb-3">End your Pro access and return to the Free plan. Your meals and saved recipes stay.</p>
+              <button id="cancel-pro-btn" type="button" class="danger-btn text-sm font-semibold text-red-500 border border-red-200 px-4 py-2 rounded-xl hover:bg-red-50 hover:border-red-300 transition-all">Cancel Pro</button>
+            </div>
+            <p id="cancel-pro-status" class="text-xs text-muted" role="status" aria-live="polite"></p>
             <div class="flex items-start gap-3">
               <div class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>

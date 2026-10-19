@@ -156,3 +156,23 @@ test('code activation, Pro meal access and expiry persist on real Firestore', as
   assert.equal((await call(activate, { code: 'emulator-code-fixture' })).code, 409);
   assert.equal((await call(recipes, { action: 'save', recipe: { ...recipe, name: 'Expired account recipe' } })).code, 403);
 });
+
+test('cancelling Pro persists Free access and preserves user data and code redemption on real Firestore', async () => {
+  const db = getFirestore(adminApp), uid = 'pro-cancellation-owner', now = Date.parse('2026-10-31T08:00:00Z');
+  const handler = createProHandler({ getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), quota: async () => {}, clock: () => now, getCode: () => 'cancel-emulator-fixture' });
+  const call = async (method, body, query) => {
+    const res = { code: 200, setHeader() {}, status(code) { this.code = code;return this; }, json(body) { this.body = body;return this; } };
+    await handler({ method, headers: { authorization: 'Bearer emulator-fixture' }, body, query }, res);return res;
+  };
+  const meal = db.collection('users').doc(uid).collection('meals').doc('keep-meal');
+  const recipe = db.collection('users').doc(uid).collection('savedRecipes').doc('keep-recipe');
+  await meal.set({ name: 'Lunch', loggedAt: new Date(now).toISOString() });
+  await recipe.set({ name: 'Rice bowl' });
+  assert.equal((await call('POST', { code: 'cancel-emulator-fixture' })).code, 200);
+  const results = await Promise.all([call('DELETE'), call('DELETE')]);
+  assert(results.every(result => result.code === 200 && result.body.plan === 'free'));
+  assert.equal(results[0].body.usage.meals.limit, 3);
+  assert.equal((await call('GET', null, { feature: 'pdf' })).code, 403);
+  assert.equal((await call('POST', { code: 'cancel-emulator-fixture' })).code, 409);
+  assert((await meal.get()).exists);assert((await recipe.get()).exists);
+});

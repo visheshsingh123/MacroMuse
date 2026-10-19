@@ -1,11 +1,17 @@
 import { authenticated, consumeQuota, HttpError, sendError } from '../lib/api-security.js';
-import { activatePro, getPlan, requirePro } from '../lib/pro.js';
+import { activatePro, cancelPro, getPlan, requirePro } from '../lib/pro.js';
+import { getUsage } from '../lib/free-usage.js';
 export function createProHandler({ getServices, quota = consumeQuota, clock = Date.now, getCode = () => process.env.PRO_ACTIVATION_CODE } = {}) {
   return async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
-    if (!['GET', 'POST'].includes(req.method)) { res.setHeader('Allow', 'GET, POST');return res.status(405).json({ error: { message: 'Method not allowed.' } }); }
+    if (!['GET', 'POST', 'DELETE'].includes(req.method)) { res.setHeader('Allow', 'GET, POST, DELETE');return res.status(405).json({ error: { message: 'Method not allowed.' } }); }
     try {
       const { uid, db } = await authenticated(req, getServices);
+      if (req.method === 'DELETE') {
+        await quota(db, uid, 'pro-cancellation');
+        const plan = await cancelPro(db, uid, clock());
+        return res.status(200).json({ ...plan, usage: await getUsage(db, uid, clock()) });
+      }
       if (req.method === 'GET') {
         const plan = await getPlan(db, uid, clock());
         if (req.query?.feature === 'pdf') requirePro(plan);
