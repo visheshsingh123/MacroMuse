@@ -57,13 +57,23 @@ receipt allows Undo to restore the original record without charging again;
 deleting meals or clearing the diary does not refund daily usage. Client edits,
 reads and deletes remain protected by the owner rules.
 
-AI Chef uses `/api/chef`. A transactional reservation prevents concurrent requests
+AI Chef sends one authenticated `/api/chef` request without a separate quota
+preflight. Tier checks, request-rate counters and the reply reservation share
+one transaction; successful replies are confirmed in a second transaction.
+Independent document reads are batched. A transactional reservation prevents concurrent requests
 from exceeding five; failed or malformed provider replies release the slot, and
 abandoned reservations expire after two minutes. `/api/groq` now returns only
 validated meal nutrition using a server-owned prompt, so it cannot be used as an
 unmetered conversation endpoint. Existing short-term/global AI safety limits
 still apply separately. `/api/usage` returns the authenticated account's counters
 without consuming a daily allowance.
+
+Chef uses `openai/gpt-oss-20b` with low reasoning and suggests one concise recipe
+by default. If that model is unavailable or returns malformed recipe JSON, the
+server retries once with `openai/gpt-oss-120b` and low reasoning on the same key.
+Key rotation still handles provider authentication, rate limits and temporary
+failures, within the shared 25-second provider deadline. Only the final successful
+reply is charged; a failed request releases its reservation.
 
 Deployment requires the existing `FIREBASE_SERVICE_ACCOUNT_JSON` and Groq
 credentials. Code activation also needs `PRO_ACTIVATION_CODE` as described below. Deploy the updated Vercel application,

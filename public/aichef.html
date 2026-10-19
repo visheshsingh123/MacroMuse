@@ -452,7 +452,7 @@
   <script>
     // API key and reply quotas are handled server-side via /api/chef — no key needed in browser
     const GROQ_ENDPOINT = '/api/chef';
-    const GROQ_MODEL    = 'openai/gpt-oss-120b';
+    const GROQ_MODEL    = 'openai/gpt-oss-20b';
 
 
     // ── DOM references ────────────────────────────────────────────────────
@@ -527,6 +527,7 @@
         },
         body: JSON.stringify({
           model: GROQ_MODEL,
+          reasoning_effort: 'low',
           max_tokens: 1024,
           messages: [
             ...history.slice(-10).map(message => ({ ...message, content: message.content.slice(0, 1500) })),
@@ -551,7 +552,6 @@
       addTypingIndicator();
 
       try {
-        await window.NutriUsage.requireAvailable('chef');
         const reply = await askAIChef(trimmed);
         if (!window.NutriSecurity.isCurrent(requestUid) || version !== conversationVersion) return;
         removeTypingIndicator();

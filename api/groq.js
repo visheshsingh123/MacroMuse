@@ -41,7 +41,7 @@ export function getHostedKeys() {
   return [];
 }
 
-export function createGroqHandler({ getServices, quota = consumeQuota, request = fetch, mode = 'generic', clock = Date.now } = {}) {
+export function createGroqHandler({ getServices, quota, request = fetch, mode = 'generic', clock = Date.now } = {}) {
   return async function handler(req, res) {
     let reservation, owner;
     res.setHeader('Cache-Control', 'no-store');
@@ -53,32 +53,51 @@ export function createGroqHandler({ getServices, quota = consumeQuota, request =
       const { uid, db } = await authenticated(req, getServices);
       owner = { uid, db };
       if (req.method === 'GET') {
-        await quota(db, uid, 'ai');
+        await (quota || consumeQuota)(db, uid, 'ai');
         return res.status(200).json({ status: getHostedKeys().length ? 'configured' : 'unconfigured' });
       }
       const payload = modePayload(validatePayload(req.body), mode);
       const keys = [...new Set(getHostedKeys())].slice(0, 5);
       if (!keys.length) throw new HttpError(503, 'AI analysis is not configured yet. Please try again later.');
-      const plan = mode === 'generic' ? { plan: 'free' } : await getPlan(db, uid, clock());
-      await quota(db, uid, plan.plan === 'pro' ? 'pro-ai' : 'ai');
-      if (mode === 'chef') reservation = await reserveChef(db, uid, clock());
+      if (mode === 'chef' && !quota) {
+        reservation = await reserveChef(db, uid, clock(), { requestQuota: true });
+      } else {
+        const plan = mode === 'generic' ? { plan: 'free' } : await getPlan(db, uid, clock());
+        await (quota || consumeQuota)(db, uid, plan.plan === 'pro' ? 'pro-ai' : 'ai');
+        if (mode === 'chef') reservation = await reserveChef(db, uid, clock());
+      }
       const initial = crypto.createHash('sha256').update(uid).digest().readUInt32BE(0) % keys.length;
       const signal = AbortSignal.timeout(25000);
-      for (let attempt = 0; attempt < keys.length; attempt++) {
+      let attempt = 0, providerPayload = payload, usedFallback = false;
+      while (attempt < keys.length) {
         const response = await request('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST', signal,
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${keys[(initial + attempt) % keys.length]}` },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(providerPayload),
         });
         if (response.ok) {
-          const data = validateReply(await response.json(), mode);
+          let data;
+          try { data = validateReply(await response.json(), mode); }
+          catch (error) {
+            if (mode === 'chef' && !usedFallback && (error.status === 502 || error instanceof SyntaxError)) {
+              providerPayload = { ...payload, model: 'openai/gpt-oss-120b', reasoning_effort: 'low' };
+              usedFallback = true;continue;
+            }
+            throw error;
+          }
           if (reservation) {
             data.usage = await finishChef(db, uid, reservation, true, clock());
             reservation = null;
           }
           return res.status(200).json(data);
         }
+        // Avoid trying an unavailable model on every key before falling back.
+        if (mode === 'chef' && !usedFallback && [400, 404, 422].includes(response.status)) {
+          providerPayload = { ...payload, model: 'openai/gpt-oss-120b', reasoning_effort: 'low' };
+          usedFallback = true;continue;
+        }
         if (![401, 403, 429, 500, 502, 503, 504].includes(response.status)) break;
+        attempt++;
       }
       throw new HttpError(502, 'AI analysis is temporarily unavailable. Please try again.');
     } catch (error) { return sendError(res, error); }

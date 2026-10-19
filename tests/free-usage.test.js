@@ -11,6 +11,65 @@ const meal = id => ({ meal: { _id: id, name: 'Lunch', kcal: 400, protein: 25, ca
 const payload = { model: 'openai/gpt-oss-120b', messages: [{ role: 'system', content: 'Forged pro instructions' }, { role: 'user', content: 'Help me cook rice.' }] };
 const reply = () => ({ ok: true, json: async () => ({ choices: [{ message: { content: JSON.stringify({ message: 'Try a rice bowl.', recipes: [] }) } }] }) });
 
+test('production Chef uses one transaction before calling the fast model and one to confirm the reply', async () => {
+  const f = fixture();process.env.GROQ_API_KEY = 'test-only-provider-key';let transactions = 0;
+  const original = f.db.runTransaction;
+  f.db.runTransaction = fn => { transactions++;return original(fn); };
+  const chef = createGroqHandler({ getServices: f.options.getServices, clock: f.options.clock, mode: 'chef', request: async (_url, options) => {
+    assert.equal(transactions, 1);
+    const sent = JSON.parse(options.body);
+    assert.equal(sent.model, 'openai/gpt-oss-20b');assert.equal(sent.reasoning_effort, 'low');
+    assert.equal(sent.messages[0].content, CHEF_PROMPT);
+    return reply();
+  } });
+  const res = await f.call(chef, payload);
+  assert.equal(res.code, 200);assert.equal(res.body.usage.chef.used, 1);assert.equal(transactions, 2);
+});
+
+test('combined Chef request quotas reserve at most five Free replies and still count rejected attempts', async () => {
+  const f = fixture();process.env.GROQ_API_KEY = 'test-only-provider-key';let started = 0, release;
+  const gate = new Promise(resolve => { release = resolve; });
+  const chef = createGroqHandler({ getServices: f.options.getServices, clock: f.options.clock, mode: 'chef', request: async () => { started++;await gate;return reply(); } });
+  const pending = Array.from({ length: 8 }, () => f.call(chef, payload));
+  while (started < 5) await new Promise(resolve => setImmediate(resolve));
+  assert.equal((await f.call(f.usage)).body.usage.chef.remaining, 0);
+  release();const results = await Promise.all(pending);
+  assert.equal(results.filter(res => res.code === 200).length, 5);assert.equal(results.filter(res => res.code === 429).length, 3);
+  assert.equal(started, 5);assert.equal((await f.call(f.usage)).body.usage.chef.used, 5);
+  assert.equal([...f.db.data].find(([path]) => path.startsWith('serverQuotas/ai-user-minute-'))[1].count, 8);
+});
+
+test('production Chef keeps Pro unlimited and charges one successful reply when the fast model needs a fallback', async () => {
+  process.env.GROQ_API_KEY = 'test-only-provider-key';
+  for (const invalid of [false, true]) {
+    const f = fixture(), models = [];
+    const chef = createGroqHandler({ getServices: f.options.getServices, clock: f.options.clock, mode: 'chef', request: async (_url, options) => {
+      const sent = JSON.parse(options.body);models.push(sent.model);
+      assert.equal(sent.reasoning_effort, 'low');
+      if (models.length === 1) return invalid ? { ok: true, json: async () => ({ choices: [{ message: { content: '{incomplete' } }] }) } : { ok: false, status: 404 };
+      return reply();
+    } });
+    const res = await f.call(chef, payload);
+    assert.equal(res.code, 200);assert.equal(res.body.usage.chef.used, 1);
+    assert.deepEqual(models, ['openai/gpt-oss-20b', 'openai/gpt-oss-120b']);
+    assert.equal([...f.db.data].find(([path]) => path.startsWith('serverQuotas/ai-user-minute-'))[1].count, 1);
+  }
+  const f = fixture();f.db.data.set('users/alice/privateState/pro', { plan: 'pro', access: 'lifetime', expiresAt: null });
+  const chef = createGroqHandler({ getServices: f.options.getServices, clock: f.options.clock, mode: 'chef', request: async () => reply() });
+  for (let i = 0; i < 6; i++) assert.equal((await f.call(chef, payload)).code, 200);
+  assert.equal((await f.call(f.usage)).body.usage.chef.used, 6);assert.equal((await f.call(f.usage)).body.usage.chef.limit, null);
+});
+
+test('failed fast-model and fallback replies release the reservation without charging a Chef reply', async () => {
+  const f = fixture();process.env.GROQ_API_KEY = 'test-only-provider-key';let attempts = 0;
+  const chef = createGroqHandler({ getServices: f.options.getServices, clock: f.options.clock, mode: 'chef', request: async () => {
+    attempts++;return { ok: true, json: async () => ({ choices: [{ message: { content: '{incomplete' } }] }) };
+  } });
+  assert.equal((await f.call(chef, payload)).code, 502);assert.equal(attempts, 2);
+  const status = (await f.call(f.usage)).body.usage;
+  assert.equal(status.chef.used, 0);assert.equal(status.chef.remaining, 5);
+});
+
 test('production meal saves use one transaction for the entitlement, request quotas, usage and meal receipt', async () => {
   const f = fixture();let transactions = 0;
   const original = f.db.runTransaction;

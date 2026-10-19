@@ -8,6 +8,7 @@ import { doc, setDoc, getDoc, collection, getDocs, deleteDoc, serverTimestamp } 
 import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { createMealsHandler } from '../api/meals.js';
+import { createGroqHandler } from '../api/groq.js';
 import { createProHandler } from '../api/pro.js';
 import { createSavedRecipesHandler } from '../api/saved-recipes.js';
 import { getUsage, reserveChef, finishChef } from '../lib/free-usage.js';
@@ -151,6 +152,27 @@ test('Chef reservations serialize on real Firestore and failed requests release 
   assert.equal(usage.chef.used, 5);assert.equal(usage.chef.remaining, 0);
 });
 
+
+test('Chef request limits and reply reservations commit together on real Firestore and failed replies release the slot', async () => {
+  const db = getFirestore(adminApp), now = Date.parse('2026-10-20T20:00:00Z');
+  let uid = 'atomic-chef-owner', fail = false, calls = 0;
+  process.env.GROQ_API_KEY = 'emulator-only-provider-key';
+  const handler = createGroqHandler({ getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), clock: () => now, mode: 'chef', request: async () => {
+    calls++;
+    return fail ? { ok: false, status: 503 } : { ok: true, json: async () => ({ choices: [{ message: { content: '{"message":"Try a rice bowl.","recipes":[]}' } }] }) };
+  } });
+  const call = async () => {
+    const res = { code: 200, setHeader() {}, status(code) { this.code = code;return this; }, json(body) { this.body = body;return this; } };
+    await handler({ method: 'POST', headers: { authorization: 'Bearer emulator-fixture' }, body: { model: 'openai/gpt-oss-20b', messages: [{ role: 'user', content: 'Help me cook rice.' }] } }, res);return res;
+  };
+  for (let i = 0; i < 5; i++) assert.equal((await call()).code, 200);
+  assert.equal((await call()).body.error.code, 'FREE_QUOTA_EXCEEDED');assert.equal(calls, 5);
+  const hash = createHash('sha256').update(uid).digest('hex');
+  assert.equal((await db.collection('serverQuotas').doc(`ai-user-minute-${hash}`).get()).data().count, 6);
+  uid = 'atomic-chef-failure-owner';fail = true;
+  assert.equal((await call()).code, 502);
+  const usage = await getUsage(db, uid, now);assert.equal(usage.chef.used, 0);assert.equal(usage.chef.remaining, 5);
+});
 
 test('lifetime code activation, Pro meal access and cancellation persist on real Firestore', async () => {
   const db = getFirestore(adminApp), uid = 'pro-activation-owner';let now = Date.parse('2026-10-31T08:00:00Z');
