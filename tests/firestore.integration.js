@@ -156,11 +156,12 @@ test('lifetime code activation, Pro meal access and cancellation persist on real
   assert.equal((await call(activate, null, null, 'DELETE')).code, 200);
   assert.equal((await getUsage(db, uid, now)).plan, 'free');
   assert.equal((await call(activate, null, { feature: 'pdf' })).code, 403);
-  assert.equal((await call(activate, { code: 'emulator-code-fixture' })).code, 409);
   assert.equal((await call(recipes, { action: 'save', recipe: { ...recipe, name: 'Expired account recipe' } })).code, 403);
+  assert.equal((await call(activate, { code: 'emulator-code-fixture' })).body.access, 'lifetime');
+  assert.equal((await call(activate, null, { feature: 'pdf' })).code, 200);
 });
 
-test('cancelling Pro persists Free access and preserves user data and code redemption on real Firestore', async () => {
+test('cancelling Pro persists Free access and the same code can reactivate it without deleting user data', async () => {
   const db = getFirestore(adminApp), uid = 'pro-cancellation-owner', now = Date.parse('2026-10-31T08:00:00Z');
   const handler = createProHandler({ getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), quota: async () => {}, clock: () => now, getCode: () => 'cancel-emulator-fixture' });
   const call = async (method, body, query) => {
@@ -176,6 +177,6 @@ test('cancelling Pro persists Free access and preserves user data and code redem
   assert(results.every(result => result.code === 200 && result.body.plan === 'free'));
   assert.equal(results[0].body.usage.meals.limit, 3);
   assert.equal((await call('GET', null, { feature: 'pdf' })).code, 403);
-  assert.equal((await call('POST', { code: 'cancel-emulator-fixture' })).code, 409);
+  assert.equal((await call('POST', { code: 'cancel-emulator-fixture' })).body.access, 'lifetime');
   assert((await meal.get()).exists);assert((await recipe.get()).exists);
 });

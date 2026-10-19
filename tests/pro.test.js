@@ -36,7 +36,7 @@ test('incorrect, malformed and unconfigured codes fail without granting Pro and 
   assert.equal((await f.call(blocked,{code:'test-activation-code'})).code,429);
   assert.equal((await f.call(f.pro,null,'alice','PATCH')).code,405);
 });
-test('concurrent/repeated activation is lifetime and idempotent; cancelled codes cannot be reused and accounts are independent', async () => {
+test('concurrent/repeated activation is lifetime and idempotent; codes can be reused after cancellation and across accounts', async () => {
   const f=setup();
   const results=await Promise.all(Array.from({length:8},()=>f.call(f.pro,{code:'test-activation-code'})));
   assert(results.every(result=>result.code===200 && result.body.access==='lifetime' && result.body.expiresAt===null));
@@ -45,7 +45,7 @@ test('concurrent/repeated activation is lifetime and idempotent; cancelled codes
   assert.equal((await f.call(f.pro,{code:'test-activation-code'},'bob')).code,200);
   await f.call(f.pro,null,'alice','DELETE');
   assert.equal((await f.call(f.pro)).body.plan,'free');
-  assert.equal((await f.call(f.pro,{code:'test-activation-code'})).code,409);
+  assert.equal((await f.call(f.pro,{code:'test-activation-code'})).body.access,'lifetime');
   const rotated=createProHandler({...f.options,getCode:()=> 'different-test-code'});
   assert.equal((await f.call(rotated,{code:'different-test-code'})).code,200);
 });
@@ -63,6 +63,8 @@ test('existing dated activations retain their expiry; an unused new code upgrade
  assert.equal((await f.call(f.pro,{code:'test-activation-code'})).body.expiresAt,legacy.expiresAt);
  const upgrade=createProHandler({...f.options,getCode:()=> 'unused-lifetime-code'});
  assert.equal((await f.call(upgrade,{code:'unused-lifetime-code'})).body.access,'lifetime');
+ f.db.data.set('users/alice/privateState/pro',{...legacy,expiresAt:'2026-10-19T20:00:00Z'});
+ assert.equal((await f.call(f.pro,{code:'test-activation-code'})).body.access,'lifetime');
 });
 test('cancellation is authenticated, account-scoped, immediate and idempotent without clearing usage or redemption receipts',async()=>{
  const f=setup();
@@ -83,9 +85,25 @@ test('cancellation is authenticated, account-scoped, immediate and idempotent wi
  f.advance(1000);
  assert.equal((await f.call(f.pro,null,'alice','DELETE')).code,200);
  assert.deepEqual(f.db.data.get('users/alice/privateState/pro'),record);
- assert.equal((await f.call(f.pro,{code:'test-activation-code'})).code,409);
+ assert.equal((await f.call(f.pro,{code:'test-activation-code'})).body.access,'lifetime');
+ assert.equal((await f.call(f.usage)).body.usage.meals.used,4);
  const rotated=createProHandler({...f.options,getCode:()=> 'new-code-after-cancel'});
  assert.equal((await f.call(rotated,{code:'new-code-after-cancel'})).body.plan,'pro');
+});
+test('the same code reactivates repeatedly without resetting daily usage or rewriting an active entitlement',async()=>{
+ const f=setup(), code={code:'test-activation-code'};
+ await f.call(f.pro,code);await f.call(f.meals,meal('keep-usage'));
+ for(let i=0;i<3;i++){
+  await f.call(f.pro,null,'alice','DELETE');f.advance(1000);
+  const results=await Promise.all(Array.from({length:8},()=>f.call(f.pro,code)));
+  assert(results.every(result=>result.code===200 && result.body.access==='lifetime'));
+  const record=structuredClone(f.db.data.get('users/alice/privateState/pro'));
+  assert.equal(record.activatedAt,new Date(f.now()).toISOString());
+  f.advance(1000);await f.call(f.pro,code);
+  assert.deepEqual(f.db.data.get('users/alice/privateState/pro'),record);
+  assert.equal((await f.call(f.usage)).body.usage.meals.used,1);
+ }
+ assert.equal((await f.call(f.pro,{code:'wrong'})).code,403);
 });
 test('cancellation works without an activation secret, handles Free accounts and respects rate limits',async()=>{
  const f=setup();

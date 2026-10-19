@@ -96,19 +96,22 @@ and a per-account redemption receipt containing only a code digest identifier
 and timestamps. Clients cannot write either document under the existing rules.
 New activations write an explicit `access: 'lifetime'` entitlement with
 `expiresAt: null`. Missing or null expiry without this marker never grants Pro.
-Each code is usable once per account. Repeated/concurrent activation is idempotent.
-Cancellation keeps the receipt, so a used code cannot reactivate a cancelled
-account; rotate the environment value to issue a new code when needed.
+The configured code is reusable across accounts and across repeated activations
+on the same account, including after cancellation. Repeated/concurrent activation
+while lifetime Pro is already active is idempotent. Receipts track the most recent
+activation and do not impose a redemption limit. Rotating the environment value
+changes which code is valid without revoking existing Pro access.
 
 Existing dated entitlements keep their original expiry. Re-entering their used
 code preserves that access; redeeming an unused new code upgrades to lifetime.
-Expired legacy entitlements return to Free until a new code is redeemed.
+Expired legacy entitlements return to Free until a valid code is redeemed; the
+same still-configured code can be used again to activate lifetime access.
 
 Settings → Account & data offers Cancel Pro to active members. Its confirmation
 button unlocks after five seconds. Confirming sends an authenticated, rate-limited
 `DELETE /api/pro`, which ends Pro immediately and restores Free limits without
 deleting user data. Cancellation is idempotent and retains the redemption receipt;
-the same activation code cannot reactivate a cancelled membership. Cancellation
+the same still-valid activation code can reactivate a cancelled membership. Cancellation
 does not issue a refund and there is no recurring charge to stop.
 
 Tier and daily-usage displays share a five-minute account-scoped browser cache.
