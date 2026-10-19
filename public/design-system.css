@@ -1,4 +1,11 @@
 /* Shared visual and interaction foundations for every NutriGlance page. */
+/* Keep the page scrollbar consistent, including Blog and Pro pages. */
+html{--ng-scrollbar-thumb:#cbd5e1;--ng-scrollbar-track:#eff7f4;--ng-scrollbar-hover:#94a3b8;scrollbar-color:var(--ng-scrollbar-thumb) var(--ng-scrollbar-track);scrollbar-width:thin}
+html.dark{--ng-scrollbar-thumb:#334155;--ng-scrollbar-track:#0f172a;--ng-scrollbar-hover:#475569}
+html::-webkit-scrollbar{width:10px;height:10px;background:var(--ng-scrollbar-track)}
+html::-webkit-scrollbar-track{background:var(--ng-scrollbar-track)}
+html::-webkit-scrollbar-thumb{background-color:var(--ng-scrollbar-thumb);border-radius:9999px;border:2px solid var(--ng-scrollbar-track)}
+html::-webkit-scrollbar-thumb:hover{background-color:var(--ng-scrollbar-hover)}
 :root{--ng-ink:#0f172a;--ng-muted:#475569;--ng-accent:#047857;--ng-line:#cbd5e1;--ng-surface:#fff;--ng-control-radius:12px;--ng-card-radius:24px;--ng-space:24px}
 html.dark,body.dark{--ng-ink:#e2e8f0;--ng-muted:#b6c4d6;--ng-accent:#6ee7b7;--ng-line:#475569;--ng-surface:#1e293b}
 button,input,textarea,select{font:inherit}
