@@ -14,6 +14,12 @@
     document.querySelectorAll('[data-pro-profile], [data-pro-only]').forEach(badge => {
       badge.hidden = plan !== 'pro';
     });
+    document.querySelectorAll('[data-pro-expiry]').forEach(time => {
+      time.dateTime = plan === 'pro' ? usage.expiresAt : '';
+      time.textContent = plan === 'pro' ? new Date(usage.expiresAt).toLocaleString(undefined, {
+        day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+      }) : '';
+    });
     document.querySelectorAll('[data-usage-feature]').forEach(section => {
       // Restore this account's display immediately, then verify in the background.
       section.hidden = plan !== 'free';
