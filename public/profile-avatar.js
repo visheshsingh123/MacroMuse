@@ -27,7 +27,7 @@ async function load(){
  const generation=++version;loading=true;loadFailed=false;status('Loading profile pictures…');render();
  try{
   const value=await request();if(!current(owner)||generation!==version)return;
-  choice=value;draft=value;remember(owner,value);status('Choose an emoji or keep your initial.');
+  choice=value;draft=value;remember(owner,value);status('Choose an emoji for your profile.');
  }catch(error){if(current(owner)&&generation===version){loadFailed=true;status(error.message,true);}}
  finally{if(current(owner)&&generation===version){loading=false;render();}}
 }
@@ -39,7 +39,7 @@ function connect(owner){
 }
 if(picker){
  const grid=document.getElementById('avatar-options');
- for(const option of AVATAR_OPTIONS){
+ for(const option of AVATAR_OPTIONS.filter(option=>option.selectable!==false)){
   const label=document.createElement('label');label.className='avatar-option';
   const input=document.createElement('input');input.type='radio';input.name='avatar-choice';input.value=option.id;input.className='sr-only';input.setAttribute('aria-label',option.label);input.disabled=true;
   const face=document.createElement('span');face.className='avatar-option-face';face.textContent=option.emoji||'Aa';face.setAttribute('aria-hidden','true');

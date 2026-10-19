@@ -1,8 +1,8 @@
 // Shared allowlist for the picker and authenticated API.
 export const AVATAR_OPTIONS = Object.freeze([
-  { id:'initial', emoji:null, label:'Your initial' },
+  { id:'initial', emoji:null, label:'Your initial', selectable:false },
   { id:'smile', emoji:'😊', label:'Smiling face' },
-  { id:'chef', emoji:'🧑‍🍳', label:'Chef' },
+  { id:'chef', emoji:'🧑‍🍳', label:'Chef', selectable:false },
   { id:'avocado', emoji:'🥑', label:'Avocado' },
   { id:'salad', emoji:'🥗', label:'Salad bowl' },
   { id:'strawberry', emoji:'🍓', label:'Strawberry' },
