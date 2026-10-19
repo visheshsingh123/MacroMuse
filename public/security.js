@@ -53,6 +53,8 @@
       if (key.startsWith('nutriglance_') && !['nutriglance_darkmode', 'nutriglance_reminder_owner'].includes(key)) localStorage.removeItem(key);
     }
     currentUid = null;
+    window.NutriPlan?.clear();
+    window.NutriUsage?.connect(null);
     window.NutriAvatar?.connect(null);
   }
   if (!bootOwner) clearAccount(); // Retire legacy shared caches with unknown ownership.
@@ -72,6 +74,7 @@
     currentUid = user.uid;
     window.NutriAvatar?.connect(user.uid);
     tabStorage?.setItem(hintKey, JSON.stringify({ uid: user.uid, verifiedAt: Date.now() }));
+    window.NutriPlan?.sync();
     document.documentElement.classList.remove('session-pending');
     document.documentElement.classList.remove('session-loader-mounted');
     document.getElementById?.('session-loader')?.remove();

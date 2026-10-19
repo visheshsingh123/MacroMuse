@@ -2,14 +2,20 @@
 (() => {
   let uid = null, usage = null, promptOpen = false, checkedAt = 0, loading = null;
   const current = () => uid && window.NutriSecurity.isCurrent(uid);
+  function restore() {
+    const state = window.NutriPlan.read(uid || window.NutriSecurity.resumeOwner());
+    usage = state ? { plan: state.plan, expiresAt: state.expiresAt, ...state.usage } : null;
+    checkedAt = state?.updatedAt || 0;render();
+  }
   function render(error) {
-    const plan = current() && usage ? usage.plan : 'unknown';
+    const owner = uid || window.NutriSecurity.resumeOwner();
+    const plan = owner && owner === window.NutriSecurity.resumeOwner() && usage ? usage.plan : 'unknown';
     document.documentElement.dataset.usagePlan = plan;
     document.querySelectorAll('[data-pro-profile], [data-pro-only]').forEach(badge => {
       badge.hidden = plan !== 'pro';
     });
     document.querySelectorAll('[data-usage-feature]').forEach(section => {
-      // Wait for the server's plan so Pro members never see a Free upsell flash.
+      // Restore this account's display immediately, then verify in the background.
       section.hidden = plan !== 'free';
       const feature = section.dataset.usageFeature, item = usage?.[feature];
       const label = feature === 'meals' ? 'meal logs' : 'AI Chef replies';
@@ -33,7 +39,7 @@
     if (!current() || !next) return;
     // A reply that began before midnight must not replace today's usage.
     if (Date.parse(next.resetAt) <= Date.now()) { void refresh();return; }
-    usage = next;checkedAt = Date.now();render();
+    window.NutriPlan.remember(uid, next);
   }
   async function showLimit(feature) {
     render();
@@ -50,10 +56,17 @@
   async function request(path, options = {}) {
     if (!current()) throw new Error('Please sign in to continue.');
     const owner = uid;
+    const revision = window.NutriPlan.revision();
+    const before = window.NutriPlan.read(owner);
     const response = await window.NutriSecurity.apiFetch(path, options);
     const data = await response.json();
     if (!current() || uid !== owner) throw new Error('Your account changed. Please try again.');
-    update(data.usage || data.error?.usage);
+    // A background read started before a cancellation/activation must not undo it.
+    const next = data.usage || data.error?.usage, after = window.NutriPlan.read(owner);
+    const changedPlan = before && after && (before.plan !== after.plan || before.expiresAt !== after.expiresAt);
+    const outdated = changedPlan && next && (next.plan !== after.plan || next.expiresAt !== after.expiresAt);
+    if (path === '/api/pro' || !outdated && ((options.method || 'GET') !== 'GET'
+      || revision === window.NutriPlan.revision())) update(next);
     if (!response.ok) {
       const error = new Error(data.error?.message || 'Couldn’t check your daily allowance. Please try again.');
       error.code = data.error?.code;
@@ -71,14 +84,14 @@
     if (loading) return loading;
     const owner = uid;
     const pending = request('/api/usage').catch(() => {
-      if (uid === owner && current()) render('Couldn’t check your allowance. Reconnect and try again.');
+      if (uid === owner && current()) render(usage?.resetAt ? undefined : 'Couldn’t check your allowance. Reconnect and try again.');
     });
     loading = pending;
     try { await pending; } finally { if (loading === pending) loading = null; }
   }
   function connect(owner) {
     if (owner === uid) return;
-    uid = owner;usage = null;loading = null;checkedAt = 0;render();
+    uid = owner;loading = null;restore();
     if (current()) void refresh();
   }
   async function requireAvailable(feature) {
@@ -95,9 +108,18 @@
     return data.meal;
   }
   window.NutriUsage = { connect, refresh, request, requireAvailable, saveMeal };
-  window.addEventListener('focus', () => { if (current() && Date.now() - checkedAt > 10_000) void refresh(); });
+  window.addEventListener('nutriglance:plan', restore);
+  document.addEventListener('DOMContentLoaded', restore);
+  const resume = () => { window.NutriPlan.sync();if (current() && Date.now() - checkedAt > 10_000) void refresh(); };
+  window.addEventListener('focus', resume);
+  window.addEventListener('online', () => { if (current()) void refresh(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) resume(); });
   setInterval(() => {
-    if (current() && usage && (Date.now() >= Date.parse(usage.resetAt)
-      || usage.plan === 'pro' && Date.now() >= Date.parse(usage.expiresAt))) void refresh();
+    const previous = usage;
+    window.NutriPlan.sync();
+    if (current() && (!usage || !usage.resetAt || Date.now() - checkedAt >= window.NutriPlan.maxAge
+      || previous && (Date.now() >= Date.parse(previous.resetAt)
+        || previous.plan === 'pro' && Date.now() >= Date.parse(previous.expiresAt)))) void refresh();
   }, 30_000);
+  restore();
 })();

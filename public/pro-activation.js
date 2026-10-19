@@ -49,13 +49,16 @@
       const identity = await auth();
       if (generation !== version) return;
       if (!identity.currentUser) { setPlan(null);return; }
+      const cached = window.NutriPlan.read(identity.currentUser.uid);
+      if (cached) setPlan(cached);
+      const revision = window.NutriPlan.revision();
       const response = await window.NutriSecurity.apiFetch('/api/pro', { method: 'GET' });
       const data = await response.json();
       if (generation !== version) return;
       if (!response.ok) throw new Error(data.error?.message || 'Couldn’t load your plan.');
-      setPlan(data);
+      if (revision === window.NutriPlan.revision()) window.NutriPlan.remember(identity.currentUser.uid, data);
     } catch {
-      if (generation === version) document.getElementById('pro-launch-note').textContent = 'Couldn’t check your plan. You can retry when activating Pro.';
+      if (generation === version && !window.NutriPlan.read()) document.getElementById('pro-launch-note').textContent = 'Couldn’t check your plan. You can retry when activating Pro.';
     }
   }
   button.hidden = false;
@@ -81,10 +84,12 @@
       const data = await response.json();
       if (generation !== version) return;
       if (!response.ok) throw new Error(data.error?.message || 'Couldn’t activate Pro. Please try again.');
-      setPlan(data);
+      window.NutriPlan.remember(identity.currentUser.uid, data);
     } catch (error) { if (generation === version) feedback.textContent = error.message || 'Couldn’t activate Pro. Please try again.'; }
     finally { input.value = '';submit.disabled = false;submit.textContent = 'Activate for one month'; }
   });
   window.addEventListener('focus', () => { if (!submit.disabled) void loadStatus(); });
+  window.addEventListener('nutriglance:plan', event => setPlan(event.detail));
+  setPlan(window.NutriPlan.read());
   void loadStatus();
 })();

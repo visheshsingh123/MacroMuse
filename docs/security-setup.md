@@ -100,6 +100,14 @@ button unlocks after five seconds. Confirming sends an authenticated, rate-limit
 deleting user data. Cancellation is idempotent and retains the redemption receipt;
 the same activation code cannot reactivate a cancelled membership.
 
+Tier and daily-usage displays share a five-minute account-scoped browser cache.
+Recent verified navigation can paint the quota cards, Pro badge and cancellation
+option immediately while authenticated requests refresh in the background.
+Activation, cancellation, meal saves and Chef replies update the cache, including
+other open tabs. Sign-out clears it; expiry and UTC rollover invalidate the
+affected state. This cache controls presentation only: API access, PDF export and
+quota enforcement always use the server-owned entitlement and usage records.
+
 Expiry is one calendar month in UTC, with month-end dates clamped (January 31 →
 February 28 or 29). Every protected operation checks current server time; there
 is no cron requirement and no browser Pro flag. Usage continues to be recorded
