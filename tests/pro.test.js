@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createProHandler } from '../api/pro.js';
 import { createGroqHandler } from '../api/groq.js';
-import { getPlan, oneMonthAfter } from '../lib/pro.js';
+import { getPlan, planFromRecord } from '../lib/pro.js';
 import { consumeQuota, HttpError } from '../lib/api-security.js';
 import { fixture, database } from './helpers/quota-db.js';
 const meal = id => ({ meal: { _id: id, name: 'Lunch', kcal: 400, protein: 25, carbs: 40, fat: 12 } });
@@ -19,7 +19,7 @@ test('activation requires an authenticated account and never trusts requested us
   for (const uid of [null, 'invalid', 'anonymous']) assert.equal((await f.call(f.pro, { code: 'test-activation-code' }, uid)).code, 401);
   assert.equal(f.attempts(), 0);
   const res = await f.call(f.pro, { code: 'test-activation-code', uid: 'victim', expiresAt: '2099-01-01', plan: 'pro' });
-  assert.equal(res.code, 200);assert.deepEqual(res.body, { plan: 'pro', expiresAt: '2026-11-20T20:00:00.000Z' });
+  assert.equal(res.code, 200);assert.deepEqual(res.body, { plan: 'pro', access: 'lifetime', expiresAt: null });
   assert.equal(res.headers['Cache-Control'], 'no-store');
   assert.equal((await getPlan(f.db, 'victim', f.now())).plan, 'free');
   assert(!JSON.stringify([...f.db.data.values()]).includes('test-activation-code'));
@@ -36,23 +36,33 @@ test('incorrect, malformed and unconfigured codes fail without granting Pro and 
   assert.equal((await f.call(blocked,{code:'test-activation-code'})).code,429);
   assert.equal((await f.call(f.pro,null,'alice','PATCH')).code,405);
 });
-test('concurrent/repeated activation cannot stack months or reuse an expired code; accounts are independent', async () => {
+test('concurrent/repeated activation is lifetime and idempotent; cancelled codes cannot be reused and accounts are independent', async () => {
   const f=setup();
   const results=await Promise.all(Array.from({length:8},()=>f.call(f.pro,{code:'test-activation-code'})));
-  assert(results.every(result=>result.code===200));assert.equal(new Set(results.map(result=>result.body.expiresAt)).size,1);
-  const expiresAt=results[0].body.expiresAt;f.advance(86400_000);
-  assert.equal((await f.call(f.pro,{code:'test-activation-code'})).body.expiresAt,expiresAt);
+  assert(results.every(result=>result.code===200 && result.body.access==='lifetime' && result.body.expiresAt===null));
+  f.advance(365*86400_000);
+  assert.equal((await f.call(f.pro,{code:'test-activation-code'})).body.access,'lifetime');
   assert.equal((await f.call(f.pro,{code:'test-activation-code'},'bob')).code,200);
-  f.advance(Date.parse(expiresAt)-f.now());
+  await f.call(f.pro,null,'alice','DELETE');
   assert.equal((await f.call(f.pro)).body.plan,'free');
   assert.equal((await f.call(f.pro,{code:'test-activation-code'})).code,409);
   const rotated=createProHandler({...f.options,getCode:()=> 'different-test-code'});
   assert.equal((await f.call(rotated,{code:'different-test-code'})).code,200);
 });
-test('one-month expiry clamps month ends and handles leap years in UTC',()=>{
- assert.equal(oneMonthAfter(Date.parse('2026-01-31T23:20:00Z')),'2026-02-28T23:20:00.000Z');
- assert.equal(oneMonthAfter(Date.parse('2028-01-31T23:20:00Z')),'2028-02-29T23:20:00.000Z');
- assert.equal(oneMonthAfter(Date.parse('2026-10-31T08:00:00Z')),'2026-11-30T08:00:00.000Z');
+test('only explicit lifetime entitlements have no expiry; older dated entitlements still expire',()=>{
+ const now=Date.parse('2026-10-20T20:00:00Z');
+ assert.deepEqual(planFromRecord({plan:'pro',access:'lifetime',expiresAt:null},now+10*365*86400_000),{plan:'pro',access:'lifetime',expiresAt:null});
+ for(const record of [{plan:'pro',expiresAt:null},{plan:'pro'},{plan:'free',access:'lifetime',expiresAt:null}])assert.equal(planFromRecord(record,now).plan,'free');
+ assert.equal(planFromRecord({plan:'pro',expiresAt:'2026-11-20T20:00:00Z'},now).plan,'pro');
+ assert.equal(planFromRecord({plan:'pro',expiresAt:'2026-11-20T20:00:00Z'},now+40*86400_000).plan,'free');
+});
+test('existing dated activations retain their expiry; an unused new code upgrades them to lifetime',async()=>{
+ const f=setup();await f.call(f.pro,{code:'test-activation-code'});
+ const legacy={plan:'pro',expiresAt:'2026-11-20T20:00:00Z',source:'activation-code'};
+ f.db.data.set('users/alice/privateState/pro',legacy);
+ assert.equal((await f.call(f.pro,{code:'test-activation-code'})).body.expiresAt,legacy.expiresAt);
+ const upgrade=createProHandler({...f.options,getCode:()=> 'unused-lifetime-code'});
+ assert.equal((await f.call(upgrade,{code:'unused-lifetime-code'})).body.access,'lifetime');
 });
 test('cancellation is authenticated, account-scoped, immediate and idempotent without clearing usage or redemption receipts',async()=>{
  const f=setup();
@@ -90,7 +100,7 @@ test('cancellation works without an activation secret, handles Free accounts and
  assert.equal((await getPlan(f.db,'alice',f.now())).plan,'pro');
  assert.equal((await f.call(noSecret,null,'alice','DELETE')).body.plan,'free');
 });
-test('Pro removes daily meal/Chef caps, expiry restores Free limits, and old usage cannot grant entitlement',async()=>{
+test('lifetime Pro removes daily meal/Chef caps beyond one month and cancellation restores Free limits',async()=>{
  const f=setup();await f.call(f.pro,{code:'test-activation-code'});
  for(let i=0;i<12;i++)assert.equal((await f.call(f.meals,meal('meal-'+i))).code,200);
  const status=(await f.call(f.usage)).body.usage;
@@ -101,7 +111,9 @@ test('Pro removes daily meal/Chef caps, expiry restores Free limits, and old usa
  for(let i=0;i<9;i++)assert.equal((await f.call(chef,payload)).code,200);
  assert(purposes.every(purpose=>purpose==='pro-ai'));
  assert.equal((await f.call(f.usage)).body.usage.chef.used,9);
- const expiration=Date.parse(status.expiresAt);f.advance(expiration-f.now());
+ f.advance(40*86400_000);
+ assert.equal((await f.call(f.usage)).body.usage.access,'lifetime');
+ await f.call(f.pro,null,'alice','DELETE');
  assert.equal((await f.call(f.usage)).body.usage.plan,'free');
  for(let i=0;i<3;i++)assert.equal((await f.call(f.meals,meal('free-'+i))).code,200);
  assert.equal((await f.call(f.meals,meal('free-fourth'))).code,429);
@@ -110,15 +122,18 @@ test('Pro removes daily meal/Chef caps, expiry restores Free limits, and old usa
  assert.equal((await f.call(chef,payload)).code,429);
  assert.equal(purposes.at(-1),'ai');
 });
-test('PDF entitlement is checked server-side for Free, active and expired accounts',async()=>{
+test('PDF entitlement is checked for Free, lifetime, cancelled and expired dated accounts',async()=>{
  const f=setup();
  const check=async()=>{
   const res={code:200,setHeader(){},status(code){this.code=code;return this;},json(body){this.body=body;return this;}};
   await f.pro({method:'GET',headers:{authorization:'Bearer alice'},query:{feature:'pdf'}},res);return res;
  };
  assert.equal((await check()).code,403);assert.equal((await check()).body.error.code,'PRO_REQUIRED');
- const active=await f.call(f.pro,{code:'test-activation-code'});assert.equal((await check()).code,200);
- f.advance(Date.parse(active.body.expiresAt)-f.now());assert.equal((await check()).code,403);
+ await f.call(f.pro,{code:'test-activation-code'});assert.equal((await check()).code,200);
+ f.advance(2*365*86400_000);assert.equal((await check()).code,200);
+ await f.call(f.pro,null,'alice','DELETE');assert.equal((await check()).code,403);
+ f.db.data.set('users/alice/privateState/pro',{plan:'pro',expiresAt:new Date(f.now()+1000).toISOString()});
+ assert.equal((await check()).code,200);f.advance(1000);assert.equal((await check()).code,403);
 });
 test('Pro removes the user daily request cap while preserving short-term and shared limits',async()=>{
  const db=database(),now=Date.UTC(2026,9,20,6);

@@ -4,7 +4,7 @@
   const current = () => uid && window.NutriSecurity.isCurrent(uid);
   function restore() {
     const state = window.NutriPlan.read(uid || window.NutriSecurity.resumeOwner());
-    usage = state ? { plan: state.plan, expiresAt: state.expiresAt, ...state.usage } : null;
+    usage = state ? { plan: state.plan, expiresAt: state.expiresAt, access: state.access, ...state.usage } : null;
     checkedAt = state?.updatedAt || 0;render();
   }
   function render(error) {
@@ -14,11 +14,11 @@
     document.querySelectorAll('[data-pro-profile], [data-pro-only]').forEach(badge => {
       badge.hidden = plan !== 'pro';
     });
-    document.querySelectorAll('[data-pro-expiry]').forEach(time => {
-      time.dateTime = plan === 'pro' ? usage.expiresAt : '';
-      time.textContent = plan === 'pro' ? new Date(usage.expiresAt).toLocaleString(undefined, {
+    document.querySelectorAll('[data-pro-access-status]').forEach(status => {
+      status.textContent = plan !== 'pro' ? '' : usage.access === 'lifetime' ? 'Lifetime Pro · No expiry. No recurring payments.'
+        : `Pro expires on ${new Date(usage.expiresAt).toLocaleString(undefined, {
         day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
-      }) : '';
+      })}.`;
     });
     document.querySelectorAll('[data-usage-feature]').forEach(section => {
       // Restore this account's display immediately, then verify in the background.
@@ -36,7 +36,7 @@
         : exhausted ? `Daily quota used up · ${Math.min(item.used, item.limit)}/${item.limit} ${label}`
           : `${item.used}/${item.limit} ${label} used · ${item.remaining} left today`);
       section.querySelector('[data-usage-note]').textContent = pro
-        ? `Pro active until ${new Date(usage.expiresAt).toLocaleString()}.`
+        ? usage.access === 'lifetime' ? 'Lifetime Pro · No expiry.' : `Pro active until ${new Date(usage.expiresAt).toLocaleString()}.`
         : exhausted ? 'Free allowance resets at 00:00 UTC. Activate Pro with a code for unlimited usage.'
         : 'Free plan · Resets at 00:00 UTC. Pro includes unlimited usage.';
     });

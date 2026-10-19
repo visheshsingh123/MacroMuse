@@ -32,16 +32,17 @@
   function setPlan(next) {
     plan = next;
     const active = next?.plan === 'pro';
+    const lifetime = active && next.access === 'lifetime';
     button.textContent = active ? 'Pro active' : 'Activate Pro';
     document.getElementById('pro-launch-note').textContent = active
-      ? `Your Pro access ends ${expiry(next.expiresAt)}.`
-      : 'Have an activation code? Unlock one month of Pro. No payment is taken.';
+      ? lifetime ? 'Your lifetime Pro access is active. No expiry or recurring payments.' : `Your Pro access ends ${expiry(next.expiresAt)}.`
+      : 'Have an activation code? Unlock lifetime Pro. No payment is taken in this form.';
     const status = document.getElementById('pro-account-status');
     status.hidden = !active;
-    status.textContent = active ? `NutriGlance Pro is active until ${expiry(next.expiresAt)}.` : '';
+    status.textContent = active ? lifetime ? 'Lifetime NutriGlance Pro is active. No expiry.' : `NutriGlance Pro is active until ${expiry(next.expiresAt)}.` : '';
     form.hidden = active;
     document.getElementById('pro-active-message').hidden = !active;
-    document.getElementById('pro-active-message').textContent = active ? `You have full Pro access until ${expiry(next.expiresAt)}. You can continue from your dashboard.` : '';
+    document.getElementById('pro-active-message').textContent = active ? lifetime ? 'You have lifetime Pro access. You can continue from your dashboard.' : `You have full Pro access until ${expiry(next.expiresAt)}. You can continue from your dashboard.` : '';
   }
   async function loadStatus() {
     const generation = ++version;
@@ -86,7 +87,7 @@
       if (!response.ok) throw new Error(data.error?.message || 'Couldn’t activate Pro. Please try again.');
       window.NutriPlan.remember(identity.currentUser.uid, data);
     } catch (error) { if (generation === version) feedback.textContent = error.message || 'Couldn’t activate Pro. Please try again.'; }
-    finally { input.value = '';submit.disabled = false;submit.textContent = 'Activate for one month'; }
+    finally { input.value = '';submit.disabled = false;submit.textContent = 'Activate lifetime Pro'; }
   });
   window.addEventListener('focus', () => { if (!submit.disabled) void loadStatus(); });
   window.addEventListener('nutriglance:plan', event => setPlan(event.detail));

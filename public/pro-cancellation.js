@@ -10,7 +10,7 @@
     busy = true;status.textContent = '';status.setAttribute('role', 'status');
     try {
       const confirmed = await window.NutriDialog.confirm(
-        'Your Pro access will end immediately and Free limits will apply. Your meals and saved recipes stay. This activation code cannot be used again. Wait five seconds before confirming.',
+        'Your Pro access will end immediately and Free limits will apply. This does not issue a refund. Your meals and saved recipes stay. This activation code cannot be used again. Wait five seconds before confirming.',
         { title: 'Cancel NutriGlance Pro?', confirmLabel: 'Cancel Pro', cancelLabel: 'Keep Pro', danger: true, confirmDelaySeconds: 5 }
       );
       if (!confirmed || !window.NutriSecurity.isCurrent(owner)) return;

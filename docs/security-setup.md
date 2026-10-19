@@ -41,7 +41,7 @@ Local API/rendering/session tests and browser checks do not certify the deployed
 
 Free accounts can create 3 meal logs and receive 5 successful AI Chef replies per
 UTC calendar day. The UI shows remaining usage and the midnight UTC reset. Pro
-can be activated for one calendar month with a server-verified activation code.
+can be activated for lifetime access with a server-verified activation code.
 Active Pro accounts have no daily meal or Chef cap, unlimited saved recipes, and
 PDF export. Free accounts can save one recipe and cannot use PDF export.
 Browser storage and caller-supplied Pro flags never grant more usage.
@@ -78,7 +78,11 @@ Undo, failed AI requests and the reset boundary. Existing meals and conversation
 must remain readable after reaching a quota.
 
 
-## One-month Pro activation
+## One-time Pro pricing and lifetime activation
+
+Pro is advertised at **US$5 or ₹500 once**, with lifetime access and no recurring
+billing. The INR/USD selector changes the displayed currency. No payment gateway
+is connected: entering a code does not take or verify a payment.
 
 Set `PRO_ACTIVATION_CODE` as a server-only environment variable in Vercel for the
 required deployment environment, then redeploy. Enter the intended activation
@@ -90,15 +94,22 @@ verifies the Firebase session, rate-limits activation attempts, and compares the
 code on the server. It writes the entitlement to `users/{uid}/privateState/pro`
 and a per-account redemption receipt containing only a code digest identifier
 and timestamps. Clients cannot write either document under the existing rules.
-Each code is usable once per account. Repeated/concurrent activation returns the
-same expiry and cannot stack months. After expiry, the same code cannot renew;
-rotate the environment value to issue a new code when needed.
+New activations write an explicit `access: 'lifetime'` entitlement with
+`expiresAt: null`. Missing or null expiry without this marker never grants Pro.
+Each code is usable once per account. Repeated/concurrent activation is idempotent.
+Cancellation keeps the receipt, so a used code cannot reactivate a cancelled
+account; rotate the environment value to issue a new code when needed.
+
+Existing dated entitlements keep their original expiry. Re-entering their used
+code preserves that access; redeeming an unused new code upgrades to lifetime.
+Expired legacy entitlements return to Free until a new code is redeemed.
 
 Settings → Account & data offers Cancel Pro to active members. Its confirmation
 button unlocks after five seconds. Confirming sends an authenticated, rate-limited
 `DELETE /api/pro`, which ends Pro immediately and restores Free limits without
 deleting user data. Cancellation is idempotent and retains the redemption receipt;
-the same activation code cannot reactivate a cancelled membership.
+the same activation code cannot reactivate a cancelled membership. Cancellation
+does not issue a refund and there is no recurring charge to stop.
 
 Tier and daily-usage displays share a five-minute account-scoped browser cache.
 Recent verified navigation can paint the quota cards, Pro badge and cancellation
@@ -108,12 +119,13 @@ other open tabs. Sign-out clears it; expiry and UTC rollover invalidate the
 affected state. This cache controls presentation only: API access, PDF export and
 quota enforcement always use the server-owned entitlement and usage records.
 
-Expiry is one calendar month in UTC, with month-end dates clamped (January 31 →
-February 28 or 29). Every protected operation checks current server time; there
-is no cron requirement and no browser Pro flag. Usage continues to be recorded
-while Pro is active, so expiry restores the normal Free allowances without
-removing existing meals or recipes. Short-term and global service protections
-still apply; Pro has no per-user daily request cap.
+Every protected operation checks the server-owned entitlement; there is no cron
+requirement and no browser Pro flag. Legacy dated entitlements also check current
+server time. Usage continues to be recorded while Pro is active, so cancellation
+or legacy expiry restores Free allowances without removing existing meals or
+recipes. Settings shows lifetime/no expiry for new activations and the expiry
+date for legacy access. Short-term and global protections still apply; Pro has
+no per-user daily request cap.
 
 Saved recipes are returned in pages of 50 without a total collection cap for
 Pro. Free accounts that downgrade keep access to their full collection but must

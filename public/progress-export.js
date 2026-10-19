@@ -115,7 +115,7 @@
     button.disabled = true;
     try {
       const plan = await window.NutriUsage.request('/api/pro?feature=pdf');
-      authorizedUntil = Date.parse(plan.expiresAt);
+      authorizedUntil = plan.access === 'lifetime' && plan.expiresAt === null ? Infinity : Date.parse(plan.expiresAt);
       authorizedOwner = window.nutriGlanceReminderAuth?.currentUser?.uid;
       if (!window.NutriSecurity.isCurrent(authorizedOwner)) throw new Error('Please sign in again.');
       buildReport();

@@ -132,16 +132,16 @@ test('Chef reservations serialize on real Firestore and failed requests release 
 });
 
 
-test('code activation, Pro meal access and expiry persist on real Firestore', async () => {
+test('lifetime code activation, Pro meal access and cancellation persist on real Firestore', async () => {
   const db = getFirestore(adminApp), uid = 'pro-activation-owner';let now = Date.parse('2026-10-31T08:00:00Z');
   const options = { getServices: () => ({ db, auth: { verifyIdToken: async () => ({ uid }) } }), quota: async () => {}, clock: () => now };
   const activate = createProHandler({ ...options, getCode: () => 'emulator-code-fixture' });
-  const call = async (handler, body, query) => {
+  const call = async (handler, body, query, method = body ? 'POST' : 'GET') => {
     const res = { code: 200, setHeader() {}, status(code) { this.code = code;return this; }, json(body) { this.body = body;return this; } };
-    await handler({ method: body ? 'POST' : 'GET', headers: { authorization: 'Bearer emulator-fixture' }, body, query }, res);return res;
+    await handler({ method, headers: { authorization: 'Bearer emulator-fixture' }, body, query }, res);return res;
   };
   const results = await Promise.all(Array.from({ length: 4 }, () => call(activate, { code: 'emulator-code-fixture' })));
-  assert(results.every(result => result.code === 200));assert(results.every(result => result.body.expiresAt === '2026-11-30T08:00:00.000Z'));
+  assert(results.every(result => result.code === 200));assert(results.every(result => result.body.access === 'lifetime' && result.body.expiresAt === null));
   const meals = createMealsHandler(options);
   for (let i = 0; i < 5; i++) assert.equal((await call(meals, { meal: { _id: 'pro-meal-'+i, name: 'Lunch', kcal: 400, protein: 25, carbs: 40, fat: 12 } })).code, 200);
   const usage = await getUsage(db, uid, now);assert.equal(usage.plan, 'pro');assert.equal(usage.meals.limit, null);
@@ -151,6 +151,9 @@ test('code activation, Pro meal access and expiry persist on real Firestore', as
   const first = await call(recipes);assert.equal(first.body.recipes.length, 50);assert(first.body.nextCursor);
   const second = await call(recipes, null, { after: first.body.nextCursor });assert.equal(second.body.recipes.length, 1);
   now = Date.parse('2026-11-30T08:00:00Z');
+  assert.equal((await getUsage(db, uid, now)).access, 'lifetime');
+  assert.equal((await call(activate, null, { feature: 'pdf' })).code, 200);
+  assert.equal((await call(activate, null, null, 'DELETE')).code, 200);
   assert.equal((await getUsage(db, uid, now)).plan, 'free');
   assert.equal((await call(activate, null, { feature: 'pdf' })).code, 403);
   assert.equal((await call(activate, { code: 'emulator-code-fixture' })).code, 409);

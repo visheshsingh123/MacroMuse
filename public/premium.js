@@ -15,19 +15,18 @@
     try { localStorage.setItem('nutriglance_darkmode', dark ? '1' : '0'); } catch {}
   });
 
-  const billing = document.querySelector('.premium-billing');
-  const buttons = [...document.querySelectorAll('[data-billing]')];
-  const setBilling = period => {
-    const annual = period === 'annual';
-    buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.billing === period)));
-    document.getElementById('pro-price').textContent = annual ? '₹1,500' : '₹200';
-    document.getElementById('pro-period').textContent = annual ? ' / year' : ' / month';
-    document.getElementById('pro-billing-note').textContent = annual
-      ? '₹125/month equivalent, billed yearly. Or choose ₹200/month.'
-      : 'Or ₹1,500/year — save ₹900 (37.5%) compared with monthly.';
+  const currency = document.querySelector('.premium-currency');
+  const buttons = [...document.querySelectorAll('[data-currency]')];
+  const setCurrency = value => {
+    const usd = value === 'USD';
+    buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.currency === value)));
+    document.getElementById('pro-price').textContent = usd ? 'US$5' : '₹500';
+    document.getElementById('pro-billing-note').textContent = usd
+      ? 'Or ₹500 once. Lifetime access, with no recurring payments.'
+      : 'Or US$5 once. Lifetime access, with no recurring payments.';
   };
-  buttons.forEach(button => button.addEventListener('click', () => setBilling(button.dataset.billing)));
-  setBilling('monthly');
-  if (billing) billing.hidden = false;
+  buttons.forEach(button => button.addEventListener('click', () => setCurrency(button.dataset.currency)));
+  setCurrency('INR');
+  if (currency) currency.hidden = false;
 
 })();

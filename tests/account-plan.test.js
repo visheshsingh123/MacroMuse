@@ -74,6 +74,17 @@ test('Pro expiry restores Free limits locally and UTC rollover discards old quot
   midnight.plan.remember('alice', usage(midnight.now(), 'free', 3));midnight.advance(60_000);
   assert.equal(midnight.read().plan, 'free');assert.equal(midnight.read().usage, null);
 });
+test('lifetime status and counters survive cached navigation; missing expiry alone never grants the Pro display', () => {
+  const c = client();
+  c.plan.remember('alice', { ...usage(c.now(), 'pro', 4), access: 'lifetime' });
+  assert.equal(c.read().plan, 'pro');assert.equal(c.read().access, 'lifetime');assert.equal(c.read().usage.access, 'lifetime');
+  const next = client({ now: c.now(), record: JSON.parse(c.data.get(key)) });
+  assert.equal(next.read().access, 'lifetime');assert.equal(next.read().expiresAt, null);
+  next.plan.remember('alice', usage(c.now(), 'free', 4));
+  assert.equal(next.read().plan, 'free');assert.equal(next.read().access, undefined);
+  const invalid = record(c.now(), usage(c.now(), 'pro', 0));
+  assert.equal(client({ now: c.now(), record: invalid }).read(), null);
+});
 test('corrupt quota data never renders counters, and storage failures keep an in-memory display', () => {
   const c = client();
   c.plan.remember('alice', { ...usage(c.now()), meals: { used: '<script>' } });
