@@ -142,11 +142,13 @@ test('lifetime Pro removes daily meal/Chef caps beyond one month and cancellatio
 });
 test('PDF entitlement is checked for Free, lifetime, cancelled and expired dated accounts',async()=>{
  const f=setup();
- const check=async()=>{
+ const check=async(query={feature:'pdf'},url)=>{
   const res={code:200,setHeader(){},status(code){this.code=code;return this;},json(body){this.body=body;return this;}};
-  await f.pro({method:'GET',headers:{authorization:'Bearer alice'},query:{feature:'pdf'}},res);return res;
+  await f.pro({method:'GET',headers:{authorization:'Bearer alice'},query,url},res);return res;
  };
  assert.equal((await check()).code,403);assert.equal((await check()).body.error.code,'PRO_REQUIRED');
+ assert.equal((await check(null,'/api/pro?feature=pdf')).code,403);
+ assert.equal((await check({},'/api/pro.js?feature=pdf')).code,403);
  await f.call(f.pro,{code:'test-activation-code'});assert.equal((await check()).code,200);
  f.advance(2*365*86400_000);assert.equal((await check()).code,200);
  await f.call(f.pro,null,'alice','DELETE');assert.equal((await check()).code,403);

@@ -125,3 +125,25 @@ test('failed revalidation retains cached counters; a delayed response after sign
   resolve({ ok: true, json: async () => ({ usage: usage(c.now(), 'pro', 0, '2026-11-20T20:00:00Z') }) });await pending;
   assert.equal(c.read(), null);assert(!c.data.has(key));
 });
+test('PDF export requires an explicit current Pro response regardless of the cached tier or HTTP success', async () => {
+  const c = client();
+  let response = { plan: 'free', expiresAt: null }, prompts = 0, status = 200;
+  c.context.window.NutriDialog.confirm = async () => { prompts++;return false; };
+  c.context.window.NutriSecurity.apiFetch = async path => ({ ok: status === 200,
+    json: async () => path === '/api/pro?feature=pdf' ? response : { usage: usage(c.now()) } });
+  const ui = c.usage();ui.connect('alice');await ui.refresh();
+  c.plan.remember('alice', { plan: 'pro', access: 'lifetime', expiresAt: null });
+  await assert.rejects(ui.requirePdfExport(), error => error.code === 'PRO_REQUIRED');
+  assert.equal(c.read().plan, 'free');assert.equal(prompts, 1);
+  for (const invalid of [{ plan: 'pro', expiresAt: null }, { plan: 'pro', expiresAt: 'bad' },
+    { plan: 'pro', expiresAt: new Date(c.now() - 1).toISOString() }]) {
+    response = invalid;await assert.rejects(ui.requirePdfExport(), error => error.code === 'PRO_REQUIRED');
+  }
+  status = 403;response = { error: { code: 'PRO_REQUIRED', message: 'Pro required' } };
+  await assert.rejects(ui.requirePdfExport(), error => error.code === 'PRO_REQUIRED');
+  assert.equal(prompts, 5);
+  status = 200;response = { plan: 'pro', access: 'lifetime', expiresAt: null };
+  assert.equal((await ui.requirePdfExport()).access, 'lifetime');assert.equal(c.read().plan, 'pro');
+  response = { plan: 'pro', expiresAt: new Date(c.now() + 60_000).toISOString() };
+  assert.equal((await ui.requirePdfExport()).plan, 'pro');assert.equal(prompts, 5);
+});

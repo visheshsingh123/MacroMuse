@@ -14,7 +14,8 @@ export function createProHandler({ getServices, quota = consumeQuota, clock = Da
       }
       if (req.method === 'GET') {
         const plan = await getPlan(db, uid, clock());
-        if (req.query?.feature === 'pdf') requirePro(plan);
+        const feature = new URL(req.url || '/', 'https://nutriglance.local').searchParams.get('feature');
+        if (req.query?.feature === 'pdf' || feature === 'pdf') requirePro(plan);
         return res.status(200).json(plan);
       }
       // Count every activation attempt, including incorrect codes.

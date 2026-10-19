@@ -59,6 +59,10 @@
       if (view && uid === owner && current()) window.location.href = '/premium';
     } finally { promptOpen = false; }
   }
+  async function showProRequired(owner) {
+    const view = await window.NutriDialog.confirm('PDF exports are included with NutriGlance Pro. Activate Pro with a code to download your progress report.', { title: 'Pro required', confirmLabel: 'Activate Pro', cancelLabel: 'Keep Free' });
+    if (view && current() && owner === uid) window.location.href = '/premium';
+  }
   async function request(path, options = {}) {
     if (!current()) throw new Error('Please sign in to continue.');
     const owner = uid;
@@ -77,13 +81,24 @@
       const error = new Error(data.error?.message || 'Couldn’t check your daily allowance. Please try again.');
       error.code = data.error?.code;
       if (error.code === 'FREE_QUOTA_EXCEEDED') await showLimit(data.error.feature);
-      if (error.code === 'PRO_REQUIRED') {
-        const view = await window.NutriDialog.confirm('PDF exports are included with NutriGlance Pro. Activate Pro with a code to download your progress report.', { title: 'Pro required', confirmLabel: 'Activate Pro', cancelLabel: 'Keep Free' });
-        if (view && current() && owner === uid) window.location.href = '/premium';
-      }
+      if (error.code === 'PRO_REQUIRED') await showProRequired(owner);
       throw error;
     }
     return data;
+  }
+  async function requirePdfExport() {
+    const owner = uid;
+    const plan = await request('/api/pro?feature=pdf');
+    const active = plan.plan === 'pro' && (plan.access === 'lifetime' && plan.expiresAt === null
+      || Date.parse(plan.expiresAt) > Date.now());
+    if (!active) {
+      if (plan.plan === 'free') window.NutriPlan.remember(owner, plan);
+      await showProRequired(owner);
+      const error = new Error('PDF exports require NutriGlance Pro.');
+      error.code = 'PRO_REQUIRED';throw error;
+    }
+    window.NutriPlan.remember(owner, plan);
+    return plan;
   }
   async function refresh() {
     if (!current()) return;
@@ -113,7 +128,7 @@
     const data = await request('/api/meals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ meal }) });
     return data.meal;
   }
-  window.NutriUsage = { connect, refresh, request, requireAvailable, saveMeal };
+  window.NutriUsage = { connect, refresh, request, requireAvailable, requirePdfExport, saveMeal };
   window.addEventListener('nutriglance:plan', restore);
   document.addEventListener('DOMContentLoaded', restore);
   const resume = () => { window.NutriPlan.sync();if (current() && Date.now() - checkedAt > 10_000) void refresh(); };

@@ -103,18 +103,19 @@
 
   let authorizedOwner = null, authorizedUntil = 0;
   window.addEventListener('beforeprint', () => {
-    if (!authorizedOwner || Date.now() >= authorizedUntil || !window.NutriSecurity.isCurrent(authorizedOwner)) {
+    if (!authorizedOwner || !(Date.now() < authorizedUntil) || !window.NutriSecurity.isCurrent(authorizedOwner)) {
       report.replaceChildren(element('h1', 'PDF exports require NutriGlance Pro'), element('p', 'Activate Pro and use Export as PDF to create a report.'));
       return;
     }
     buildReport();
   });
-  window.addEventListener('afterprint', () => { authorizedOwner = null;document.title = originalTitle;report.replaceChildren(); });
+  window.addEventListener('afterprint', () => { authorizedOwner = null;authorizedUntil = 0;document.title = originalTitle;report.replaceChildren(); });
   button.addEventListener('click', async () => {
     if (button.disabled) return;
     button.disabled = true;
+    authorizedOwner = null;authorizedUntil = 0;report.replaceChildren();
     try {
-      const plan = await window.NutriUsage.request('/api/pro?feature=pdf');
+      const plan = await window.NutriUsage.requirePdfExport();
       authorizedUntil = plan.access === 'lifetime' && plan.expiresAt === null ? Infinity : Date.parse(plan.expiresAt);
       authorizedOwner = window.nutriGlanceReminderAuth?.currentUser?.uid;
       if (!window.NutriSecurity.isCurrent(authorizedOwner)) throw new Error('Please sign in again.');
@@ -122,7 +123,7 @@
       window.print();
     } catch (error) {
       document.title = originalTitle;
-      authorizedOwner = null;
+      authorizedOwner = null;authorizedUntil = 0;report.replaceChildren();
       if (error.code !== 'PRO_REQUIRED') showToast(error.message || 'Could not open the print dialog. Please try again.');
     } finally { button.disabled = false; }
   });

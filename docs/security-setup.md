@@ -133,5 +133,7 @@ no per-user daily request cap.
 Saved recipes are returned in pages of 50 without a total collection cap for
 Pro. Free accounts that downgrade keep access to their full collection but must
 remove excess recipes before saving a new one. The PDF button verifies active
-Pro before generating the local print report; browser printing of a user's own
+Pro before generating the local print report. Free users see a Pro label and
+upgrade prompt; any Free, expired, malformed or failed entitlement response
+prevents opening the print dialog. Browser printing of a user's own
 visible information cannot be prevented as a form of copy protection.
