@@ -24,7 +24,8 @@
 .site-nav-links,.site-nav-actions { display:flex; align-items:center; gap:4px; }
 .site-nav-actions { gap:12px; }
 .site-nav button { cursor:pointer; }
-.site-nav .nav-pro-button { position:relative; display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; flex-shrink:0; border:0; border-radius:50%; background:transparent; color:#0f172a; box-shadow:none; text-decoration:none; }
+.site-nav .nav-pro-button { position:relative; display:none; align-items:center; justify-content:center; width:44px; height:44px; flex-shrink:0; border:0; border-radius:50%; background:transparent; color:#0f172a; box-shadow:none; text-decoration:none; }
+html[data-usage-plan="free"] .site-nav .nav-pro-button { display:inline-flex; }
 .site-nav .nav-pro-button::before { content:''; position:absolute; inset:4px; border:1px solid currentColor; border-radius:50%; opacity:.35; pointer-events:none; }
 .site-nav .nav-pro-button:hover::before { background:#ffffff1a; opacity:.65; }
 .site-nav .nav-pro-button svg { display:block; flex-shrink:0; }

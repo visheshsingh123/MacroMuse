@@ -3,7 +3,11 @@
   let uid = null, usage = null, promptOpen = false, checkedAt = 0, loading = null;
   const current = () => uid && window.NutriSecurity.isCurrent(uid);
   function render(error) {
+    const plan = current() && usage ? usage.plan : 'unknown';
+    document.documentElement.dataset.usagePlan = plan;
     document.querySelectorAll('[data-usage-feature]').forEach(section => {
+      // Wait for the server's plan so Pro members never see a Free upsell flash.
+      section.hidden = plan !== 'free';
       const feature = section.dataset.usageFeature, item = usage?.[feature];
       const label = feature === 'meals' ? 'meal logs' : 'AI Chef replies';
       const pro = usage?.plan === 'pro';
@@ -89,5 +93,8 @@
   }
   window.NutriUsage = { connect, refresh, request, requireAvailable, saveMeal };
   window.addEventListener('focus', () => { if (current() && Date.now() - checkedAt > 10_000) void refresh(); });
-  setInterval(() => { if (current() && usage && Date.now() >= Date.parse(usage.resetAt)) void refresh(); }, 30_000);
+  setInterval(() => {
+    if (current() && usage && (Date.now() >= Date.parse(usage.resetAt)
+      || usage.plan === 'pro' && Date.now() >= Date.parse(usage.expiresAt))) void refresh();
+  }, 30_000);
 })();
