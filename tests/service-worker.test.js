@@ -20,19 +20,21 @@ function worker() {
       return new Response('Saved file: ' + url.pathname, { status: url.pathname === unavailable ? 503 : 200, headers: { 'Cache-Control': policy } });
     },
   };
-  vm.runInNewContext(readFileSync(new URL('../public/service-worker.js', import.meta.url), 'utf8'), context);
+  const source = readFileSync(new URL('../public/service-worker.js', import.meta.url), 'utf8');
+  const cacheName = source.match(/const CACHE_NAME = '([^']+)'/)[1];
+  vm.runInNewContext(source, context);
   const lifecycle = async name => { let done;events[name]({ waitUntil: promise => done = promise });await done; };
   const fetch = async (path, options = {}) => {
     let response;
     events.fetch({ request: { url: new URL(path, 'https://example.com').href, method: 'GET', headers: new Headers(), mode: 'navigate', cache: 'default', ...options }, respondWith: promise => response = promise });
     return response === undefined ? null : await response;
   };
-  return { records, requests, lifecycle, fetch, setOffline: value => offline = value, setUnavailable: value => unavailable = value, setPolicy: value => policy = value };
+  return { cacheName, records, requests, lifecycle, fetch, setOffline: value => offline = value, setUnavailable: value => unavailable = value, setPolicy: value => policy = value };
 }
 
 test('PWA installation caches all page styles and scripts even if one optional page is unavailable', async () => {
   const fixture = worker();fixture.setUnavailable('/qr');await fixture.lifecycle('install');
-  const cache = fixture.records.get('nutriglance-v52');
+  const cache = fixture.records.get(fixture.cacheName);
   for (const path of ['/offline','/dashboard','/settings','/premium','/privacy','/site-shell.css','/site-shell.js','/dashboard.css','/progress-layout.css','/progress-print.css','/workspace-pages.css','/manifest.json']) assert(cache.has('https://example.com'+path), path);
   assert(!cache.has('https://example.com/qr'));
   const publicCode = fixture.records.get('nutriglance-public-libraries-v1');
@@ -60,7 +62,7 @@ test('only pinned public library files are intercepted; user APIs and Firebase d
 test('no-store and private responses are not persisted and server errors use an existing saved page', async () => {
   for (const policy of ['no-store','private']) {
     const fixture=worker();fixture.setPolicy(policy);await fixture.fetch('/dashboard');
-    assert.equal(fixture.records.get('nutriglance-v52').size,0);
+    assert.equal(fixture.records.get(fixture.cacheName).size,0);
   }
   const fixture=worker();await fixture.lifecycle('install');fixture.setUnavailable('/dashboard');
   assert.equal((await fixture.fetch('/dashboard')).status,200);
@@ -70,6 +72,6 @@ test('activation removes only old NutriGlance app caches and retains the public 
   const fixture=worker();await fixture.lifecycle('install');
   fixture.records.set('nutriglance-v51',new Map());fixture.records.set('another-app',new Map());
   await fixture.lifecycle('activate');
-  assert(!fixture.records.has('nutriglance-v51'));assert(fixture.records.has('nutriglance-v52'));
+  assert(!fixture.records.has('nutriglance-v51'));assert(fixture.records.has(fixture.cacheName));
   assert(fixture.records.has('nutriglance-public-libraries-v1'));assert(fixture.records.has('another-app'));
 });
