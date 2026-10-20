@@ -13,7 +13,7 @@
 .workspace-page a:focus-visible,.workspace-page button:focus-visible { outline:3px solid #059669; outline-offset:4px; }
 .settings-sidebar nav { display:flex; flex-direction:column; gap:6px; margin-top:24px; }
 .settings-sidebar nav a { padding:12px 10px; display:flex; align-items:center; gap:12px; color:var(--ws-ink); font-size:13px; font-weight:600; border-radius:12px; }
-.settings-sidebar nav a:hover { background:#d1fae5; }
+.settings-sidebar nav a:hover,.settings-sidebar nav a[aria-current="location"] { background:#d1fae5; }
 .settings-sidebar nav a span { font-size:10px; color:#047857; }
 .settings-content { display:flex; flex-direction:column; gap:20px; min-width:0; }
 #settings-page .section-card { border:1px solid var(--ws-line); border-radius:24px; box-shadow:none; background:var(--ws-card); scroll-margin-top:100px; }
@@ -67,7 +67,7 @@ html.dark #prof-activity,body.dark #prof-activity,html.dark #prof-goal,body.dark
 html.dark .workspace-page,body.dark .workspace-page { --ws-ink:#e2e8f0; --ws-muted:#94a3b8; --ws-card:#1e293b; --ws-soft:#0f172a; --ws-line:#334155; }
 html.dark .workspace-sidebar,body.dark .workspace-sidebar { background:#12382e; border-color:#245b49; }
 html.dark .workspace-eyebrow,body.dark .workspace-eyebrow,html.dark .settings-sidebar nav a span,body.dark .settings-sidebar nav a span { color:#6ee7b7; }
-html.dark .settings-sidebar nav a:hover,body.dark .settings-sidebar nav a:hover { background:#064e3b; }
+html.dark .settings-sidebar nav a:hover,body.dark .settings-sidebar nav a:hover,html.dark .settings-sidebar nav a[aria-current="location"],body.dark .settings-sidebar nav a[aria-current="location"] { background:#064e3b; }
 html.dark .chef-sidebar-icon,body.dark .chef-sidebar-icon { background:#064e3b; color:#6ee7b7; }
 html.dark #chef-page .suggestion-chip,body.dark #chef-page .suggestion-chip { background:#064e3b; color:#a7f3d0; border-color:#245b49; }
 html.dark .chef-sidebar-tip,body.dark .chef-sidebar-tip { border-color:#245b49; }

@@ -39,6 +39,40 @@
   desktop.addEventListener('change', () => { if (desktop.matches) close(); });
 })();
 
+// Settings section shortcuts scroll the page below the sticky navbar.
+(() => {
+  const nav = document.querySelector('.settings-sidebar nav');
+  if (!nav) return;
+  const links = nav.querySelectorAll('a[href^="#"]');
+  const markCurrent = () => links.forEach(link => {
+    if (link.hash === location.hash) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+
+  nav.addEventListener('click', event => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const section = document.getElementById(link.hash.slice(1));
+    if (!section) return;
+    event.preventDefault();
+    if (location.hash !== link.hash) history.pushState(null, '', link.hash);
+    markCurrent();
+
+    const heading = section.querySelector('h2');
+    if (heading) {
+      heading.setAttribute('tabindex', '-1');
+      heading.focus({ preventScroll: true });
+    }
+    const headerBottom = document.querySelector('.site-nav')?.getBoundingClientRect().bottom || 0;
+    window.scrollTo({
+      top: window.scrollY + section.getBoundingClientRect().top - Math.max(0, headerBottom) - 24,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    });
+  });
+  window.addEventListener('hashchange', markCurrent);
+  markCurrent();
+})();
+
 // A small connection indicator; cached pages stay usable without a write queue.
 (() => {
   const notice = document.createElement('aside');notice.className = 'connection-notice';notice.setAttribute('role', 'status');notice.hidden = true;
