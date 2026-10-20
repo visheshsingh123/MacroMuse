@@ -542,11 +542,11 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
               </div>
               <div class="flex-1">
-                <p class="text-sm font-semibold text-charcoal">Reset App Data</p>
-                <p class="text-xs text-muted mt-0.5 mb-3">Permanently clears your profile, all meals, and every saved preference. Cannot be undone.</p>
+                <p class="text-sm font-semibold text-charcoal">Clear local data</p>
+                <p class="text-xs text-muted mt-0.5 mb-3">Clears this browser’s cached app data and preferences and turns off this device’s reminders. Your account and cloud records remain.</p>
                 <button id="reset-app-btn"
                         class="danger-btn text-sm font-semibold text-red-500 border border-red-200 px-4 py-2 rounded-xl hover:bg-red-50 hover:border-red-300 transition-all">
-                  Reset All Data
+                  Clear Local Data
                 </button>
               </div>
             </div>
@@ -697,9 +697,9 @@
     // ── Reset app data ──
     document.getElementById('reset-app-btn').addEventListener('click', async () => {
       const owner = localStorage.getItem('nutriglance_session_uid');
-      if (await window.NutriDialog.confirm('This will clear your profile, meals, and all saved data. Are you sure?', { title: 'Reset app data?', confirmLabel: 'Reset data', danger: true })) {
+      if (await window.NutriDialog.confirm('Clear cached app data and preferences from this browser and turn off this device’s reminders? Your account, cloud meals, saved recipes, and Pro access will remain.', { title: 'Clear local data?', confirmLabel: 'Clear local data', danger: true })) {
         if (!window.NutriSecurity.isCurrent(owner)) return;
-        try { await window.nutriGlanceDisableReminders?.(); } catch { await window.NutriDialog.alert('Couldn’t disable reminders. Please try again before resetting.', { title: 'Couldn’t reset data' }); return; }
+        try { await window.nutriGlanceDisableReminders?.(); } catch { await window.NutriDialog.alert('Couldn’t disable reminders. Please try again before clearing local data.', { title: 'Couldn’t clear local data' }); return; }
         if (!window.NutriSecurity.isCurrent(owner)) return;
         localStorage.clear();
         location.href = '/login';

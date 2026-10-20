@@ -18,6 +18,8 @@
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Privacy Policy – NutriGlance</title>
+  <meta name="description" content="How NutriGlance handles account data, meal scans, AI Chef chats, saved recipes, Pro access, browser caches, and deletion requests." />
+  <link rel="canonical" href="https://nutriglance.vercel.app/privacy" />
 
   <!-- PWA: manifest + service worker -->
   <link rel="manifest" href="/manifest.json" />
@@ -163,284 +165,75 @@
   </nav>
 
   <!-- ── Main Content ── -->
-  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 relative z-10 page-animate">
-
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs font-medium text-muted mb-6">
-      <a href="/?view=home" class="hover:text-charcoal transition-colors">Home</a>
-      <span>/</span>
-      <span class="text-charcoal font-semibold">Privacy Policy</span>
-    </nav>
-
-    <!-- Header Card -->
-    <div class="bg-card rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 mb-8">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 mb-4">
-        <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
-        Privacy & Data Security
-      </div>
-      <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-charcoal tracking-tight">
-        Privacy Policy
-      </h1>
-      <p class="text-sm text-muted mt-3 max-w-2xl leading-relaxed">
-        Your privacy is paramount. This policy explains how NutriGlance collects, protects, processes, and respects your meal scans, health targets, and personal information.
-      </p>
-      <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-muted">
-        <span>Effective Date: June 1, 2026</span>
-        <span>Last Updated: October 2026</span>
-      </div>
-    </div>
-
-    <!-- Policy Content Card -->
-    <div class="bg-card rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 space-y-8 text-sm leading-relaxed">
-
-      <!-- Section 1 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">1</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Overview & Core Principles</h2>
-        </div>
-        <p class="text-charcoal/80">
-          NutriGlance ("we", "our", or "us") provides an AI-powered personal dietitian and nutrition logging service available via our web and mobile applications. We believe your dietary choices, meal photos, and biometrics belong strictly to you.
-        </p>
-        <p class="text-charcoal/80">
-          Our core privacy commitments:
-        </p>
-        <ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2">
-          <li>We never sell or rent your personal, dietary, or biometric data to third-party advertisers or brokers.</li>
-          <li>Meal images are processed exclusively for nutritional analysis and recipe generation.</li>
-          <li>You retain complete control: you can inspect, modify, or permanently delete your meal history at any time.</li>
-        </ul>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 2 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">2</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Information We Collect</h2>
-        </div>
-        <p class="text-charcoal/80">
-          To provide nutritional insights, macro calculations, and personalized meal recommendations, we collect the following types of information:
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-          <div class="p-4 rounded-xl info-card">
-            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              Profile & Biometric Targets
-            </h3>
-            <p class="text-xs info-desc leading-relaxed">
-              User profile details such as age, gender, height, current weight, activity level, weight goal preference, daily target calories, and macro breakdown (protein, carbs, fat) used to calibrate your nutrition goals. These profile details are not automatically submitted to Google Forms.
-            </p>
-          </div>
-
-          <div class="p-4 rounded-xl info-card">
-            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              Meal Images & Food Logs
-            </h3>
-            <p class="text-xs info-desc leading-relaxed">
-              Photos of food, handwritten meal notes, text descriptions (e.g. "2 rotis with dal"), meal timestamps, estimated macro values, and daily water hydration counts you record.
-            </p>
-          </div>
-
-          <div class="p-4 rounded-xl info-card">
-            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Authentication Credentials
-            </h3>
-            <p class="text-xs info-desc leading-relaxed">
-              If you register an account, we securely manage your email address, display name, and Firebase User ID (UID), or public Google account profile via Google OAuth. Passwords are never stored on our servers.
-            </p>
-          </div>
-
-          <div class="p-4 rounded-xl info-card">
-            <h3 class="font-semibold text-charcoal mb-1 flex items-center gap-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              Technical & Device Information
-            </h3>
-            <p class="text-xs info-desc leading-relaxed">
-              Browser type, operating system, and local display preferences (such as light or dark theme) to optimize visual presentation and offline PWA functionality.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 3 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">3</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">How We Use Your Information</h2>
-        </div>
-        <p class="text-charcoal/80">
-          We use the information we collect strictly to deliver and refine your dietitian experience:
-        </p>
-        <ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2">
-          <li><strong>Real-Time Meal Scanning:</strong> Analyzing uploaded food images through AI vision models to detect dishes and estimate calories, protein, carbohydrates, and fats.</li>
-          <li><strong>AI Chef Personalization:</strong> Formulating customized recipe ideas, ingredient suggestions, and nutritional alternatives based on your remaining daily macros.</li>
-          <li><strong>Progress & Habit Tracking:</strong> Aggregating your daily intake, calorie burn ratios, and hydration streaks over weekly and monthly trends.</li>
-          <li><strong>Cross-Device Synchronization:</strong> Syncing your meal timeline seamlessly across your browser, tablet, and mobile PWA via encrypted cloud database.</li>
-        </ul>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 4 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">4</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">AI Processing & Third-Party Service Providers</h2>
-        </div>
-        <p class="text-charcoal/80">
-          NutriGlance integrates select, industry-standard infrastructure partners to process meal scans and authenticate users:
-        </p>
-        <div class="space-y-2.5 pt-1">
-          <div class="p-3.5 rounded-xl info-card">
-            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">AI Inference (Groq & Vision APIs)</span>
-            <p class="text-xs info-desc">
-              When you scan a meal or ask the AI Chef for recipes, visual or textual prompts are securely processed by high-speed inference endpoints. Your photo or meal description is sent to Groq for analysis. NutriGlance does not save the uploaded photo in your meal history; processing and retention by the AI provider follow its policies.
-            </p>
-          </div>
-
-          <div class="p-3.5 rounded-xl info-card">
-            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">Authentication & Storage (Google Firebase)</span>
-            <p class="text-xs info-desc">
-              Account authentication and user records are managed via Google Firebase Authentication and Cloud Firestore, protected by granular Firestore Security Rules ensuring users can only read and write their own data.
-            </p>
-          </div>
-
-          <div class="p-3.5 rounded-xl info-card">
-            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">Optional notifications &amp; feedback</span>
-            <p class="text-xs info-desc">If you enable reminders, your browser’s push service receives the reminder text and our server stores the device subscription and encryption keys. Turning reminders off removes that device’s subscription. Your star rating, name, email address, and written review from the feedback page are sent to Google Forms only when you press Submit.</p>
-          </div>
-          <div class="p-3.5 rounded-xl info-card">
-            <span class="font-semibold text-charcoal text-xs uppercase tracking-wider block mb-1">Hosting & Deployment (Vercel)</span>
-            <p class="text-xs info-desc">
-              Our web infrastructure is hosted on Vercel's global edge network with automated HTTPS encryption, DDOS protection, and high-availability caching.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 5 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">5</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Data Storage, Local Caching & Security</h2>
-        </div>
-        <p class="text-charcoal/80">
-          We implement rigorous administrative, technical, and physical security safeguards to maintain your data integrity:
-        </p>
-        <ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2">
-          <li><strong>Encryption in Transit:</strong> All communications between your device, our serverless APIs, and AI models use modern TLS 1.3 encryption.</li>
-          <li><strong>Offline Local Storage:</strong> NutriGlance caches your current day's meals locally using browser <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand font-mono text-xs">localStorage</code> so you can review meals even with intermittent connectivity.</li>
-          <li><strong>Least-Privilege Database Access:</strong> Firestore rules enforce authentication checks so that no user can query or modify another user's dietary logs.</li>
-        </ul>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 6 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">6</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Your Rights & Data Control</h2>
-        </div>
-        <p class="text-charcoal/80">
-          You have full authority over your data. At any time, you can:
-        </p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-          <div class="p-3 rounded-lg info-card text-center">
-            <span class="font-semibold text-charcoal block text-xs mb-1">Delete Log Entries</span>
-            <span class="text-xs info-desc">Remove any individual meal entry directly from your dashboard or meals history tab.</span>
-          </div>
-          <div class="p-3 rounded-lg info-card text-center">
-            <span class="font-semibold text-charcoal block text-xs mb-1">Update Targets</span>
-            <span class="text-xs info-desc">Re-adjust your height, weight, activity levels, or target calorie thresholds in settings.</span>
-          </div>
-          <div class="p-3 rounded-lg info-card text-center">
-            <span class="font-semibold text-charcoal block text-xs mb-1">Purge Account</span>
-            <span class="text-xs info-desc">Request complete deletion of your Firebase profile and associated food logs permanently.</span>
-          </div>
-        </div>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 7 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">7</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Cookies & Local Storage</h2>
-        </div>
-        <p class="text-charcoal/80">
-          NutriGlance does not use invasive third-party tracking or advertising cookies. We strictly utilize necessary client-side storage technologies (<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand font-mono text-xs">localStorage</code> and Service Worker cache) to:
-        </p>
-        <ul class="list-disc list-inside space-y-1 text-charcoal/80 pl-2">
-          <li>Remember your light / dark mode color scheme preference.</li>
-          <li>Store offline session tokens so you remain signed in.</li>
-          <li>Cache your own nutritional history while you are signed in. Signing out or switching accounts clears this account data from the browser.</li>
-          <li>Store device notification preferences and, if you enable reminders, a push subscription so reminders can arrive with the app closed.</li>
-        </ul>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 8 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">8</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Children's Privacy</h2>
-        </div>
-        <p class="text-charcoal/80">
-          NutriGlance is intended for general audiences aged 13 and older (or the applicable minimum legal age in your jurisdiction). We do not knowingly solicit or collect personal or nutritional data from children under 13 without verified parental consent. If we become aware that such information has been logged, we promptly take steps to delete it.
-        </p>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 9 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">9</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Updates to This Policy</h2>
-        </div>
-        <p class="text-charcoal/80">
-          As we release new AI capabilities, nutritional calculators, or integrations, we may update this Privacy Policy periodically. Significant updates will be highlighted on this page along with a revised "Last Updated" date. Continued use of NutriGlance after changes indicates your acknowledgement of the updated terms.
-        </p>
-      </section>
-
-      <hr class="border-slate-100 dark:border-slate-800" />
-
-      <!-- Section 10 -->
-      <section class="space-y-3">
-        <div class="flex items-center gap-2.5">
-          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs">10</span>
-          <h2 class="font-display text-lg sm:text-xl font-bold text-charcoal">Contact Us</h2>
-        </div>
-        <p class="text-charcoal/80">
-          If you have questions regarding this Privacy Policy, your personal data, or data deletion requests, please connect with us:
-        </p>
-        <div class="mt-3 p-4 rounded-xl info-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <span class="font-semibold text-charcoal block">NutriGlance Privacy & Support</span>
-            <span class="text-xs info-desc">Created & maintained by Vishesh Singh</span>
-          </div>
-          <a href="mailto:support@nutriglance.vercel.app" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-emerald-600 transition-colors">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Contact Support
-          </a>
-        </div>
-      </section>
-
-    </div>
-
-  </main>
+  <main id="privacy-page" class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 relative z-10 page-animate">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs font-medium text-muted mb-6"><a href="/?view=home" class="hover:text-charcoal transition-colors">Home</a><span aria-hidden="true">/</span><span aria-current="page" class="text-charcoal font-semibold">Privacy Policy</span></nav>
+<div class="bg-card rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 mb-8">
+<h1 class="font-display text-3xl sm:text-4xl font-extrabold text-charcoal tracking-tight">Privacy Policy</h1>
+<p class="text-sm text-muted mt-3 max-w-2xl leading-relaxed">How NutriGlance handles your account, meal scans, Chef conversations, saved recipes, Pro access, and device data.</p>
+<div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-3 justify-between text-xs text-muted"><span>Effective date: 1 June 2026</span><span>Last updated: <time datetime="2026-10-20">20 October 2026</time></span></div>
+</div>
+<div class="bg-card rounded-2xl p-6 sm:p-10 shadow-sm border border-slate-200 space-y-8 text-sm leading-relaxed">
+<section id="privacy-overview" aria-labelledby="privacy-overview-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">1</span><h2 id="privacy-overview-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">What this policy covers</h2></div>
+<p class="text-charcoal/80">NutriGlance is a nutrition tracking and cooking assistant created and maintained by Vishesh Singh. This policy covers the website, installed web app, and the NutriGlance Android app when it uses the same services.</p><p class="text-charcoal/80">We use the information you provide to run your account, estimate nutrition, store your logs, suggest recipes, manage Free and Pro access, and deliver optional reminders. We do not sell or rent your personal data or use advertising trackers.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-information" aria-labelledby="privacy-information-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">2</span><h2 id="privacy-information-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Information you provide</h2></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2"><div class="p-4 rounded-xl info-card"><h3 class="font-semibold text-charcoal mb-1">Account and profile</h3><p class="text-xs info-desc leading-relaxed">Firebase account ID, email, display name, and Google sign-in profile information when you use Google. Profile details include age, gender, height, weight, activity level, goal preference, calorie and macro targets, and your selected avatar. Password sign-in is handled by Firebase Authentication.</p></div><div class="p-4 rounded-xl info-card"><h3 class="font-semibold text-charcoal mb-1">Meals, progress, and recipes</h3><p class="text-xs info-desc leading-relaxed">Meal descriptions, portion details, timestamps, estimated calories and macros, hydration counts, and other progress entries you choose to record. Saved recipes include their ingredients, method, nutrition estimates, and saved date.</p></div><div class="p-4 rounded-xl info-card"><h3 class="font-semibold text-charcoal mb-1">AI requests and photos</h3><p class="text-xs info-desc leading-relaxed">Photos you select or capture for meal analysis, food descriptions, cooking questions, ingredients, and recent messages included with AI Chef requests. Only select images and information you want processed.</p></div><div class="p-4 rounded-xl info-card"><h3 class="font-semibold text-charcoal mb-1">Access, reminders, and feedback</h3><p class="text-xs info-desc leading-relaxed">Your Free or Pro status, activation and cancellation records, daily usage and request-limit records. Optional reminders use your device push subscription. Feedback includes the rating, name, email, and review you submit.</p></div></div>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-ai" aria-labelledby="privacy-ai-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">3</span><h2 id="privacy-ai-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Meal scans and AI Chef</h2></div>
+<p class="text-charcoal/80">Meal photos and descriptions are sent through our server to Groq for AI processing. NutriGlance saves the resulting meal details when you log the meal; it does not save the uploaded photo in your cloud meal history.</p><p class="text-charcoal/80">AI Chef sends your current question and a limited recent conversation history to Groq. Your full profile and meal diary are not automatically included in Chef requests. NutriGlance keeps the conversation in the current page rather than saving a chat transcript to your account. Recipes you choose to save are stored separately.</p><p class="text-charcoal/80">Clearing a chat resets the conversation on your device. It does not erase requests already processed by a provider. Groq’s own policies govern its processing and retention of submitted content. Avoid putting sensitive personal information in prompts or unrelated details in photos.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-providers" aria-labelledby="privacy-providers-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">4</span><h2 id="privacy-providers-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Service providers and external resources</h2></div>
+<ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2"><li><strong>Google Firebase:</strong> account authentication and Cloud Firestore storage for profiles, meals, progress, saved recipes, preferences, access status, and operational records.</li><li><strong>Groq:</strong> AI processing of meal images, descriptions, and Chef conversations.</li><li><strong>Vercel:</strong> website hosting and server functions. Hosting providers receive connection information such as IP address, request time, and browser details and may keep operational or security logs.</li><li><strong>Browser push services:</strong> delivery of reminders when you enable notifications. The service depends on your browser or device.</li><li><strong>Google Forms:</strong> receives your rating, name, email, and review only when you submit feedback. Your nutrition profile and diary are not automatically attached.</li><li><strong>Google Fonts and external links:</strong> loading fonts sends a request to Google. Following a portfolio, social, source, or other external link takes you to a service with its own privacy practices.</li></ul><p class="text-charcoal/80">Providers may process information in countries other than your own. See <a href="https://firebase.google.com/support/privacy" class="font-semibold text-brand hover:underline">Firebase privacy information</a>, <a href="https://groq.com/privacy-policy/" class="font-semibold text-brand hover:underline">Groq’s privacy policy</a>, <a href="https://vercel.com/legal/privacy-policy" class="font-semibold text-brand hover:underline">Vercel’s privacy policy</a>, and <a href="https://policies.google.com/privacy" class="font-semibold text-brand hover:underline">Google’s privacy policy</a> for their practices.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-storage" aria-labelledby="privacy-storage-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">5</span><h2 id="privacy-storage-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Browser storage and caching</h2></div>
+<p class="text-charcoal/80">Your browser stores the signed-in session through Firebase and uses local storage for your profile, meal history, hydration, saved recipes, avatar, theme, reminder preferences, and a short-lived copy of your tier and daily allowance. Session storage can help restore the same account’s display during navigation.</p><p class="text-charcoal/80">These local copies make pages load faster. The server checks permissions and quotas; changing a cached tier does not unlock Pro. Signing out or switching accounts clears NutriGlance’s account caches. Theme preferences may remain. On shared devices, sign out when you finish.</p><p class="text-charcoal/80">The service worker caches pages and app assets for faster loading and limited offline viewing. It excludes API responses, authenticated requests, and Firebase traffic. AI requests and cloud saves need an internet connection. Browser settings can clear site storage and cached files.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-reminders" aria-labelledby="privacy-reminders-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">6</span><h2 id="privacy-reminders-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Optional reminders</h2></div>
+<p class="text-charcoal/80">Enabling notifications requires browser permission. We store the push endpoint, subscription keys, your account ID, and delivery state. The reminder service checks recent meal and water activity to choose a message; reminder text may be visible on your device’s lock screen.</p><p class="text-charcoal/80">Turn reminders off in Settings to remove this device’s subscription, or revoke notification permission in your browser. Delivery depends on your browser, device, connection, and service availability.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-pro" aria-labelledby="privacy-pro-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">7</span><h2 id="privacy-pro-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Free limits, Pro access, and exports</h2></div>
+<p class="text-charcoal/80">The Free plan allows 3 meal logs and 5 successful AI Chef replies per day, resetting at 00:00 UTC. Saving recipes and PDF progress exports require Pro. The server records usage to enforce these limits; deleting a meal does not restore the day’s allowance.</p><p class="text-charcoal/80">Pro is currently listed at US$5 or ₹500 as a one-time price for lifetime access. Activation uses a code checked by our server. The activation form does not take a payment, and the website currently has no payment checkout or card collection. Earlier time-limited activations keep the expiry shown in Settings.</p><p class="text-charcoal/80">Pro PDF reports are created through your browser’s print or save-as-PDF function. You control where the file is saved or shared. Cancelling Pro in Account &amp; data ends Pro access without deleting meals or saved recipes or issuing a refund. Previously saved recipes remain available to view or remove on Free.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-retention" aria-labelledby="privacy-retention-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">8</span><h2 id="privacy-retention-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Retention and deletion</h2></div>
+<p class="text-charcoal/80">Cloud profiles, meal and progress records, saved recipes, and preferences do not currently have an automatic deletion schedule. Access records, usage counters, and other operational records may remain after you stop using a feature.</p><p class="text-charcoal/80">Deleting a meal removes it from the visible diary. The server also retains an original meal receipt for safe retries and Undo, and usage records to prevent quota bypass; deleting the visible entry does not remove those records. Removing a saved recipe deletes it from your saved collection.</p><p class="text-charcoal/80">Clearing local data or uninstalling the app does not delete your Firebase account or cloud records. To request account and associated cloud-data deletion, email <a href="mailto:nutriglanceai@gmail.com" class="font-semibold text-brand hover:underline">nutriglanceai@gmail.com</a> from your account email where possible. We may need to verify ownership before acting. Mention any feedback sent to Google Forms so it can be included in your request. Providers may retain service logs or backups under their own policies.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-controls" aria-labelledby="privacy-controls-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">9</span><h2 id="privacy-controls-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Your choices and account controls</h2></div>
+<ul class="list-disc list-inside space-y-1.5 text-charcoal/80 pl-2"><li>Edit your profile and nutrition targets in <a href="/settings" class="font-semibold text-brand hover:underline">Settings</a>.</li><li>View and remove meals in <a href="/meals" class="font-semibold text-brand hover:underline">Meals</a> and remove saved recipes in <a href="/aichef" class="font-semibold text-brand hover:underline">AI Chef</a>.</li><li>Use <strong>Clear local data</strong> in Settings to clear this browser’s cached app data and preferences and turn off this device’s reminders. Your account and cloud records remain.</li><li>Contact <a href="mailto:nutriglanceai@gmail.com" class="font-semibold text-brand hover:underline">nutriglanceai@gmail.com</a> to ask about your personal data, request a correction, access, or deletion, including if you cannot access your account. PDF export is a Pro feature; you can still contact us about your data on Free.</li></ul>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-security" aria-labelledby="privacy-security-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">10</span><h2 id="privacy-security-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Security</h2></div>
+<p class="text-charcoal/80">We use HTTPS, authenticated API requests, database access rules, and server-side checks for account access, quotas, and Pro features. Password authentication is managed by Firebase. Local browser storage is not a secure vault; protect your device and avoid leaving your account open on a shared computer.</p><p class="text-charcoal/80">No online service can guarantee absolute security. If you suspect unauthorized access or a data issue, contact us using the address below.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-children" aria-labelledby="privacy-children-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">11</span><h2 id="privacy-children-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Children’s privacy</h2></div>
+<p class="text-charcoal/80">NutriGlance is not intended for children under 13 or the higher minimum age required where they live. Entering an age in a profile is not identity or parental-consent verification. If you believe a child has supplied personal information, contact us to request its removal.</p>
+</section>
+<hr class="border-slate-100 dark:border-slate-800" />
+<section id="privacy-contact" aria-labelledby="privacy-contact-heading" class="space-y-3">
+<div class="flex items-center gap-2.5"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand/10 text-brand font-bold text-xs shrink-0">12</span><h2 id="privacy-contact-heading" class="font-display text-lg sm:text-xl font-bold text-charcoal">Updates and contact</h2></div>
+<p class="text-charcoal/80">We may update this policy as NutriGlance changes. The date above identifies the latest revision. For privacy questions or requests, contact Vishesh Singh, the creator and maintainer of NutriGlance, at <a href="mailto:nutriglanceai@gmail.com" class="font-semibold text-brand hover:underline">nutriglanceai@gmail.com</a>.</p>
+</section>
+</div>
+</main>
 
   <!-- ════════════════════════════════════════════════════════════════
        FOOTER — exactly like index.html
