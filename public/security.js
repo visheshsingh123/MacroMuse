@@ -15,18 +15,38 @@
       const dashboard = /^\/(dashboard|nutriglance)(\.html)?\/?$/.test(location.pathname);
       loader.setAttribute('aria-label', dashboard ? 'Loading dashboard' : 'Loading page');
       const line = '<span class="loading-placeholder loading-line"></span>';
-      const card = `<div class="loading-card">${line}${line}</div>`;
+      const mealRow = `<div class="loading-meal-row"><span class="loading-meal-dot loading-placeholder"></span><div class="loading-meal-copy">${line}${line}</div><span class="loading-meal-time loading-placeholder"></span><span class="loading-meal-delete loading-placeholder"></span></div>`;
+      const action = name => `<div class="loading-card loading-action loading-${name}"><div class="loading-action-heading"><span class="loading-action-icon loading-placeholder"></span>${line}</div>${line}</div>`;
       loader.innerHTML = dashboard ? `
         <div class="loading-dashboard" aria-hidden="true">
-          <div class="loading-navbar"><div><span class="loading-brand">NutriGlance</span><span class="loading-nav-links">${line}${line}${line}${line}</span><span class="loading-avatar loading-placeholder"></span></div></div>
+          <div class="loading-navbar"><div><span class="loading-brand">NutriGlance</span><span class="loading-nav-links">${line}${line}${line}${line}${line}</span><span class="loading-account"><span class="loading-pro loading-placeholder"></span><span class="loading-avatar loading-placeholder"></span></span></div></div>
           <div class="loading-dashboard-content">
-            <div class="loading-greeting loading-placeholder"></div>
-            <div class="loading-dashboard-grid">
-              <div class="loading-card loading-nutrition">${line}<div class="loading-calorie-ring loading-placeholder"></div><div class="loading-macros">${line}${line}${line}${line}${line}${line}</div><div class="loading-input loading-placeholder"></div></div>
-              <div class="loading-meal-column"><div class="loading-card loading-upload"><span class="loading-upload-icon loading-placeholder"></span>${line}${line}</div><div class="loading-card loading-recent">${line}<div class="loading-meal-row">${line}${line}</div><div class="loading-meal-row">${line}${line}</div><div class="loading-meal-row">${line}${line}</div></div></div>
-              <div class="loading-actions">${card}${card}${card}<div class="loading-card loading-water">${line}<div>${Array(8).fill('<span class="loading-placeholder"></span>').join('')}</div></div></div>
+            <div class="loading-dashboard-heading">
+              <div class="loading-greeting loading-placeholder"></div>
+              <div class="loading-guidance">${line}${line}</div>
+              <div class="loading-summary"><span class="loading-placeholder"></span><span class="loading-placeholder"></span><span class="loading-placeholder"></span><span class="loading-recipe-link loading-placeholder"></span></div>
             </div>
+            <div class="loading-dashboard-grid">
+              <div class="loading-card loading-nutrition">
+                <div class="loading-nutrition-title">${line}${line}</div>
+                <div class="loading-calorie-ring loading-placeholder"></div>
+                <div class="loading-macros">${Array(3).fill(`<div class="loading-macro"><div>${line}${line}</div><span class="loading-macro-bar loading-placeholder"></span></div>`).join('')}</div>
+                <div class="loading-describe">${line}<div><span class="loading-input loading-placeholder"></span><span class="loading-send loading-placeholder"></span></div></div>
+              </div>
+              <div class="loading-meal-column">
+                <div class="loading-card loading-upload"><span class="loading-upload-icon loading-placeholder"></span>${line}${line}</div>
+                <div class="loading-card loading-recent"><div class="loading-recent-heading">${line}<span class="loading-clear loading-placeholder"></span></div><div class="loading-meals">${mealRow}${mealRow}${mealRow}</div><div class="loading-recent-footer">${line}</div></div>
+              </div>
+              <div class="loading-actions">
+                ${action('scan')}${action('chef')}
+                <div class="loading-card loading-goal">${line}<span class="loading-goal-value loading-placeholder"></span>${line}<span class="loading-goal-bar loading-placeholder"></span></div>
+                <div class="loading-card loading-water"><div class="loading-water-heading">${line}${line}</div><div class="loading-water-glasses">${Array(8).fill('<span class="loading-placeholder"></span>').join('')}</div><span class="loading-water-reset loading-placeholder"></span></div>
+              </div>
+            </div>
+            <div class="loading-allowance loading-card"><div>${line}${line}</div><span class="loading-plan-link loading-placeholder"></span></div>
           </div>
+          <div class="loading-mobile-actions">${Array(3).fill('<span class="loading-placeholder"></span>').join('')}</div>
+          <div class="loading-bottom-nav">${Array(5).fill(`<div><span class="loading-bottom-icon loading-placeholder"></span>${line}</div>`).join('')}</div>
         </div>` : '<div class="session-loading-center"><span class="circular-loader" aria-hidden="true"></span></div>';
       document.body.appendChild(loader);
     }
