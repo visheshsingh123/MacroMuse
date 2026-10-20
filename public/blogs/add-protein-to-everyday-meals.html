@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Restore the saved theme before stylesheets or account scripts can delay paint. -->
+  <script>
+    (() => {
+      let dark = false;
+      try { dark = localStorage.getItem('nutriglance_darkmode') === '1'; } catch {}
+      document.documentElement.classList.toggle('dark', dark);
+    })();
+  </script>
+  <style>
+    html { background:#eff7f4; color-scheme:light; }
+    html.dark { background:#0f172a; color-scheme:dark; }
+    html.dark body { background-color:#0f172a!important; color:#e2e8f0!important; }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple ways to add protein to everyday meals – NutriGlance</title>
+  <meta name="description" content="Build meals around familiar protein sources, from dal and chickpeas to eggs, tofu, and yogurt, without making cooking complicated." />
+  <link rel="canonical" href="https://nutriglance.vercel.app/blogs/add-protein-to-everyday-meals" />
+  <meta property="og:title" content="Simple ways to add protein to everyday meals – NutriGlance" />
+  <meta property="og:description" content="Build meals around familiar protein sources, from dal and chickpeas to eggs, tofu, and yogurt, without making cooking complicated." />
+  <meta property="og:url" content="https://nutriglance.vercel.app/blogs/add-protein-to-everyday-meals" />
+  <meta property="og:type" content="article" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
+  <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
+  <link rel="stylesheet" href="/app.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/site-shell.css" />
+  <script src="/site-shell.js" defer></script>
+  <link rel="stylesheet" href="/design-system.css" />
+  <script src="/accessibility.js" defer></script>
+  <link rel="stylesheet" href="/dialogs.css" />
+  <script src="/dialogs.js" defer></script>
+  <link rel="stylesheet" href="/blogs.css" />
+  <script src="/blogs.js" defer></script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Simple ways to add protein to everyday meals", "description": "Build meals around familiar protein sources, from dal and chickpeas to eggs, tofu, and yogurt, without making cooking complicated.", "author": {"@type": "Organization", "name": "NutriGlance", "url": "https://nutriglance.vercel.app/"}, "publisher": {"@type": "Organization", "name": "NutriGlance"}, "datePublished": "2026-10-20", "dateModified": "2026-10-20", "mainEntityOfPage": "https://nutriglance.vercel.app/blogs/add-protein-to-everyday-meals", "articleSection": "Everyday nutrition", "wordCount": 493}</script>
+</head>
+<body class="blog-page bg-bg min-h-screen font-body text-charcoal flex flex-col">
+  <script>document.body.classList.toggle('dark', document.documentElement.classList.contains('dark'));</script>
+<nav class="site-nav bg-brand sticky top-0 z-40" aria-label="Site header">
+    <div class="site-nav-container">
+      <div class="site-nav-row">
+        <a href="/?view=home" class="flex items-center gap-2">
+          <span class="font-display text-xl font-extrabold tracking-tight">
+            <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand"></span>
+          </span>
+          <span class="hidden sm:inline text-charcoal/70 font-medium text-xs">Your personal AI dietitian</span>
+        </a>
+        <div class="site-nav-actions"><button id="dark-toggle" aria-label="Toggle dark mode"
+          class="w-8 h-8 rounded-lg flex items-center justify-center text-white/80
+                 hover:bg-white/20 transition-colors duration-150">
+          <!-- Moon (light mode) -->
+          <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <!-- Sun (dark mode) -->
+          <svg id="icon-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button></div>
+      </div>
+    </div>
+  </nav>
+<main id="blog-article-page" class="blog-main">
+<nav class="blog-breadcrumb" aria-label="Breadcrumb"><a href="/?view=home">Home</a><span aria-hidden="true">/</span><a href="/blogs">Blog</a><span aria-hidden="true">/</span><span aria-current="page">Everyday nutrition</span></nav>
+<article>
+<header class="blog-article-header"><span class="blog-category">Everyday nutrition</span><h1>Simple ways to add protein to everyday meals</h1><p class="blog-article-lead">Build meals around familiar protein sources, from dal and chickpeas to eggs, tofu, and yogurt, without making cooking complicated.</p><p class="blog-byline">By NutriGlance <span aria-hidden="true">·</span> <time datetime="2026-10-20">20 October 2026</time> <span aria-hidden="true">·</span> 3 min read</p></header>
+<div class="blog-article-layout"><div class="blog-prose">
+<div class="blog-visual blog-article-visual blog-visual-plate"><svg viewBox="0 0 480 240" fill="none" aria-hidden="true" focusable="false">
+<ellipse cx="240" cy="205" rx="130" ry="12" fill="currentColor" opacity=".08"/>
+<path d="M135 115h210c-5 56-44 84-105 84s-100-28-105-84Z" class="blog-plate-rim"/>
+<ellipse cx="240" cy="114" rx="105" ry="37" fill="#fbbf24"/>
+<ellipse cx="240" cy="114" rx="89" ry="26" fill="#f59e0b"/>
+<g fill="#fef3c7"><ellipse cx="192" cy="109" rx="10" ry="7"/><ellipse cx="216" cy="123" rx="10" ry="7"/><ellipse cx="247" cy="104" rx="10" ry="7"/><ellipse cx="280" cy="119" rx="10" ry="7"/><ellipse cx="302" cy="106" rx="10" ry="7"/></g>
+<path d="M231 118c-18-23-4-39 14-43 7 16 3 33-14 43Z" fill="#059669"/>
+<path d="M240 39v20m-29-13 6 14m48-14-6 14" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".45"/>
+<circle cx="100" cy="136" r="26" fill="#fff"/><ellipse cx="100" cy="136" rx="12" ry="13" fill="#fbbf24"/>
+<rect x="348" y="141" width="30" height="29" rx="5" fill="#fff" transform="rotate(12 348 141)"/>
+<path d="m365 65 5 10 11 1-8 8 2 11-10-6-10 6 2-11-8-8 11-1 5-10Z" fill="#6ee7b7"/>
+</svg></div>
+<section aria-labelledby="start-with-the-meal">
+<h2 id="start-with-the-meal" tabindex="-1">Start with a meal you already make</h2>
+<p>If you want to include more protein in your meals, begin with something familiar. Think about breakfast, lunch, and dinner as you usually eat them. Which meals already include eggs, beans, lentils, dairy, fish, meat, or soy foods? Which could use an addition you would actually enjoy?</p>
+<p>You do not need a whole new menu. Adding dal alongside rice, stirring chickpeas into a salad, or serving yogurt with breakfast can be a practical first step. Keep the rest of the meal varied, with vegetables or fruit, carbohydrates, and fats that suit the dish.</p>
+</section>
+<section aria-labelledby="choose-your-options">
+<h2 id="choose-your-options" tabindex="-1">Keep a few easy options available</h2>
+<p>Choose foods that fit your preferences, cooking time, and budget. Different foods provide different amounts of protein, so use the package information or your recipe when you want a closer estimate.</p>
+<ul><li><strong>From the cupboard:</strong> lentils, chickpeas, beans, and canned fish can help you assemble a meal with little planning.</li><li><strong>From the fridge:</strong> eggs, tofu, yogurt, paneer, and cooked leftovers can work in breakfasts, bowls, wraps, or sandwiches.</li><li><strong>From the freezer:</strong> edamame, fish, or portions of cooked beans make useful backups for busy evenings.</li></ul>
+<p>Pick two or three options you already like. Having food you will use is more helpful than buying a long list of ingredients that need unfamiliar recipes.</p>
+</section>
+<section aria-labelledby="three-meal-ideas">
+<h2 id="three-meal-ideas" tabindex="-1">Try three flexible meal ideas</h2>
+<ul><li><strong>A breakfast you can repeat:</strong> pair toast with eggs or tofu, or add yogurt alongside oats and fruit. Check the label when comparing yogurts; their protein content varies.</li><li><strong>A lunch built from leftovers:</strong> combine rice or roti with dal, beans, chicken, or paneer and a vegetable side. Reuse a dish you enjoyed the night before.</li><li><strong>A quick evening bowl:</strong> toss chickpeas or edamame with cooked grains, vegetables, and a dressing. Add herbs or spices to make the combination your own.</li></ul>
+<p>These are starting points rather than fixed portions. Your appetite, activity, and dietary needs affect what works for you.</p>
+</section>
+<section aria-labelledby="look-at-the-whole-meal">
+<h2 id="look-at-the-whole-meal" tabindex="-1">Look at the whole meal when tracking</h2>
+<p>Log the amount you ate, including the rest of the dish. A bowl of dal also contains carbohydrate; paneer and eggs contain fat as well as protein. Oils, sauces, and toppings contribute to the meal too.</p>
+<p>If you use a photo estimate in NutriGlance, add details that the photo cannot show, such as the type of yogurt, the amount of tofu, or the oil used in cooking. AI nutrition figures are estimates, and ingredient amounts and brands can change the result.</p>
+</section>
+<section aria-labelledby="make-one-change">
+<h2 id="make-one-change" tabindex="-1">Make one change you can keep</h2>
+<p>Try one addition at one meal this week. You might keep cooked lentils ready for lunch or choose an egg or tofu filling for your usual sandwich. Notice whether the meal is enjoyable and manageable, then repeat or adjust it.</p>
+<p>Protein needs vary, so a target that works for someone else may not be the right one for you. Use your meal log to notice patterns and ask a qualified dietitian for help if you need an individual plan.</p>
+</section>
+<p class="blog-further-reading">Further reading: <a href="https://www.myplate.gov/eat-healthy/protein-foods" target="_blank" rel="noopener noreferrer">USDA MyPlate: Protein Foods <svg class="blog-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 11 11 5M5 5h6v6"/></svg></a></p>
+<div class="blog-article-cta"><h2>Try a familiar ingredient in a new way.</h2><p>Tell AI Chef what you have and get an idea for your next meal.</p><a href="/aichef" class="ng-button ng-button-primary">Ask AI Chef <svg class="blog-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 11 11 5M5 5h6v6"/></svg></a></div>
+<a href="/blogs" class="blog-back-link">← All articles</a>
+</div><aside class="blog-article-sidebar"><nav class="blog-toc" aria-label="In this article"><details open><summary>In this article</summary><ol><li><a href="#start-with-the-meal">Start with a meal you already make</a></li>
+<li><a href="#choose-your-options">Keep a few easy options available</a></li>
+<li><a href="#three-meal-ideas">Try three flexible meal ideas</a></li>
+<li><a href="#look-at-the-whole-meal">Look at the whole meal when tracking</a></li>
+<li><a href="#make-one-change">Make one change you can keep</a></li></ol></details></nav>
+<a class="blog-next" href="/blogs/read-food-labels-with-confidence"><span>Read next</span><h2>How to read food labels without getting lost in the numbers</h2><p>Read article <svg class="blog-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 11 11 5M5 5h6v6"/></svg></p></a>
+</aside></div></article></main>
+<footer class="site-footer bg-charcoal text-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+
+      <!-- Top row: brand + nav columns -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 pb-8 border-b border-white/10">
+
+        <!-- Brand col -->
+        <div class="col-span-2 sm:col-span-1">
+          <span class="font-display text-lg font-extrabold">
+            <span class="text-brand">Nutri</span><span class="text-white">Glance</span>
+          </span>
+          <p class="text-xs text-white/50 mt-2 leading-relaxed">
+            Your personal AI dietitian.<br/>
+            Track meals, macros, and habits — all in one place.
+          </p>
+          <!-- Social icons -->
+          <div class="flex gap-3 mt-4">
+            <a href="https://instagram.com/nutriglanceai" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-brand transition-colors flex items-center justify-center">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://github.com/visheshsingh123/NutriGlance" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="w-7 h-7 rounded-lg bg-white/10 hover:bg-brand transition-colors flex items-center justify-center">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Product links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Product</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="/dashboard" class="footer-link text-sm text-white/70 transition-colors">Dashboard</a></li>
+            <li><a href="/dashboard" class="footer-link text-sm text-white/70 transition-colors">Meal Scanner</a></li>
+            <li><a href="/aichef" class="footer-link text-sm text-white/70 transition-colors">AI Chef</a></li>
+            <li><a href="/progress" class="footer-link text-sm text-white/70 transition-colors">Progress Tracker</a></li>
+            <li><a href="/premium" class="footer-link text-sm text-white/70 transition-colors">NutriGlance Pro</a></li>
+            </ul>
+        </div>
+
+        <!-- Company links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Company</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="/about" class="footer-link text-sm text-white/70 transition-colors">About Us</a></li>
+            <li><a href="/blogs" class="footer-link text-sm text-white/70 transition-colors">Blog</a></li>
+            <li><a href="/download" class="footer-link text-sm text-white/70 transition-colors">Download APK</a></li>
+          </ul>
+        </div>
+
+        <!-- Support links -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">Support</h4>
+          <ul class="flex flex-col gap-2">
+            <li><a href="mailto:nutriglanceai@gmail.com" class="footer-link text-sm text-white/70 transition-colors">Help</a></li>
+            <li><a href="/privacy" class="footer-link text-sm text-white/70 transition-colors">Privacy Policy</a></li>
+            <li><a href="/feedback" class="footer-link text-sm text-white/70 transition-colors">Feedback</a></li>
+          </ul>
+        </div>
+
+      </div><!-- /top row -->
+
+      <!-- Bottom row: copyright + badge -->
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <p>© 2026 NutriGlance. All rights reserved.</p>
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
+          <span>All systems operational</span>
+        </div>
+      </div>
+
+      <div class="pt-4 text-center text-xs text-white/40">
+        <p>Made with <span class="text-red-500">♥</span> by <a href="https://visheshsingh.vercel.app" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand transition-colors underline underline-offset-2">Vishesh Singh</a></p>
+      </div>
+
+    </div>
+  </footer>
+</body>
+</html>
