@@ -123,7 +123,7 @@ html.dark #page-drag-overlay,body.dark #page-drag-overlay { --drop-card:#1e293b;
 .dashboard-guidance-metrics > a { display:inline-flex; align-items:center; gap:6px; min-height:36px; padding:6px 4px; color:#047857; font-size:11px; font-weight:600; text-decoration:none; }
 .dashboard-guidance-metrics > a:hover { text-decoration:underline; text-underline-offset:3px; }
 html.dark .dashboard-guidance-metrics > a { color:#6ee7b7; }
-@media(max-width:767px) { .dashboard-guidance-metrics { gap:6px; } .dashboard-guidance-metrics > span { font-size:10px; padding:6px 9px; } }
+@media(max-width:767px) { .dashboard-guidance-metrics { gap:6px; } .dashboard-guidance-metrics > span { font-size:10px; padding:6px 9px; } .dashboard-guidance-metrics > a { display:none; } }
 
 /* Keep daily usage below the main dashboard cards. */
 #dashboard-page > .daily-usage { margin:24px 0 0; }

@@ -121,7 +121,8 @@ html[data-usage-plan="free"] .loading-allowance { display:flex; }
   .loading-dashboard-content { padding:24px 16px calc(180px + env(safe-area-inset-bottom,0px)); }
   .loading-guidance { height:44.8px; }
   .loading-guidance .loading-line:last-child { display:block; width:190px; max-width:55%; }
-  .loading-summary { gap:6px; }
+  .loading-summary { gap:6px; min-height:29px; }
+  .loading-summary > .loading-recipe-link { display:none; }
   .loading-summary > span:not(.loading-recipe-link) { height:29px; }
   .loading-dashboard-grid { grid-template-columns:minmax(0,1fr); }
   .loading-nutrition { display:grid; grid-template-columns:120px minmax(0,1fr); gap:20px 16px; padding:20px; min-height:0; }
