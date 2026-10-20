@@ -20,13 +20,14 @@
   const setCurrency = value => {
     const usd = value === 'USD';
     buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.currency === value)));
+    document.getElementById('free-price').textContent = usd ? 'US$0' : '₹0';
     document.getElementById('pro-price').textContent = usd ? 'US$5' : '₹500';
     document.getElementById('pro-billing-note').textContent = usd
       ? 'Or ₹500 once. Lifetime access, with no recurring payments.'
       : 'Or US$5 once. Lifetime access, with no recurring payments.';
   };
   buttons.forEach(button => button.addEventListener('click', () => setCurrency(button.dataset.currency)));
-  setCurrency('INR');
+  setCurrency('USD');
   if (currency) currency.hidden = false;
 
 })();
