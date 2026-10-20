@@ -1,90 +1,147 @@
-// Originally developed by Vishesh Singh — June 2026
-const CACHE_NAME = 'nutriglance-v51';
-const PRECACHE = [
-  '/',
-  '/landing-session.js',
-  '/landing.js',
-  '/landing.css',
-  '/dashboard',
-  '/meals',
-  '/progress',
-  '/aichef',
-  '/settings',
-  '/login',
-  '/reminders.js',
-  '/security.js',
+// Public app files only. Account data remains in owner-scoped app storage.
+const CACHE_NAME = 'nutriglance-v52';
+const LIBRARY_CACHE = 'nutriglance-public-libraries-v1';
+const PAGES = [
+  "/",
+  "/dashboard",
+  "/meals",
+  "/progress",
+  "/aichef",
+  "/settings",
+  "/login",
+  "/about",
+  "/privacy",
+  "/premium",
+  "/download",
+  "/qr",
+  "/feedback",
+  "/blogs",
+  "/offline",
+  "/blogs/add-protein-to-everyday-meals",
+  "/blogs/build-a-balanced-plate",
+  "/blogs/make-meal-tracking-stick",
+  "/blogs/read-food-labels-with-confidence"
+];
+const PRECACHE = [...PAGES,
+  '/accessibility.js',
   '/account-plan.js',
-  '/nutrition-goals.js',
-  '/weekly-insights.js',
-  '/onboarding.js',
-  '/onboarding.css',
-  '/security.css',
   '/app-interactions.css',
   '/app-interactions.js',
-  '/meal-actions.js',
-  '/free-usage.js',
-  '/pro-activation.js',
-  '/pro-cancellation.js',
-  '/free-usage.css',
-  '/dashboard-guidance.js',
-  '/chef-recipes.js',
-  '/profile-avatar.js',
-  '/profile-avatar.css',
-  '/avatar-options.js',
-  '/saved-recipes.js',
-  '/design-system.css',
-  '/accessibility.js',
-  '/chef-recipes.css',
   '/app.css',
-  '/feedback',
-  '/blogs',
-  '/blogs/add-protein-to-everyday-meals',
-  '/blogs/read-food-labels-with-confidence',
-  '/blogs/build-a-balanced-plate',
-  '/blogs/make-meal-tracking-stick',
+  '/avatar-options.js',
   '/blogs.css',
   '/blogs.js',
-  '/feedback.js',
-  '/feedback.css',
-  '/dialogs.js',
+  '/chef-recipes.css',
+  '/chef-recipes.js',
+  '/dashboard-guidance.js',
+  '/dashboard.css',
+  '/design-system.css',
   '/dialogs.css',
+  '/dialogs.js',
+  '/download.css',
+  '/feedback.css',
+  '/feedback.js',
+  '/free-usage.css',
+  '/free-usage.js',
+  '/hero-nutrition-small.webp',
+  '/hero-nutrition.webp',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/landing-navigation.js',
+  '/landing-session.js',
+  '/landing.css',
+  '/landing.js',
+  '/login-events.js',
+  '/login.css',
+  '/manifest.json',
+  '/meal-actions.js',
+  '/meals.css',
+  '/nutrition-goals.js',
+  '/onboarding.css',
+  '/onboarding.js',
+  '/premium.css',
+  '/premium.js',
+  '/pro-activation.js',
+  '/pro-cancellation.js',
+  '/profile-avatar.css',
+  '/profile-avatar.js',
+  '/progress-export.js',
+  '/progress-layout.css',
+  '/progress-print.css',
+  '/reminders.js',
+  '/saved-recipes.js',
+  '/security.css',
+  '/security.js',
+  '/site-shell.css',
+  '/site-shell.js',
+  '/weekly-insights.js',
+  '/workspace-pages.css',
 ];
-
-// Install: pre-cache core pages
+const PUBLIC_LIBRARIES = new Set([
+  'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js',
+  'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js',
+  'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js',
+  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
+]);
+const assets = new Set(PRECACHE);
+function pagePath(path) {
+  const clean = path.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+  return ({ '/index': '/', '/nutriglance': '/dashboard', '/privacy-policy': '/privacy', '/blog': '/blogs' })[clean] || clean;
+}
+function cacheKey(url) {
+  const path = pagePath(url.pathname);
+  return url.origin === self.location.origin && (PAGES.includes(path) || assets.has(url.pathname)) ? self.location.origin + (PAGES.includes(path) ? path : url.pathname) : url.href;
+}
+async function remember(cacheName, key, response) {
+  if (response.ok && response.type !== 'opaque' && !/no-store|private/i.test(response.headers.get('Cache-Control') || '')) {
+    try { await (await caches.open(cacheName)).put(key, response.clone()); } catch {} // Storage pressure must not break navigation.
+  }
+  return response;
+}
+async function download(cacheName, url) {
+  const response = await fetch(url, { credentials: 'omit', cache: 'reload', signal: globalThis.AbortSignal?.timeout?.(15000) });
+  return remember(cacheName, cacheKey(new URL(url, self.location.origin)), response);
+}
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(PRECACHE))
-  );
-  self.skipWaiting();
+  // One unavailable optional page or CDN must not discard all the working files.
+  event.waitUntil((async () => {
+    await download(CACHE_NAME, '/offline');
+    await Promise.allSettled(PRECACHE.filter(path => path !== '/offline').map(path => download(CACHE_NAME, path)));
+    await Promise.allSettled([...PUBLIC_LIBRARIES].map(url => download(LIBRARY_CACHE, url)));
+    await self.skipWaiting();
+  })());
 });
-
-// Activate: remove old caches
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    await Promise.all((await caches.keys()).filter(key => key.startsWith('nutriglance-') && ![CACHE_NAME, LIBRARY_CACHE].includes(key)).map(key => caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
-
-// Fetch: network-first, fall back to cache
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
-  // Never cache API responses, authenticated requests, or Firebase traffic.
-  if (url.origin !== self.location.origin || url.pathname.startsWith('/api/') || event.request.headers.has('Authorization')) return;
-  event.respondWith(
-    fetch(event.request)
-      .then(res => {
-        if (res.ok && !/no-store|private/i.test(res.headers.get('Cache-Control') || '')) {
-          const clone = res.clone();
-          event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone)).catch(() => {}));
-        }
-        return res;
-      })
-      .catch(() => caches.match(event.request))
-  );
+  const request = event.request, url = new URL(request.url);
+  if (request.method !== 'GET' || request.headers.has('Authorization') || request.cache === 'no-store') return;
+  // Only these exact, public code files may be cached cross-origin. No Firebase
+  // authentication, database, API, or other cross-origin traffic is intercepted.
+  const library = PUBLIC_LIBRARIES.has(url.href);
+  if (url.origin !== self.location.origin && !library || url.pathname.startsWith('/api/')) return;
+  const navigation = request.mode === 'navigate';
+  const key = cacheKey(url), cacheName = library ? LIBRARY_CACHE : CACHE_NAME;
+  if (!library && !navigation && !assets.has(url.pathname) && !PAGES.includes(pagePath(url.pathname))) return;
+  const network = () => fetch(request).then(response => remember(cacheName, key, response));
+  event.respondWith((async () => {
+    const cache = await caches.open(cacheName), cached = await cache.match(key);
+    // Versioned app assets and pinned public libraries work immediately offline.
+    if (!navigation && cached) return cached;
+    try { const response = await network();return cached && response.status >= 500 ? cached : response; }
+    catch {
+      if (cached) return cached;
+      if (navigation) {
+        const offline = await cache.match(self.location.origin + '/offline');
+        if (offline) return offline;
+      }
+      return new Response('This file is not available offline yet.', { status: 503, headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' } });
+    }
+  })());
 });
 
 self.addEventListener('push', event => {

@@ -826,6 +826,9 @@ let calorieChart = null;
 let macroChart   = null;
 
 function renderCalorieChart(days = 7) {
+  if (typeof Chart !== 'function') {
+    const empty = document.getElementById('chart-empty');empty.classList.remove('hidden');empty.querySelector('p').textContent = 'Reconnect to load this chart.';return;
+  }
   const data  = loadProgress();
   const goal  = getGoal();
   const dark  = document.body.classList.contains('dark');
@@ -894,6 +897,9 @@ function renderCalorieChart(days = 7) {
 }
 
 function renderMacroChart() {
+  if (typeof Chart !== 'function') {
+    const empty = document.getElementById('macro-chart-empty');empty.classList.remove('hidden');empty.querySelector('p').textContent = 'Reconnect to load this chart.';return;
+  }
   const data = loadProgress();
   const dark = document.body.classList.contains('dark');
 
@@ -1253,6 +1259,7 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
 
     // Load all meals from Firestore and cache to localStorage
     async function loadMealsFromFirestore(uid) {
+      if (navigator.onLine === false) return; // Keep this account’s saved meals while offline.
       try {
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
         if (!window.NutriSecurity.isCurrent(uid)) return;
@@ -1266,6 +1273,7 @@ document.querySelectorAll('.bottom-nav-link').forEach(link => {
 
     // Load all manual progress logs from Firestore and merge into localStorage
     async function loadProgressFromFirestore(uid) {
+      if (navigator.onLine === false) return;
       try {
         const snap = await getDocs(collection(db, 'users', uid, 'progress'));
         if (!window.NutriSecurity.isCurrent(uid)) return;

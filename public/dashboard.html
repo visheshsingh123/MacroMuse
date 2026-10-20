@@ -1846,6 +1846,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // Load all meals from Firestore and cache to localStorage
     async function loadMealsFromFirestore(uid) {
+      if (navigator.onLine === false) return; // Keep this account’s saved meals while offline.
       try {
         const snap = await getDocs(collection(db, 'users', uid, 'meals'));
         if (!window.NutriSecurity.isCurrent(uid)) return;
@@ -1885,6 +1886,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // Load hydration from Firestore
     async function loadWaterFromFirestore(uid) {
+      if (navigator.onLine === false) return null;
       try {
         const today = new Date().toISOString().split('T')[0];
         const snap = await getDoc(doc(db, 'users', uid, 'progress', today));

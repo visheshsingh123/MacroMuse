@@ -152,3 +152,26 @@ Pro before generating the local print report. Free users see a Pro label and
 upgrade prompt; any Free, expired, malformed or failed entitlement response
 prevents opening the print dialog. Browser printing of a user's own
 visible information cannot be prevented as a form of copy protection.
+
+## Offline page viewing
+
+The existing service worker caches the public HTML pages, their local CSS/JS,
+manifest/icons, and hero images. Public libraries are restricted to the three
+pinned Firebase SDK modules and the pinned Chart.js URL. The CSP allows the
+worker to fetch that exact Chart.js file. It does not cache authentication,
+Firestore requests, account API responses, or requests carrying Authorization.
+App assets use their versioned cache; navigations try the network and fall back
+to their canonical cached page (including `.html` and query-string variants).
+Unknown offline routes show the cached offline page. One failed optional file
+cannot prevent all other pages being cached.
+
+A phone must open the app online once and finish loading. Account pages also need
+Firebase's saved sign-in and data previously loaded on that device. A restored
+same-account identity may read its existing profile/recipe cache offline even if
+its ordinary online freshness window has passed. No new offline auth bypass or
+write queue is introduced. Meal, water, and progress refreshes preserve local
+records while offline. Shared controls reject offline writes; server APIs still
+verify access and quotas when online. The connection notice offers a refresh
+when connectivity returns. A device without a usable saved sign-in stays behind
+the session guard with reconnect/home options. Phone/browser storage can be
+cleared or evicted, in which case another online visit is required.

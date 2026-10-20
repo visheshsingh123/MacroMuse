@@ -55,6 +55,19 @@
   // Paint before deferred Firebase modules finish downloading.
   document.addEventListener?.('readystatechange', mountLoader);
   window.addEventListener('DOMContentLoaded', mountLoader);
+  function offlineSessionNotice() {
+    if (window.navigator?.onLine !== false || !protectedPage || !document.documentElement.classList.contains('session-pending')) return;
+    mountLoader();
+    const loader = document.getElementById('session-loader');
+    if (!loader || document.getElementById('offline-session-notice')) return;
+    const notice = document.createElement('div');notice.id = 'offline-session-notice';
+    const message = document.createElement('p');message.textContent = 'Reconnect to restore your saved sign-in. Public pages are available offline.';
+    const home = document.createElement('a');home.href = '/?view=home';home.textContent = 'Open home';
+    const retry = document.createElement('button');retry.type = 'button';retry.textContent = 'Try again';retry.addEventListener('click', () => location.reload());
+    notice.append(message, retry, home);loader.appendChild(notice);
+  }
+  window.addEventListener('DOMContentLoaded', () => { if (window.navigator?.onLine === false) setTimeout(offlineSessionNotice, 1500); });
+  window.addEventListener('offline', () => setTimeout(offlineSessionNotice, 1500));
   function canResume(owner) {
     try {
       const hint = JSON.parse(tabStorage?.getItem(hintKey) || 'null');
@@ -131,6 +144,7 @@
     }));
   }
   async function apiFetch(url, options) {
+    if (window.navigator?.onLine === false) throw new Error('You’re offline. Reconnect to use AI or update your account.');
     const auth = window.nutriGlanceReminderAuth;
     if (!auth?.currentUser || currentUid !== auth.currentUser.uid) throw new Error('Please sign in to continue.');
     const uid = currentUid;

@@ -162,6 +162,7 @@
     retry.textContent = 'Checking…';
     retry.classList.add('inline-loading');
     try {
+      if (navigator.onLine === false) throw new Error('Reconnect to load your profile.');
       const snapshot = await current.getDoc(current.doc(current.db, 'users', current.uid));
       if (!isCurrent(current)) { settle(current, null); return; }
       const profile = snapshot.exists() ? snapshot.data()?.profile : null;
@@ -191,7 +192,7 @@
   function ensureProfile(options) {
     if (!window.NutriSecurity.isCurrent(options.user.uid)) return Promise.resolve(null);
     if (context?.uid === options.user.uid) return context.promise;
-    const cached = window.NutriSecurity.readCache(options.user.uid, 'profile');
+    const cached = window.NutriSecurity.readCache(options.user.uid, 'profile', navigator.onLine === false ? Number.MAX_SAFE_INTEGER : undefined);
     if (isCompleteProfile(cached)) {
       localStorage.setItem('nutriglance_profile', JSON.stringify(cached));
       return Promise.resolve(cached);

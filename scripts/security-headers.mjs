@@ -17,7 +17,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://lh3.googleusercontent.com",
-  "connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://nutriglance.firebaseapp.com https://docs.google.com",
+  "connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://nutriglance.firebaseapp.com https://docs.google.com https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js",
   "frame-src https://nutriglance.firebaseapp.com https://accounts.google.com",
   "object-src 'none'", "base-uri 'none'", "form-action 'self'", "frame-ancestors 'none'",
 ].join('; ');

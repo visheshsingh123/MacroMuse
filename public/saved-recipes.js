@@ -44,7 +44,7 @@
     syncButtons();
   }
   async function load() {
-    const owner = uid;if (!current(owner) || loading || pending.size) return;
+    const owner = uid;if (!current(owner) || loading || pending.size || navigator.onLine === false) return;
     const generation = ++version;loading = true;
     byId('saved-recipes-error').hidden = true;renderLibrary();syncButtons();
     try {
@@ -108,7 +108,7 @@
     if (uid === owner) return;
     uid = owner;version++;loading = false;saved.clear();pending.clear();renderLibrary();
     if (current(owner)) {
-      const cache = window.NutriSecurity.readCache(owner, 'saved_recipes', 24 * 60 * 60 * 1000);
+      const cache = window.NutriSecurity.readCache(owner, 'saved_recipes', navigator.onLine === false ? Number.MAX_SAFE_INTEGER : 24 * 60 * 60 * 1000);
       try {
         if (Array.isArray(cache) && cache.length <= 50) {
           const items = cache.map(validateItem);

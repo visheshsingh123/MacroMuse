@@ -170,14 +170,14 @@ test('expired, mismatched and cross-tab invalidated navigation hints keep accoun
   assert.equal(page.tabData.nutriglance_recent_session, undefined);
 });
 
-test('service worker never caches API responses, Firebase traffic or authenticated requests', async () => {
+test('service worker never caches API responses, Firebase database traffic or authenticated requests', async () => {
   const events = {}, cached = [];
   let responseHeader = '';
   const context = {
     URL,
     self: { location: { origin: 'https://example.com' }, addEventListener: (name, fn) => events[name] = fn },
     fetch: async () => ({ ok: true, headers: { get: () => responseHeader }, clone: () => ({}) }),
-    caches: { open: async () => ({ put: async request => cached.push(request.url) }), match: async () => null },
+    caches: { open: async () => ({ put: async request => cached.push(typeof request === 'string' ? request : request.url), match: async () => null }), match: async () => null },
   };
   vm.runInNewContext(readFileSync(new URL('../public/service-worker.js', import.meta.url), 'utf8'), context);
   for (const [url, headers] of [['https://example.com/api/reminders', {}], ['https://firestore.googleapis.com/data', {}], ['https://example.com/private', { Authorization: 'Bearer token' }]]) {

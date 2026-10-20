@@ -84,3 +84,8 @@ html.dark .site-nav #mobile-menu a,body.dark .site-nav #mobile-menu a,html.dark 
 html.dark .site-nav .nav-link::after,body.dark .site-nav .nav-link::after { background:#e2e8f0; }
 @media(prefers-reduced-motion:reduce) { .site-nav .nav-link::after { transition:none; } }
 html.dark .site-nav #mobile-menu a.site-nav-cta,body.dark .site-nav #mobile-menu a.site-nav-cta,html.dark .site-nav #mobile-menu a.bg-charcoal,body.dark .site-nav #mobile-menu a.bg-charcoal { color:#0f172a; }
+
+.connection-notice{position:fixed;z-index:90;bottom:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100% - 32px);padding:10px 12px 10px 16px;border:1px solid var(--ng-line,#cbd5e1);border-radius:16px;background:var(--ng-surface,#fff);color:var(--ng-ink,#0f172a);box-shadow:0 8px 32px #0f172a20;font:12px/1.7 Inter,sans-serif}
+.connection-notice[hidden]{display:none}.connection-notice button{flex-shrink:0;min-height:36px;padding:4px 9px;border-radius:8px;border:1px solid var(--ng-line,#cbd5e1);background:transparent;color:inherit;font-size:12px}.connection-notice button[hidden]{display:none}.connection-notice button:last-child{border:0;font-size:21px}
+.offline-fallback{max-width:620px;margin:10vh auto;padding:28px;color:var(--ng-ink,#0f172a);font:14px/1.9 Inter,sans-serif}.offline-fallback h1{font:700 38px/1.2 'Space Grotesk',sans-serif;margin:32px 0 18px}.offline-fallback p{margin:18px 0;color:var(--ng-muted,#475569)}.offline-fallback nav{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}
+@media(max-width:767px){body:has(#bottom-nav) .connection-notice{bottom:calc(148px + env(safe-area-inset-bottom,0px))}.connection-notice{font-size:11px;gap:6px;padding:9px 10px 9px 13px}}
