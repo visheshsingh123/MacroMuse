@@ -106,16 +106,6 @@ Copy the **SHA-256** value and paste it into your `.well-known/assetlinks.json` 
 
 **This step is critical** — without it, TWA will fall back to showing the browser address bar instead of looking like a native app.
 
-The hosted association currently supports both NutriGlance APK signing
-certificates for `app.vercel.nutriglance.twa`. If another build uses a different
-signing key, verify its package name and certificate fingerprint, then add the
-fingerprint to `sha256_cert_fingerprints` while retaining those for builds still
-in use. The association must be publicly available over HTTPS at
-`/.well-known/assetlinks.json` as JSON without a redirect. Android and Chrome may
-cache verification results, so a website update may not take effect immediately
-on an installed app. This association enables a verified full-screen TWA; the
-browser still controls any brief startup or verification UI.
-
 ---
 
 ## Part 4 — Test on Your Phone
