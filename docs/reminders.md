@@ -2,6 +2,14 @@
 
 Meal Reminders defaults to on for signed-in users without a saved reminder preference on that browser. Existing off choices are preserved. The switch represents the saved preference; its status explains whether notifications are active, awaiting permission, blocked, or unavailable. In Settings, **Allow notifications** requests browser permission after a click. No permission prompt appears automatically on page load. If permission is already granted, an on preference subscribes automatically. Delivery starts only after the server saves the subscription.
 
+Turning reminders on in Settings, or choosing **Allow notifications**, displays
+an immediate “NutriGlance reminders enabled” notification after permission is
+granted and the subscription is saved. It is displayed locally through the
+service worker and opens the dashboard when tapped; it does not wait for the
+scheduled push job or test the remote push-delivery path. Reloading a page or
+restoring a subscription does not repeat this confirmation. If the browser
+cannot display it, Settings explains that reminders are still enabled.
+
 Vercel runs two jobs at 07:30 and 13:30 UTC (1 PM and 7 PM IST). Delivery works with the page closed on browsers that support Web Push. On iPhone/iPad, the user must install the site to their Home Screen first (iOS/iPadOS 16.4+).
 
 Each job sends at most one combined notification per device. Water reminders stop after eight glasses; meal reminders are skipped when a meal is logged today (afternoon job), or since 1 PM IST (evening job). Both checks use the user's synced Firestore records. If both are satisfied, nothing is sent. Missed notifications expire after 30 minutes at the push service. Delivery timing also depends on the browser, device, and Vercel plan; Hobby daily jobs may run within an hour of the configured time.

@@ -140,7 +140,18 @@
           localStorage.setItem(preferenceKey, '0');
           if (permission === 'default') errorMessage = 'Permission wasn’t granted. Reminders are off.';
         } else {
-          await subscribe(await registration());
+          const reg = await registration();
+          await subscribe(reg);
+          try {
+            await reg.showNotification('NutriGlance reminders enabled', {
+              body: 'You’re all set! Meal and water reminders are on for 1 PM and 7 PM IST.',
+              tag: 'nutriglance-reminder-enabled', renotify: true,
+              icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
+            });
+          } catch {
+            // Delivery of the confirmation must not undo a saved subscription.
+            errorMessage = 'Reminders are on, but the confirmation notification could not be shown.';
+          }
         }
       }
     } catch (error) {

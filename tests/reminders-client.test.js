@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const script = readFileSync(new URL('../public/reminders.js', import.meta.url), 'utf8');
 const flush = () => new Promise(resolve => setImmediate(resolve));
-function fixture({ workerPending = false, supported = true, preference = '0', permission = 'default', available = false } = {}) {
+function fixture({ workerPending = false, supported = true, preference = '0', permission = 'default', requestedPermission = 'granted', available = false } = {}) {
   const timers = new Map(), storage = new Map(), events = {};
   if (preference !== null) storage.set('nutriglance_notifications', preference);
   const elements = Object.fromEntries(['notif-toggle', 'notif-thumb', 'notif-status', 'notif-retry'].map(id => [id, {
@@ -14,13 +14,16 @@ function fixture({ workerPending = false, supported = true, preference = '0', pe
     addEventListener(name, fn) { this[name] = fn; },
     classList: { toggle() {} },
   }]));
-  const state = { available, permissions: 0, posts: 0, unsubscribed: 0, subscribed: false, tokenPending: false };
+  const state = { available, permissions: 0, posts: 0, unsubscribed: 0, subscribed: false, tokenPending: false, postError: false, notificationError: false, notifications: [] };
   const sub = { endpoint: 'https://fcm.googleapis.com/fcm/send/test', toJSON() { return { endpoint: this.endpoint }; }, async unsubscribe() { state.unsubscribed++; state.subscribed = false; return true; } };
-  const reg = { getNotifications: async () => [], pushManager: {
+  const reg = { getNotifications: async () => [], showNotification: async (title, options) => {
+    if (state.notificationError) throw new Error('Browser could not display notification');
+    state.notifications.push({ title, options, posts: state.posts });
+  }, pushManager: {
     getSubscription: async () => state.subscribed ? sub : null,
     subscribe: async () => { state.subscribed = true; return sub; },
   } };
-  const notification = { permission, async requestPermission() { state.permissions++; this.permission = 'granted'; return 'granted'; } };
+  const notification = { permission, async requestPermission() { state.permissions++; this.permission = requestedPermission; return requestedPermission; } };
   const context = {
     document: { getElementById: id => elements[id] },
     navigator: { serviceWorker: { register: async () => reg, ready: workerPending ? new Promise(() => {}) : Promise.resolve(reg), getRegistration: async () => reg } },
@@ -29,7 +32,8 @@ function fixture({ workerPending = false, supported = true, preference = '0', pe
     setTimeout: fn => { const id = Symbol(); timers.set(id, fn); return id; }, clearTimeout: id => timers.delete(id),
     fetch: async (_url, options) => {
       if (options.method === 'POST') state.posts++;
-      return { ok: state.available, status: state.available ? 200 : 503, json: async () => state.available ? { publicKey: Buffer.alloc(65, 4).toString('base64url') } : { error: 'Reminders are temporarily unavailable. Please try again later.' } };
+      const ok = state.available && !(options.method === 'POST' && state.postError);
+      return { ok, status: ok ? 200 : 503, json: async () => ok ? { publicKey: Buffer.alloc(65, 4).toString('base64url') } : { error: 'Reminders are temporarily unavailable. Please try again later.' } };
     },
     window: {
       isSecureContext: supported, Notification: notification, PushManager: class {},
@@ -52,6 +56,7 @@ test('new users default to on and approve browser permission through an explicit
   await f.allow();
   assert.equal(f.state.permissions, 1);
   assert.equal(f.state.posts, 1);
+  assert.equal(f.state.notifications.length, 1);
   assert.match(f.elements['notif-status'].textContent, /1 PM and 7 PM IST/);
 });
 
@@ -60,8 +65,58 @@ test('new users with existing browser permission subscribe automatically', async
   assert.equal(f.state.permissions, 0);
   assert.equal(f.state.posts, 1);
   assert.equal(f.state.subscribed, true);
+  assert.equal(f.state.notifications.length, 0);
   assert.equal(f.storage.get('nutriglance_reminder_owner'), 'alice');
   assert.match(f.elements['notif-status'].textContent, /1 PM and 7 PM IST/);
+});
+
+test('explicitly enabling reminders confirms once after saving, without repeating on refresh or disable', async () => {
+  const f = fixture({ available: true, permission: 'granted' }); await flush();
+  assert.equal(f.state.notifications.length, 0);
+  await f.click();
+  assert.equal(f.state.notifications.length, 1);
+  const notice = f.state.notifications[0];
+  assert.equal(notice.posts, 1);
+  assert.equal(notice.title, 'NutriGlance reminders enabled');
+  assert.match(notice.options.body, /1 PM and 7 PM IST/);
+  assert.equal(notice.options.tag, 'nutriglance-reminder-enabled');
+  assert.equal(notice.options.data.url, '/dashboard');
+  assert.equal(f.storage.get('nutriglance_notifications'), '1');
+  await f.events.focus();
+  assert.equal(f.state.notifications.length, 1);
+  await f.click();
+  assert.equal(f.state.notifications.length, 1);
+  assert.equal(f.state.subscribed, false);
+  await f.click();
+  assert.equal(f.state.notifications.length, 2);
+});
+
+test('declined permission and failed subscription saves never show an enabled confirmation', async () => {
+  for (const permission of ['default', 'denied']) {
+    const f = fixture({ available: true, requestedPermission: permission }); await flush();
+    await f.click();
+    assert.equal(f.state.notifications.length, 0);
+    assert.equal(f.state.posts, 0);
+    assert.equal(f.storage.get('nutriglance_notifications'), '0');
+  }
+  const f = fixture({ available: true, permission: 'granted' }); await flush();
+  f.state.postError = true;
+  await f.click();
+  assert.equal(f.state.notifications.length, 0);
+  assert.equal(f.state.subscribed, false);
+  assert.equal(f.storage.get('nutriglance_notifications'), '0');
+});
+
+test('a confirmation display failure preserves enabled reminders and explains the failure', async () => {
+  const f = fixture({ available: true, permission: 'granted' }); await flush();
+  f.state.notificationError = true;
+  await f.click();
+  assert.equal(f.state.subscribed, true);
+  assert.equal(f.state.unsubscribed, 0);
+  assert.equal(f.storage.get('nutriglance_notifications'), '1');
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.match(f.elements['notif-status'].textContent, /Reminders are on.*confirmation notification could not be shown/);
+  assert.equal(f.elements['notif-toggle'].disabled, false);
 });
 
 test('existing opt-outs stay off even with granted permission and repeated refreshes', async () => {
