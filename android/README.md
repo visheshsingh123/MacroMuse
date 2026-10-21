@@ -11,10 +11,10 @@ origin verification; failure never grants full-screen access. The default
 browser callback, notification delegation, sign-in context, and splash-image
 handoff remain managed by Android Browser Helper.
 
-This is a candidate mitigation, not a guarantee of a toolbar-free launch on
-every device. Chrome controls its own startup UI and “Running in Chrome” notice.
-Confirm cold starts, repeat launches, sign-in, offline reopening, and reminder
-delivery on a phone before replacing the main download.
+This startup mitigation does not guarantee a toolbar-free launch on every
+device. Chrome controls its own startup UI and “Running in Chrome” notice.
+For future builds, confirm cold starts, repeat launches, sign-in, offline
+reopening, and reminder delivery on a phone before publishing an update.
 
 ## Build
 
@@ -32,6 +32,6 @@ passwords must stay outside this repository. Reuse the same signing key for
 future builds, and keep its certificate fingerprint in the website's
 `public/.well-known/assetlinks.json`.
 
-This candidate is version code 2, version name 1.0.1.0. Android can update an
+The current release is version code 2, version name 1.0.1.0. Android can update an
 installed app only when its package name and signing certificate match. A build
 signed with a different key cannot update the old installation in place.
