@@ -265,6 +265,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <script src="/meal-photo.js" defer></script>
   <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/dashboard.css" />
   <link rel="stylesheet" href="/onboarding.css" />
@@ -592,6 +593,7 @@
               Upload your meals here
             </p>
             <p class="text-slate-400 text-[11px]">Click to browse or drag &amp; drop anywhere · AI will analyse nutrition instantly</p>
+            <p class="text-slate-400 text-[11px]">JPG, PNG or WebP · Up to 10 MB</p>
           </div>
 
           <!-- Analysing state (hidden by default) -->
@@ -1360,31 +1362,27 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
 
     // ── Shared handler: takes a File (from picker or camera) and runs it
     //    through AI analysis, updating the upload card UI. ───────────────────
+    let photoScanVersion = 0;
     async function processImageFile(file) {
       const requestUid = window.nutriGlanceReminderAuth?.currentUser?.uid;
       if (!file) return;
-      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 1800000) {
-        showToast('Please use a JPG, PNG or WebP photo smaller than 1.8 MB.');
+      try { window.NutriPhoto.validate(file); } catch (error) {
+        showToast(error.message);
         return;
       }
-
-      // Convert to base64
-      const base64 = await new Promise((res, rej) => {
-        const reader = new FileReader();
-        reader.onload  = () => res(reader.result.split(',')[1]);
-        reader.onerror = rej;
-        reader.readAsDataURL(file);
-      });
-
-      const previewURL = URL.createObjectURL(file);
-
-      // Show analysing state with thumbnail
-      document.getElementById('upload-preview').src = previewURL;
+      const scanVersion = ++photoScanVersion;
+      pendingMeal = null;
+      const preview = document.getElementById('upload-preview');
+      preview.classList.add('hidden');
       showUploadState('analysing');
 
       try {
-        const meal = await analyseWithAI(base64, file.type || 'image/jpeg');
-        if (!window.NutriSecurity.isCurrent(requestUid)) return;
+        const photo = await window.NutriPhoto.prepare(file);
+        if (scanVersion !== photoScanVersion || !window.NutriSecurity.isCurrent(requestUid)) return;
+        preview.src = photo.dataUrl;
+        preview.classList.remove('hidden');
+        const meal = await analyseWithAI(photo.base64, photo.mimeType);
+        if (scanVersion !== photoScanVersion || !window.NutriSecurity.isCurrent(requestUid)) return;
 
         // Reject non-food images
         if (meal.notFood) {
@@ -1394,7 +1392,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
         }
 
         // Populate result card
-        document.getElementById('result-thumb').src  = previewURL;
+        document.getElementById('result-thumb').src  = photo.dataUrl;
         document.getElementById('result-name').textContent = meal.name;
         document.getElementById('result-desc').textContent = meal.description ?? '';
 
@@ -1425,6 +1423,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
         showUploadState('result');
 
       } catch (err) {
+        if (scanVersion !== photoScanVersion || !window.NutriSecurity.isCurrent(requestUid)) return;
         showUploadState('idle');
         showToast(`⚠️ Analysis failed: ${err.message}`);
         console.error('Groq error:', err);
