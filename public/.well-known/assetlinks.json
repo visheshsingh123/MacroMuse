@@ -5,7 +5,8 @@
         "package_name": "app.vercel.nutriglance.twa",
         "sha256_cert_fingerprints": [
           "05:49:8C:A0:F2:4D:95:6B:34:A4:BE:5A:C8:C6:D4:12:EA:FE:CE:A3:14:D2:79:61:96:1E:06:EF:77:CB:AC:60",
-          "58:C5:86:84:8D:70:3C:A6:14:E8:1E:C5:4D:C2:E7:E6:82:30:BF:C7:B8:29:B5:0D:8F:09:8F:42:55:8F:FC:AF"
+          "58:C5:86:84:8D:70:3C:A6:14:E8:1E:C5:4D:C2:E7:E6:82:30:BF:C7:B8:29:B5:0D:8F:09:8F:42:55:8F:FC:AF",
+          "02:3C:B8:45:AE:A7:99:42:79:1F:C2:49:86:34:6A:E8:6C:BF:53:09:EE:F7:EF:13:CE:A8:64:17:90:6B:4C:4A"
         ]
       }
     }]
