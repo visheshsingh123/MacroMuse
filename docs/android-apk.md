@@ -7,7 +7,7 @@ Using **Trusted Web Activity (TWA)** — the official Google-recommended method.
 - [Android Studio](https://developer.android.com/studio) (free)
 - [Java JDK 17+](https://adoptium.net/) (free)
 - A Google Play Developer account ($25 one-time fee) — only if publishing
-- Your live site URL (e.g. https://nutriglance.app)
+- Your live site URL (e.g. https://macromuse.vercel.app)
 
 ---
 
@@ -50,7 +50,7 @@ You'll fill in your SHA-256 fingerprint in Part 3. For now create the file:
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "com.yourname.nutriglance",
+    "package_name": "app.vercel.macromuse.twa",
     "sha256_cert_fingerprints": ["PASTE_YOUR_SHA256_HERE"]
   }
 }]
@@ -78,7 +78,7 @@ It will ask you a few questions — answer like this:
 | Question | Answer |
 |---|---|
 | Application name | MacroMuse |
-| Package ID | com.yourname.nutriglance |
+| Package ID | app.vercel.macromuse.twa |
 | Start URL | https://your-site.com/dashboard |
 | Theme colour | #10B981 |
 | Background colour | #EFF7F4 |
