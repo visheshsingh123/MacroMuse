@@ -95,7 +95,7 @@ html.dark .lp-button-primary:hover{background:#a7f3d0}
 .hydration-preview strong{font:700 42px 'Space Grotesk',sans-serif;letter-spacing:-.04em}
 .hydration-preview>p>span{font-size:12px;color:var(--lp-muted)}
 .hydration-note{display:block;font-size:11px;color:var(--lp-muted);margin-top:16px}
-.bento-tip{grid-column:1/-1;display:flex;align-items:center;gap:18px;border:1px solid var(--lp-soft-line);border-radius:24px;background:var(--lp-soft);padding:24px 28px}
+.bento-tip{grid-column:1/-1;zoom:.75;width:75%;justify-self:center;display:flex;align-items:center;gap:18px;border:1px solid var(--lp-soft-line);border-radius:24px;background:var(--lp-soft);padding:24px 28px}
 .bento-tip>div{flex:1}
 .bento-tip p{font-size:14px;line-height:1.7;margin-top:4px;color:var(--lp-ink)}
 /* AI Chef uses the same panel and message shapes as the app. */
@@ -190,7 +190,7 @@ html.dark .landing-pro{background:#1e293b;border-color:#475569}
  .landing-section{scroll-margin-top:88px}.landing-section-heading{align-items:flex-start;flex-direction:column;gap:16px;margin-bottom:24px}.landing-section-heading>p{max-width:420px}.landing-page h2{font-size:30px}.landing-eyebrow{font-size:9px}
  .landing-steps,.landing-bento,.landing-feature-cards,.landing-chef,.landing-journal-grid,.landing-faq{grid-template-columns:1fr;gap:16px}.landing-steps>article,.landing-feature-cards>article{padding:24px}.step-number{margin-bottom:24px}.landing-steps h3{font-size:19px}.landing-steps p{max-width:460px}
  .bento-progress{grid-column:auto}.progress-preview{padding:18px;margin-top:22px}.preview-summary{gap:10px}.preview-summary>strong{font-size:21px}.preview-summary>span{font-size:10px}.hydration-preview{margin-top:24px}.hydration-preview .water-preview>span{height:22px}
- .bento-tip{flex-wrap:wrap;gap:14px;padding:22px}.bento-tip>div{flex:1;min-width:200px}.bento-tip>.landing-text-link{margin-left:58px}.bento-tip p{font-size:13px}
+ .bento-tip{zoom:1;width:100%;flex-wrap:wrap;gap:12px;padding:16px}.bento-tip>.feature-icon{width:32px;height:32px}.bento-tip>div{flex:1;min-width:0}.bento-tip>.landing-text-link{margin-left:44px}.bento-tip p{font-size:13px}
  .landing-chef{gap:28px}.chef-copy>p:not(.landing-eyebrow){max-width:100%}.chef-copy ul{gap:12px}.chef-preview-top{padding:18px}.chef-conversation{padding:18px}.chef-preview-top>div>span{font-size:9px}
  .landing-pro{grid-template-columns:1fr;padding:28px 24px;gap:28px}.landing-pro h2{font-size:30px}.landing-pro-features{grid-template-columns:1fr 1fr;gap:12px}.landing-pro-features li{font-size:11px}.landing-pro-pricing{padding:28px 0 0;border-left:0;border-top:1px solid #334155}.landing-pro-price{font-size:56px}.landing-pro-status{max-width:100%}
  .journal-visual{padding:20px 24px}.journal-story-copy{padding:24px}.journal-story h3{font-size:21px;max-width:100%}.landing-faq{gap:24px}.landing-faq-list details{padding-inline:20px}.landing-faq-list summary{min-height:72px;font-size:13px}.faq-intro{max-width:100%}
