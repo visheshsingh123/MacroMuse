@@ -37,6 +37,7 @@ html.dark .lp-button-primary:hover{background:#a7f3d0}
 .landing-nav-inner{padding-inline:24px}
 .landing-logo{display:flex;align-items:center;gap:8px;color:var(--ng-nav-ink);white-space:nowrap}
 .landing-desktop-links{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.landing-nav .nav-link::after{transform-origin:left}
 .landing-nav-actions{display:flex;align-items:center;gap:8px}
 .landing-page .landing-theme{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:50%;background:#0f172a33;color:var(--ng-nav-ink)}
 .landing-theme:hover{background:#0f172a4d}
