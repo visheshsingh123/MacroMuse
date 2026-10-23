@@ -7,6 +7,20 @@ published `/MacroMuse.apk` was supplied separately: package
 a different signing certificate and installs separately from the legacy app.
 The website asset links authorize both packages.
 
+The exact launch origin must expose `/.well-known/assetlinks.json` as a public
+HTTPS response with status 200, JSON content, and no redirect or login page.
+An explicit Vercel rewrite serves that path through `api/assetlinks.js` using
+the checked-in associations, even if a deployment omits the hidden static
+directory. The current APK's certificate is
+`4E:61:85:05:A8:1D:1D:93:D1:45:B5:99:C0:4B:41:5C:96:D9:E1:30:02:0B:C1:0D:A6:E2:DC:34:C4:B9:4D:17`.
+
+A persistent close/share/address toolbar means the browser is running a Custom
+Tab rather than a verified Trusted Web Activity. After deploying the matching
+association on `macromuse.vercel.app`, fully close and reopen the Android app.
+Chrome may retain a failed verification temporarily. Verify the live URL and
+certificate before changing or reinstalling the APK. Choosing fullscreen in
+PWABuilder or changing website CSS cannot override browser origin verification.
+
 The source below was supplied through PWABuilder, with a startup
 change for the brief Chrome toolbar seen between the splash and dashboard.
 
