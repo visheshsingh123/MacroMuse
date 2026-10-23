@@ -72,10 +72,6 @@ html.dark .site-footer,body.dark .site-footer { background:#020617!important; }
   .site-nav .site-menu-toggle { display:flex; }
   .site-footer > div { padding:36px 16px; }
 }
-@media(min-width:768px) and (max-width:1100px) {
-  .landing-page .site-nav .nav-link { padding-inline:6px; font-size:11px; }
-  .landing-page .site-nav .h-14 { gap:8px; }
-}
 @media(prefers-reduced-motion:reduce) { .site-nav *,.site-nav *::after { transition:none!important; } .site-footer .animate-pulse { animation:none; } }
 .site-nav .nav-link { position:relative; display:inline-flex; align-items:center; justify-content:center; }
 .site-nav .nav-link::after { content:''; position:absolute; bottom:2px; left:1rem; right:1rem; height:2px; border-radius:2px; transform:scaleX(0); transition:transform .25s; }
