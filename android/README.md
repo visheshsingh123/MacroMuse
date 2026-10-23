@@ -1,6 +1,13 @@
 # MacroMuse Android wrapper
 
-This is the clean Android source supplied through PWABuilder, with a startup
+This directory contains the legacy `app.vercel.nutriglance.twa` source. The
+published `/MacroMuse.apk` was supplied separately: package
+`app.vercel.macromuse.twa`, version code 1, version name 1.0.0.0, opening
+`https://macromuse.vercel.app/dashboard`. Its source was not included. It uses
+a different signing certificate and installs separately from the legacy app.
+The website asset links authorize both packages.
+
+The source below was supplied through PWABuilder, with a startup
 change for the brief Chrome toolbar seen between the splash and dashboard.
 
 The launcher keeps its existing splash visible while the same Custom Tabs
@@ -32,10 +39,10 @@ passwords must stay outside this repository. Reuse the same signing key for
 future builds, and keep its certificate fingerprint in the website's
 `public/.well-known/assetlinks.json`.
 
-The current release is version code 3, version name 1.0.2.0. Android can update an
+The legacy source builds version code 3, version name 1.0.2.0. Android can update an
 installed app only when its package name and signing certificate match. A build
 signed with a different key cannot update the old installation in place.
 
-MacroMuse keeps the original `app.vercel.nutriglance.twa` package and web origin.
+This legacy source keeps the original `app.vercel.nutriglance.twa` package and web origin.
 This preserves installed-app updates and browser sign-in. Only the public app
 and launcher labels change; use the existing release signing certificate.
