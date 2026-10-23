@@ -4,10 +4,9 @@
 #export-pdf-btn:hover { background:#d1fae5; }
 #export-pdf-btn:focus-visible { outline:3px solid #059669; outline-offset:3px; }
 html.dark #export-pdf-btn,body.dark #export-pdf-btn { background:#064e3b; color:#a7f3d0; border-color:#059669; }
-.pdf-pro-label,#export-pdf-pro-note { display:none; }
+.pdf-pro-label { display:none; }
 html[data-usage-plan="free"] #export-pdf-btn { background:var(--ng-surface); color:var(--ng-muted); border-color:var(--ng-line); }
 html[data-usage-plan="free"] .pdf-pro-label { display:inline-block; font-size:10px; padding:2px 6px; border:1px solid var(--ng-line); border-radius:5px; color:var(--ng-accent); }
-html[data-usage-plan="free"] #export-pdf-pro-note { display:block; font-size:11px; line-height:1.6; color:var(--ng-muted); }
 #progress-print-report { display:none; }
 @page { size:A4 portrait; margin:15mm; }
 @media print {
