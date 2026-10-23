@@ -35,7 +35,7 @@
     const profile = loadProfile();
     const generated = new Date();
     const header = element('header');
-    header.append(element('p', 'NutriGlance', 'report-brand'), element('h1', 'Your progress report'));
+    header.append(element('p', 'MacroMuse', 'report-brand'), element('h1', 'Your progress report'));
     if (profile?.name) header.append(element('p', String(profile.name), 'report-name'));
     header.append(element('p', `Generated ${generated.toLocaleString()}`, 'report-meta'));
     header.append(element('p', keys.length
@@ -98,13 +98,13 @@
       history.append(table);
     }
     report.replaceChildren(header, summary, targets, history);
-    document.title = `NutriGlance-Progress-${todayKey()}`;
+    document.title = `MacroMuse-Progress-${todayKey()}`;
   }
 
   let authorizedOwner = null, authorizedUntil = 0;
   window.addEventListener('beforeprint', () => {
     if (!authorizedOwner || !(Date.now() < authorizedUntil) || !window.NutriSecurity.isCurrent(authorizedOwner)) {
-      report.replaceChildren(element('h1', 'PDF exports require NutriGlance Pro'), element('p', 'Activate Pro and use Export as PDF to create a report.'));
+      report.replaceChildren(element('h1', 'PDF exports require MacroMuse Pro'), element('p', 'Activate Pro and use Export as PDF to create a report.'));
       return;
     }
     buildReport();

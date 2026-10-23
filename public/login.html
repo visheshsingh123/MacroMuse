@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="/security.css" />
   <script src="/security.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NutriGlance – Sign In</title>
+  <title>MacroMuse – Sign In</title>
     <!-- PWA: manifest + service worker -->
   <link rel="manifest" href="/manifest.json" />
   <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
@@ -242,7 +242,7 @@
       <div class="site-nav-row">
         <a href="/?view=home" class="flex items-center gap-2">
           <span class="font-display text-xl font-extrabold tracking-tight">
-            <span class="text-charcoal">Nutri</span><span class="text-white">Glance</span><span class="text-brand"></span>
+            <span class="text-charcoal">Macro</span><span class="text-white">Muse</span><span class="text-brand"></span>
           </span>
           <span class="hidden sm:inline text-charcoal/70 font-medium text-xs">Your personal AI dietitian</span>
         </a>
@@ -257,13 +257,13 @@
         <div class="auth-brand-mark" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 64 64" fill="none"><path d="M17 44C17 24 33 14 49 15C50 33 39 47 21 47C18.8 47 17 45.2 17 43Z" fill="currentColor"/></svg></div>
         <p class="auth-eyebrow">A FRESH START, EVERY DAY</p>
         <h2 id="auth-intro-heading">Small habits.<br>Good things ahead.</h2>
-        <p>Make room for a healthier everyday with a little help from NutriGlance.</p>
+        <p>Make room for a healthier everyday with a little help from MacroMuse.</p>
         <ul class="auth-features">
           <li><span aria-hidden="true">01</span><div><h3>Snap your meals</h3><p>Get a nutrition estimate from a photo.</p></div></li>
           <li><span aria-hidden="true">02</span><div><h3>See your progress</h3><p>Keep meals, macros, and daily habits together.</p></div></li>
           <li><span aria-hidden="true">03</span><div><h3>Find your next favorite</h3><p>Get recipe ideas from the ingredients you have.</p></div></li>
         </ul>
-        <a href="/?view=home" class="auth-home-link">Explore NutriGlance <span aria-hidden="true">→</span></a>
+        <a href="/?view=home" class="auth-home-link">Explore MacroMuse <span aria-hidden="true">→</span></a>
       </aside>
       <div class="auth-form-column">
 
@@ -279,7 +279,7 @@
             </svg>
           </div>
           <h1 id="auth-title" class="font-display text-2xl font-extrabold text-charcoal">Welcome back</h1>
-          <p id="auth-subtitle" class="text-muted text-sm mt-1">Sign in to your NutriGlance account</p>
+          <p id="auth-subtitle" class="text-muted text-sm mt-1">Sign in to your MacroMuse account</p>
         </div>
 
         <!-- Tabs: Sign In / Sign Up -->
@@ -524,7 +524,7 @@
     // ── Tab switching ─────────────────────────────────────────────────────
     function switchTab(tab) {
       document.getElementById('auth-title').textContent = tab === 'signup' ? 'Create your account' : 'Welcome back';
-      document.getElementById('auth-subtitle').textContent = tab === 'signup' ? 'Start your NutriGlance journey' : 'Sign in to your NutriGlance account';
+      document.getElementById('auth-subtitle').textContent = tab === 'signup' ? 'Start your MacroMuse journey' : 'Sign in to your MacroMuse account';
       document.getElementById('tab-signin').setAttribute('aria-pressed', String(tab === 'signin'));
       document.getElementById('tab-signup').setAttribute('aria-pressed', String(tab === 'signup'));
       document.getElementById('panel-signin').classList.toggle ('hidden', tab !== 'signin');

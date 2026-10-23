@@ -39,7 +39,7 @@
       : 'Have an activation code? Unlock lifetime Pro. No payment is taken in this form.';
     const status = document.getElementById('pro-account-status');
     status.hidden = !active;
-    status.textContent = active ? lifetime ? 'Lifetime NutriGlance Pro is active. No expiry.' : `NutriGlance Pro is active until ${expiry(next.expiresAt)}.` : '';
+    status.textContent = active ? lifetime ? 'Lifetime MacroMuse Pro is active. No expiry.' : `MacroMuse Pro is active until ${expiry(next.expiresAt)}.` : '';
     form.hidden = active;
     document.getElementById('pro-active-message').hidden = !active;
     document.getElementById('pro-active-message').textContent = active ? lifetime ? 'You have lifetime Pro access. You can continue from your dashboard.' : `You have full Pro access until ${expiry(next.expiresAt)}. You can continue from your dashboard.` : '';

@@ -3,7 +3,7 @@
 Meal Reminders defaults to on for signed-in users without a saved reminder preference on that browser. Existing off choices are preserved. The switch represents the saved preference; its status explains whether notifications are active, awaiting permission, blocked, or unavailable. In Settings, **Allow notifications** requests browser permission after a click. No permission prompt appears automatically on page load. If permission is already granted, an on preference subscribes automatically. Delivery starts only after the server saves the subscription.
 
 Turning reminders on in Settings, or choosing **Allow notifications**, displays
-an immediate “NutriGlance reminders enabled” notification after permission is
+an immediate “MacroMuse reminders enabled” notification after permission is
 granted and the subscription is saved. It is displayed locally through the
 service worker and opens the dashboard when tapped; it does not wait for the
 scheduled push job or test the remote push-delivery path. Reloading a page or

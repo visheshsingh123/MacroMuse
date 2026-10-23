@@ -1,4 +1,4 @@
-/* Shared visual and interaction foundations for every NutriGlance page. */
+/* Shared visual and interaction foundations for every MacroMuse page. */
 /* Keep the page scrollbar consistent, including Blog and Pro pages. */
 html{--ng-scrollbar-thumb:#cbd5e1;--ng-scrollbar-track:#eff7f4;--ng-scrollbar-hover:#94a3b8;scrollbar-color:var(--ng-scrollbar-thumb) var(--ng-scrollbar-track);scrollbar-width:thin}
 html.dark{--ng-scrollbar-thumb:#334155;--ng-scrollbar-track:#0f172a;--ng-scrollbar-hover:#475569}

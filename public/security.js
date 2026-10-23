@@ -19,7 +19,7 @@
       const action = name => `<div class="loading-card loading-action loading-${name}"><div class="loading-action-heading"><span class="loading-action-icon loading-placeholder"></span>${line}</div>${line}</div>`;
       loader.innerHTML = dashboard ? `
         <div class="loading-dashboard" aria-hidden="true">
-          <div class="loading-navbar"><div><span class="loading-brand">NutriGlance</span><span class="loading-nav-links">${line}${line}${line}${line}${line}</span><span class="loading-account"><span class="loading-pro loading-placeholder"></span><span class="loading-avatar loading-placeholder"></span></span></div></div>
+          <div class="loading-navbar"><div><span class="loading-brand">MacroMuse</span><span class="loading-nav-links">${line}${line}${line}${line}${line}</span><span class="loading-account"><span class="loading-pro loading-placeholder"></span><span class="loading-avatar loading-placeholder"></span></span></div></div>
           <div class="loading-dashboard-content">
             <div class="loading-dashboard-heading">
               <div class="loading-greeting loading-placeholder"></div>

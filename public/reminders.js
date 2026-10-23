@@ -45,7 +45,7 @@
       retry.disabled = busy;
     }
     status.textContent = busy ? 'Checking reminders…' : message || (!supported
-      ? 'Reminders aren’t supported in this browser. On iPhone, add NutriGlance to your Home Screen first.'
+      ? 'Reminders aren’t supported in this browser. On iPhone, add MacroMuse to your Home Screen first.'
       : !user ? 'Sign in to manage reminders.'
         : Notification.permission === 'denied'
           ? 'Notifications are blocked. Allow them in your browser’s site settings to enable reminders.'
@@ -143,7 +143,7 @@
           const reg = await registration();
           await subscribe(reg);
           try {
-            await reg.showNotification('NutriGlance reminders enabled', {
+            await reg.showNotification('MacroMuse reminders enabled', {
               body: 'You’re all set! Meal and water reminders are on for 1 PM and 7 PM IST.',
               tag: 'nutriglance-reminder-enabled', renotify: true,
               icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },

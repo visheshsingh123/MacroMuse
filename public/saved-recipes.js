@@ -37,7 +37,7 @@
     byId('saved-recipes-empty').hidden = loading || items.length > 0;
     byId('saved-recipes-loading').hidden = !loading || saved.size > 0;
     byId('saved-recipes-empty-title').textContent = query ? 'No recipes match your search' : 'Keep your next favorite close';
-    byId('saved-recipes-empty-copy').textContent = query ? 'Try another ingredient or clear your search.' : 'Save recipes with NutriGlance Pro. Their ingredients, method, and nutrition will be here when you return.';
+    byId('saved-recipes-empty-copy').textContent = query ? 'Try another ingredient or clear your search.' : 'Save recipes with MacroMuse Pro. Their ingredients, method, and nutrition will be here when you return.';
     byId('saved-recipes-clear-search').hidden = !query;
     byId('saved-recipes-start-chat').hidden = Boolean(query);
     for (const item of items) window.NutriRecipes.render(grid, [item.recipe], uid, { library: true });
@@ -93,9 +93,9 @@
         if (current(owner) && generation === version) {
           status.textContent = error.message;
           if (error.code === 'PRO_REQUIRED') {
-            status.textContent = 'Saving recipes requires NutriGlance Pro.';
+            status.textContent = 'Saving recipes requires MacroMuse Pro.';
             const link = document.createElement('a');link.href = '/premium';link.className = 'chef-recipe-view';link.textContent = 'Explore Pro →';status.appendChild(link);
-            const view = await window.NutriDialog.confirm('Save unlimited recipes to your collection with NutriGlance Pro.', { title: 'Saving recipes is a Pro feature', confirmLabel: 'Explore Pro', cancelLabel: 'Keep Free' });
+            const view = await window.NutriDialog.confirm('Save unlimited recipes to your collection with MacroMuse Pro.', { title: 'Saving recipes is a Pro feature', confirmLabel: 'Explore Pro', cancelLabel: 'Keep Free' });
             if (view && current(owner) && generation === version) window.location.href = '/premium';
           }
         }

@@ -1,4 +1,4 @@
-# NutriGlance → Android APK Guide
+# MacroMuse → Android APK Guide
 Using **Trusted Web Activity (TWA)** — the official Google-recommended method.
 
 ---
@@ -77,7 +77,7 @@ It will ask you a few questions — answer like this:
 
 | Question | Answer |
 |---|---|
-| Application name | NutriGlance |
+| Application name | MacroMuse |
 | Package ID | com.yourname.nutriglance |
 | Start URL | https://your-site.com/dashboard |
 | Theme colour | #10B981 |
@@ -113,14 +113,14 @@ Copy the **SHA-256** value and paste it into your `.well-known/assetlinks.json` 
 1. Transfer `app-release-signed.apk` to your Android phone
 2. Enable **Install from unknown sources** in Settings → Security
 3. Open the APK file and install it
-4. Launch NutriGlance — it should open full-screen with no browser chrome
+4. Launch MacroMuse — it should open full-screen with no browser chrome
 
 ---
 
 ## Part 5 — Publish to Google Play
 
 1. Go to [play.google.com/console](https://play.google.com/console)
-2. Create a new app → set name to **NutriGlance**
+2. Create a new app → set name to **MacroMuse**
 3. Under **Release → Production**, upload `app-release-bundle.aab`
 4. Fill in the store listing:
    - Short description: AI-powered nutrition & meal tracker

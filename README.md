@@ -1,12 +1,23 @@
-# NutriGlance
+# MacroMuse
 
 AI-assisted meal logging, nutrition tracking, hydration, and recipe suggestions.
+
+Formerly NutriGlance. The public brand is MacroMuse (MacroMuse AI in search and
+marketing). The existing `nutriglance.vercel.app` origin, GitHub repository,
+Firebase project, support address, social links, browser storage keys, PWA ID,
+and Android package ID remain in place for continuity. No account migration
+is required. A future domain change needs a separate deployment and Android
+origin-verification update.
+
+The Android download is `/MacroMuse.apk`; the old `/NutriGlance.apk` URL redirects
+to it. Existing Android installations need the new APK to update their launcher
+label. The historical startup-test APK and ZIP retain their original names.
 
 ## License
 
 Copyright (c) 2026 Vishesh Singh. All rights reserved.
 
-NutriGlance is proprietary software. Reuse, modification, and redistribution of
+MacroMuse is proprietary software. Reuse, modification, and redistribution of
 the original repository materials require written permission from the copyright
 holder, subject to the exceptions in [LICENSE](LICENSE). GitHub platform rights
 and third-party licenses continue to apply.

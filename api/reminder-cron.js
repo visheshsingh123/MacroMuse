@@ -48,7 +48,7 @@ export function createReminderCronHandler({ getServices = services, isConfigured
             });
             if (!claimed) continue;
             await webpush.sendNotification(data.subscription, JSON.stringify({
-              title: 'A little check-in from NutriGlance', body, tag: `nutriglance-reminder-${delivery}`,
+              title: 'A little check-in from MacroMuse', body, tag: `nutriglance-reminder-${delivery}`,
             }), { TTL: 1800, urgency: 'normal', timeout: 10_000 });
             sent++;
           } catch (error) {

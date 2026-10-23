@@ -1,4 +1,4 @@
-/* Account access follows NutriGlance's emerald, mint, and charcoal palette. */
+/* Account access follows MacroMuse's emerald, mint, and charcoal palette. */
 .auth-page { --auth-ink:#0f172a; --auth-muted:#64748b; --auth-card:#fff; --auth-soft:#f8fafc; --auth-line:#e2e8f0; }
 .auth-page .blob { display:none; }
 #login-page { width:100%; max-width:1120px; margin-inline:auto; padding:48px 24px; }

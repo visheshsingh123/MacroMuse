@@ -1,7 +1,7 @@
 {
   "id": "/nutriglance",
-  "name": "NutriGlance",
-  "short_name": "NutriGlance",
+  "name": "MacroMuse",
+  "short_name": "MacroMuse",
   "description": "Your personal AI dietitian — track meals, macros and hydration.",
   "start_url": "/dashboard",
   "display": "standalone",

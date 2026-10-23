@@ -11,8 +11,8 @@ export function createFeedbackHandler({getServices=adminServices,quota=consumeQu
   try{
    if(!/^application\/json(?:\s*;|$)/i.test(req.headers?.['content-type']||''))throw new HttpError(415,'Please submit feedback using the form.');
    if(req.headers?.origin){
-    let origin;try{origin=new URL(req.headers.origin);}catch{throw new HttpError(403,'Please submit feedback from NutriGlance.');}
-    if(!['https:','http:'].includes(origin.protocol)||origin.host!==req.headers.host)throw new HttpError(403,'Please submit feedback from NutriGlance.');
+    let origin;try{origin=new URL(req.headers.origin);}catch{throw new HttpError(403,'Please submit feedback from MacroMuse.');}
+    if(!['https:','http:'].includes(origin.protocol)||origin.host!==req.headers.host)throw new HttpError(403,'Please submit feedback from MacroMuse.');
    }
    let body=req.body;
    if(typeof body==='string'){if(Buffer.byteLength(body)>8000)throw new HttpError(413,'This review is too large.');try{body=JSON.parse(body);}catch{throw new HttpError(400,'Please complete the feedback form.');}}

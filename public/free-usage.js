@@ -28,7 +28,7 @@
       const pro = usage?.plan === 'pro';
       const exhausted = !pro && item && item.remaining === 0;
       const title = section.querySelector('.daily-usage-title');
-      if (title) title.textContent = pro ? 'NutriGlance Pro' : feature === 'meals' ? 'Free meal logs' : 'Free AI Chef';
+      if (title) title.textContent = pro ? 'MacroMuse Pro' : feature === 'meals' ? 'Free meal logs' : 'Free AI Chef';
       section.classList.toggle('daily-usage-exhausted', Boolean(exhausted));
       section.querySelector('[data-usage-status]').textContent = error || (!item
         ? 'Checking your daily allowance…'
@@ -54,13 +54,13 @@
     const owner = uid;
     try {
       const label = feature === 'meals' ? '3 meal logs' : '5 AI Chef replies';
-      const message = `You’ve used your Free allowance of ${label} today. It resets at 00:00 UTC. Activate NutriGlance Pro with a code for unlimited meal logs and AI Chef replies.`;
+      const message = `You’ve used your Free allowance of ${label} today. It resets at 00:00 UTC. Activate MacroMuse Pro with a code for unlimited meal logs and AI Chef replies.`;
       const view = await window.NutriDialog.confirm(message, { title: 'Daily Free quota used up', confirmLabel: 'View Pro plans', cancelLabel: 'Wait for reset' });
       if (view && uid === owner && current()) window.location.href = '/premium';
     } finally { promptOpen = false; }
   }
   async function showProRequired(owner) {
-    const view = await window.NutriDialog.confirm('PDF exports are included with NutriGlance Pro. Activate Pro with a code to download your progress report.', { title: 'Pro required', confirmLabel: 'Activate Pro', cancelLabel: 'Keep Free' });
+    const view = await window.NutriDialog.confirm('PDF exports are included with MacroMuse Pro. Activate Pro with a code to download your progress report.', { title: 'Pro required', confirmLabel: 'Activate Pro', cancelLabel: 'Keep Free' });
     if (view && current() && owner === uid) window.location.href = '/premium';
   }
   async function request(path, options = {}) {
@@ -94,7 +94,7 @@
     if (!active) {
       if (plan.plan === 'free') window.NutriPlan.remember(owner, plan);
       await showProRequired(owner);
-      const error = new Error('PDF exports require NutriGlance Pro.');
+      const error = new Error('PDF exports require MacroMuse Pro.');
       error.code = 'PRO_REQUIRED';throw error;
     }
     window.NutriPlan.remember(owner, plan);

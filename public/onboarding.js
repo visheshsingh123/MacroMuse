@@ -6,7 +6,7 @@
        role="dialog" aria-modal="true" aria-labelledby="onboarding-title" aria-describedby="onboarding-description">
     <div class="onboarding-card">
       <aside class="onboarding-intro">
-        <div class="onboarding-brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 4C9 2 3 8 5 15s15 5 15-11Z"/><path d="M4 21 15 10"/></svg>NutriGlance</div>
+        <div class="onboarding-brand"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 4C9 2 3 8 5 15s15 5 15-11Z"/><path d="M4 21 15 10"/></svg>MacroMuse</div>
         <div class="onboarding-intro-copy">
           <p class="onboarding-eyebrow">LET’S MAKE IT PERSONAL</p>
           <h2>Your goals.<br> Your pace.</h2>

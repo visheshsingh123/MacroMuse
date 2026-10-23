@@ -1,4 +1,4 @@
-# NutriGlance Android wrapper
+# MacroMuse Android wrapper
 
 This is the clean Android source supplied through PWABuilder, with a startup
 change for the brief Chrome toolbar seen between the splash and dashboard.
@@ -32,6 +32,10 @@ passwords must stay outside this repository. Reuse the same signing key for
 future builds, and keep its certificate fingerprint in the website's
 `public/.well-known/assetlinks.json`.
 
-The current release is version code 2, version name 1.0.1.0. Android can update an
+The current release is version code 3, version name 1.0.2.0. Android can update an
 installed app only when its package name and signing certificate match. A build
 signed with a different key cannot update the old installation in place.
+
+MacroMuse keeps the original `app.vercel.nutriglance.twa` package and web origin.
+This preserves installed-app updates and browser sign-in. Only the public app
+and launcher labels change; use the existing release signing certificate.

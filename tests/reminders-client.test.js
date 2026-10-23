@@ -77,7 +77,7 @@ test('explicitly enabling reminders confirms once after saving, without repeatin
   assert.equal(f.state.notifications.length, 1);
   const notice = f.state.notifications[0];
   assert.equal(notice.posts, 1);
-  assert.equal(notice.title, 'NutriGlance reminders enabled');
+  assert.equal(notice.title, 'MacroMuse reminders enabled');
   assert.match(notice.options.body, /1 PM and 7 PM IST/);
   assert.equal(notice.options.tag, 'nutriglance-reminder-enabled');
   assert.equal(notice.options.data.url, '/dashboard');

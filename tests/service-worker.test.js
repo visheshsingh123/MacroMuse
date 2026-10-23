@@ -68,7 +68,7 @@ test('no-store and private responses are not persisted and server errors use an 
   assert.equal((await fixture.fetch('/dashboard')).status,200);
 });
 
-test('activation removes only old NutriGlance app caches and retains the public code cache', async () => {
+test('activation removes only old MacroMuse app caches and retains the public code cache', async () => {
   const fixture=worker();await fixture.lifecycle('install');
   fixture.records.set('nutriglance-v51',new Map());fixture.records.set('another-app',new Map());
   await fixture.lifecycle('activate');
