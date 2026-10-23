@@ -76,7 +76,6 @@ html.dark .lp-button-primary:hover{background:#a7f3d0}
 .landing-bento{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
 .landing-feature-cards{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;zoom:.9;width:90%;justify-self:center}
 .bento-progress{grid-column:span 2}
-.landing-feature-cards>article>.feature-icon{margin-bottom:22px}
 .landing-bento h3{margin-bottom:12px}
 .bento-progress>p{max-width:470px}
 .progress-preview{border:1px solid var(--lp-line);border-radius:16px;background:var(--lp-paper);padding:20px;margin-top:26px}
