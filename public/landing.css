@@ -132,7 +132,7 @@ html.dark .lp-button-primary:hover{background:#a7f3d0}
 .chef-copy ul{list-style:none;padding:0;margin:24px 0 28px;display:flex;flex-direction:column;gap:14px}
 .chef-copy li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--lp-muted)}
 .chef-copy li svg{color:var(--lp-accent)}
-.chef-preview{border:1px solid var(--lp-line);border-radius:24px;background:var(--lp-card);overflow:hidden}
+.chef-preview{zoom:.8;width:80%;justify-self:center;border:1px solid var(--lp-line);border-radius:24px;background:var(--lp-card);overflow:hidden}
 .chef-preview-top{display:flex;align-items:center;gap:12px;padding:20px;border-bottom:1px solid var(--lp-line)}
 .chef-preview-top>div{flex:1}
 .chef-preview-top strong{display:block;font-size:14px}
