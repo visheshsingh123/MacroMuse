@@ -182,6 +182,7 @@ html.dark .landing-pro{background:#1e293b;border-color:#475569}
  .landing-steps>article,.landing-feature-cards>article{padding:24px}.step-icon{right:24px}.landing-pro{gap:32px;padding:32px}.landing-pro-pricing{padding-left:28px}.landing-pro-features{grid-template-columns:1fr}
 }
 @media(max-width:767px){
+  .hero-visual{display:none}
  .landing-page{--lp-section-gap:48px}
  .landing-wrap{width:calc(100% - 32px)}.landing-nav-inner{padding-inline:16px}.landing-nav-cta{display:none}.landing-nav-actions{gap:4px}
  .landing-hero{grid-template-columns:1fr;gap:32px}.landing-hero h1{font-size:clamp(36px,8.8vw,48px);max-width:560px}.landing-hero-lead{font-size:14px;line-height:1.8;margin-top:20px!important}.landing-hero-actions{margin-top:24px}.landing-hero-actions .lp-button{font-size:12px;padding-inline:16px}.landing-hero-note{gap:16px}
