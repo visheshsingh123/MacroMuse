@@ -85,3 +85,8 @@ and retain the existing `1 star` through `5 star` rating choices.
 files for article content; shared reading layouts and theme behavior are in
 `blogs.css` and `blogs.js`. Keep the index previews, reading times, dates, and
 article metadata in sync when updating a post.
+
+## Search metadata
+
+Public search metadata, canonical URLs, structured data, sitemap coverage, and
+Search Console submission steps are documented in [SEO setup](docs/seo.md).

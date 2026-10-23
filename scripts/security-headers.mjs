@@ -32,7 +32,14 @@ const headers = [
     { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=()' },
     { key: 'Strict-Transport-Security', value: 'max-age=31536000' },
   ] },
-  { source: '/api/(.*)', headers: [{ key: 'Cache-Control', value: 'no-store' }] },
+  { source: '/api/(.*)', headers: [
+    { key: 'Cache-Control', value: 'no-store' },
+    { key: 'X-Robots-Tag', value: 'noindex' },
+  ] },
+  ...['dashboard', 'meals', 'progress', 'aichef', 'settings', 'login', 'feedback', 'qr', 'offline'].map(page => ({
+    source: `/${page}`,
+    headers: [{ key: 'X-Robots-Tag', value: page === 'offline' ? 'noindex, nofollow' : 'noindex, follow' }],
+  })),
 ];
 if (process.argv.includes('--check')) {
   if (JSON.stringify(config.headers) !== JSON.stringify(headers)) {

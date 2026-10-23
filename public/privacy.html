@@ -17,21 +17,39 @@
     html.dark body { background-color:#0f172a!important; color:#e2e8f0!important; }
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Policy – MacroMuse</title>
-  <meta name="description" content="How MacroMuse handles account data, meal scans, AI Chef chats, saved recipes, Pro access, browser caches, and deletion requests." />
+  <!-- Search and sharing metadata -->
+  <title>MacroMuse Privacy Policy | Your Account &amp; Nutrition Data</title>
+  <meta name="description" content="Read how MacroMuse handles accounts, meal photos, AI Chef requests, saved recipes, Pro access and reminders, plus your options for managing personal data." />
   <link rel="canonical" href="https://macromuse.vercel.app/privacy" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="application-name" content="MacroMuse" />
+  <meta name="apple-mobile-web-app-title" content="MacroMuse" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MacroMuse" />
+  <meta property="og:url" content="https://macromuse.vercel.app/privacy" />
+  <meta property="og:title" content="MacroMuse Privacy Policy | Your Account &amp; Nutrition Data" />
+  <meta property="og:description" content="Read how MacroMuse handles accounts, meal photos, AI Chef requests, saved recipes, Pro access and reminders, plus your options for managing personal data." />
+  <meta property="og:image" content="https://macromuse.vercel.app/hero-nutrition.webp" />
+  <meta property="og:image:type" content="image/webp" />
+  <meta property="og:image:width" content="1000" />
+  <meta property="og:image:height" content="1000" />
+  <meta property="og:image:alt" content="MacroMuse nutrition tracking illustration with a meal, fruit and water" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MacroMuse Privacy Policy | Your Account &amp; Nutrition Data" />
+  <meta name="twitter:description" content="Read how MacroMuse handles accounts, meal photos, AI Chef requests, saved recipes, Pro access and reminders, plus your options for managing personal data." />
+  <meta name="twitter:image" content="https://macromuse.vercel.app/hero-nutrition.webp" />
+  <meta name="twitter:image:alt" content="MacroMuse nutrition tracking illustration with a meal, fruit and water" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
+
 
   <!-- PWA: manifest + service worker -->
   <link rel="manifest" href="/manifest.json" />
   <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
-
   <link rel="stylesheet" href="/app.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
-
-
 
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -123,6 +141,47 @@
   <script src="/accessibility.js" defer></script>
   <link rel="stylesheet" href="/dialogs.css" />
   <script src="/dialogs.js" defer></script>
+
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://macromuse.vercel.app/privacy#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://macromuse.vercel.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Privacy Policy",
+          "item": "https://macromuse.vercel.app/privacy"
+        }
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://macromuse.vercel.app/privacy#webpage",
+      "url": "https://macromuse.vercel.app/privacy",
+      "name": "MacroMuse Privacy Policy | Your Account & Nutrition Data",
+      "description": "Read how MacroMuse handles accounts, meal photos, AI Chef requests, saved recipes, Pro access and reminders, plus your options for managing personal data.",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://macromuse.vercel.app/#website"
+      },
+      "about": {
+        "@id": "https://macromuse.vercel.app/#app"
+      },
+      "breadcrumb": {
+        "@id": "https://macromuse.vercel.app/privacy#breadcrumb"
+      }
+    }
+  ]
+}</script>
 </head>
 
 <body class="bg-bg min-h-screen font-body text-charcoal flex flex-col">

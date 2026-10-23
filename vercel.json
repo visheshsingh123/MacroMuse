@@ -41,6 +41,11 @@
       "source": "/NutriGlance-startup-test.zip",
       "destination": "/MacroMuse-legacy-startup-test.zip",
       "permanent": false
+    },
+    {
+      "source": "/index",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -163,7 +168,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://www.gstatic.com/firebasejs/ https://apis.google.com https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js 'sha256-/tpOICt5TZMqWyupzXthZWgw8+WMrNmD8BrHxxnyj48=' 'sha256-4doxVo6T8pb9gEPQ+TuSonIliW5KLyJWhkk5i8zwklM=' 'sha256-7CNcxoK+WPrzV6s20AsGF2fqxsu8J8yqIq/l7z1kk24=' 'sha256-7TH5RZBb1mmieNGgeP3rcXyXGEb+19THzAqoA9CBKOc=' 'sha256-9rKBwUDn4RI9tzZvyDZ7ZItiolOra0CVljlVEz2JqoM=' 'sha256-9z9PVbPC+L7ecTZcYGIw2kVRmeKrD3pLyULEoNemJyE=' 'sha256-Bogy1/flxEuoEKwRAHoo7zkMG0qbxmKGDoF4yhm2Ne4=' 'sha256-JgHy03X4StKspTJw0HjukBjYg5Gfkg2NFmyvIeMd5kk=' 'sha256-Ju2wPeCRVKPy0JvdHGKsqPLX8j29JvO/s8P/hHpwCnE=' 'sha256-KeTHcgFKvUvdzK7P+riVsHg0g8ESvgQo2bX0H8q3P1M=' 'sha256-NKOiST/Hb9yaX4cBTJz8gLnQ0f0N3JukaHYOqTsQFTE=' 'sha256-REaZkiNaBNdkRmEAYEqbHjEnoYqxjip+jXAXu6KdNHQ=' 'sha256-Rg2zuo7So9/3unbvMrLHxVPkVeP5jOAloW54bPVoToM=' 'sha256-UvDKIZT6hZkwA1g8z4QFA9qodBNUiuuJLCdTbzgBddI=' 'sha256-W1hgoOIJqeeC3c5gmC3okN9h/mAHGLUXloZqmgEgXgc=' 'sha256-XP1dTBUD1edqU9M+lfPlTzkBEW01SsdByZ52d8Aj/+Q=' 'sha256-XSDyTd70oifSyhoHebjVr+GJOFKW7SmiXn5ONDrI4IM=' 'sha256-ZXtPZLM+RLFyHn3K3GuNR0DM8X5VtMOQ3ACoEy2T8SI=' 'sha256-a4GBqowbTXt4gH/uoevq6uOYKN4EHqPAl7doJi2iOAI=' 'sha256-cGRkvsrIldk9wJ5hSawRheaeixmzMF5IS2rq2y1wryk=' 'sha256-cxYnqCLfmiLOhP8+m38LswvK3jDMvdNEiUbXwbDFetE=' 'sha256-eMg5oKjSh19HifXR/wQEfRYnAIQo9uO1xO3zLYFhh+Q=' 'sha256-fM0l3vpwa3tF0OYKoTea7LX8HPGsz8wOIi+RQMYeu/A=' 'sha256-kf6PuCr/6Jc5WNVRUMSdz+gvtlHJkvhqF0Z6Z8fSyls=' 'sha256-r+6rBuqaCCRocQ+x6nJgmje8Y9wZq3xyUpZsAfxmssQ=' 'sha256-rK9cZ4W7AiQwTcvcm3Ehq5nWCm49Bgnwsjm+n3KCy+g=' 'sha256-rTjv31rqIuN5osou3WGH5fdjKFCGH2XRlOdxN4TCeLg=' 'sha256-sd56Fjz8dhpIRASNCicLbVXPw2+ogk/xYWRn8ARrz0Y=' 'sha256-wIOzvXCFVaROZiSc3SFsOs5hDq0Jbck/JkgnkybHMho=' 'sha256-x+qqpE4hAKfBjEIN/IQlVeNOUEbwIOvIUqAn5Pkr2SI=' 'sha256-x0VV7YReBuFlYt4+yuxY8E+3kXBjqW0URDSdqrxyWI8='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://lh3.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://nutriglance.firebaseapp.com https://docs.google.com https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js; frame-src https://nutriglance.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' https://www.gstatic.com/firebasejs/ https://apis.google.com https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js 'sha256-4doxVo6T8pb9gEPQ+TuSonIliW5KLyJWhkk5i8zwklM=' 'sha256-7CNcxoK+WPrzV6s20AsGF2fqxsu8J8yqIq/l7z1kk24=' 'sha256-9rKBwUDn4RI9tzZvyDZ7ZItiolOra0CVljlVEz2JqoM=' 'sha256-9z9PVbPC+L7ecTZcYGIw2kVRmeKrD3pLyULEoNemJyE=' 'sha256-FkIvUIKEx+RbuwIRa28V7pHkk98kJ9p7MSgz5zVRTlc=' 'sha256-HcZ13JfNPYB9SvGmpGCmFhEeDWs2gbPt0vRnj5tKYrw=' 'sha256-JgHy03X4StKspTJw0HjukBjYg5Gfkg2NFmyvIeMd5kk=' 'sha256-KeTHcgFKvUvdzK7P+riVsHg0g8ESvgQo2bX0H8q3P1M=' 'sha256-NKOiST/Hb9yaX4cBTJz8gLnQ0f0N3JukaHYOqTsQFTE=' 'sha256-QaNHAax2oJ21BJvoVgu0/K6DAbCh7RIJ9FxhJ8qNpAs=' 'sha256-R0He4740hZybc80s/4Y5JIqkQZtHjkd9n9+08uuXzeE=' 'sha256-REaZkiNaBNdkRmEAYEqbHjEnoYqxjip+jXAXu6KdNHQ=' 'sha256-Rg2zuo7So9/3unbvMrLHxVPkVeP5jOAloW54bPVoToM=' 'sha256-S10CcFIZjiMS23ordPLSiM12wwjQ/UecprdzokTArfc=' 'sha256-W1hgoOIJqeeC3c5gmC3okN9h/mAHGLUXloZqmgEgXgc=' 'sha256-WRkw2Z+48NSeG7QINbj1LgdbMMMgKPh+/LTenZX9K+8=' 'sha256-XSDyTd70oifSyhoHebjVr+GJOFKW7SmiXn5ONDrI4IM=' 'sha256-ZXtPZLM+RLFyHn3K3GuNR0DM8X5VtMOQ3ACoEy2T8SI=' 'sha256-a4GBqowbTXt4gH/uoevq6uOYKN4EHqPAl7doJi2iOAI=' 'sha256-cGRkvsrIldk9wJ5hSawRheaeixmzMF5IS2rq2y1wryk=' 'sha256-cxYnqCLfmiLOhP8+m38LswvK3jDMvdNEiUbXwbDFetE=' 'sha256-eMg5oKjSh19HifXR/wQEfRYnAIQo9uO1xO3zLYFhh+Q=' 'sha256-fM0l3vpwa3tF0OYKoTea7LX8HPGsz8wOIi+RQMYeu/A=' 'sha256-haEzIK7zVgz+sJ5xbVuI7MLK1cq1xP+OXb/gVjKg6o8=' 'sha256-k+b8rWoglOXqRFBgUha2KpSoqZScIbxeMHCvGCOSYlk=' 'sha256-kf6PuCr/6Jc5WNVRUMSdz+gvtlHJkvhqF0Z6Z8fSyls=' 'sha256-lQMHJa7Ydigq90JUeKT/xTOhbNWohSYcsK0TeNvvuMU=' 'sha256-r+6rBuqaCCRocQ+x6nJgmje8Y9wZq3xyUpZsAfxmssQ=' 'sha256-rK9cZ4W7AiQwTcvcm3Ehq5nWCm49Bgnwsjm+n3KCy+g=' 'sha256-rTjv31rqIuN5osou3WGH5fdjKFCGH2XRlOdxN4TCeLg=' 'sha256-sd56Fjz8dhpIRASNCicLbVXPw2+ogk/xYWRn8ARrz0Y=' 'sha256-vVZdTaccjOPFYGRfpdM7WPXui0hBkF64q4vnubR2Rks=' 'sha256-wIOzvXCFVaROZiSc3SFsOs5hDq0Jbck/JkgnkybHMho=' 'sha256-x+qqpE4hAKfBjEIN/IQlVeNOUEbwIOvIUqAn5Pkr2SI='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://lh3.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://www.gstatic.com https://nutriglance.firebaseapp.com https://docs.google.com https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js; frame-src https://nutriglance.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
         },
         {
           "key": "X-Content-Type-Options",
@@ -193,6 +198,91 @@
         {
           "key": "Cache-Control",
           "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/dashboard",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/meals",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/progress",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/aichef",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/settings",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/login",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/feedback",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/qr",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/offline",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     }

@@ -17,116 +17,37 @@
     html.dark body { background-color:#0f172a!important; color:#e2e8f0!important; }
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="google-site-verification" content="LoqvPvLi23khtu8zaWT42EBOnnnAT9v60HbxTSSJPsk" />
-  <title>MacroMuse – AI Calorie Tracker & Meal Scanner App</title>
-  <meta name="description" content="Track meals from photos or text, explore recipes with AI Chef, and follow calories, macros, and hydration. A little clarity for your everyday." />
-  <meta name="keywords" content="MacroMuse, MacroMuse AI, MacroMuse AI Agent, MacroMuseAI, AI calorie tracker, calorie tracker app, meal scanner, AI dietitian, macro tracker" />
+  <!-- Search and sharing metadata -->
+  <title>MacroMuse AI | Calorie &amp; Macro Tracker, Meal Scanner</title>
+  <meta name="description" content="Scan meal photos or log food by text with MacroMuse AI. Track estimated calories, protein, carbs, fat and water, and get recipe ideas from AI Chef." />
   <link rel="canonical" href="https://macromuse.vercel.app/" />
-  <meta name="theme-color" content="#10B981" />
-
-  <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="application-name" content="MacroMuse" />
+  <meta name="apple-mobile-web-app-title" content="MacroMuse" />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MacroMuse" />
   <meta property="og:url" content="https://macromuse.vercel.app/" />
-  <meta property="og:site_name" content="MacroMuse AI" />
-  <meta property="og:title" content="MacroMuse AI – AI Calorie Tracker & Meal Scanner App" />
-  <meta property="og:description" content="Track meals from photos or text, explore recipes with AI Chef, and follow calories, macros, and hydration. A little clarity for your everyday." />
+  <meta property="og:title" content="MacroMuse AI | Calorie &amp; Macro Tracker, Meal Scanner" />
+  <meta property="og:description" content="Scan meal photos or log food by text with MacroMuse AI. Track estimated calories, protein, carbs, fat and water, and get recipe ideas from AI Chef." />
   <meta property="og:image" content="https://macromuse.vercel.app/hero-nutrition.webp" />
+  <meta property="og:image:type" content="image/webp" />
   <meta property="og:image:width" content="1000" />
   <meta property="og:image:height" content="1000" />
-
-  <!-- Twitter Card -->
+  <meta property="og:image:alt" content="MacroMuse nutrition tracking illustration with a meal, fruit and water" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="MacroMuse AI – AI Calorie Tracker & Meal Scanner App" />
-  <meta name="twitter:description" content="Track meals from photos or text, explore recipes with AI Chef, and follow calories, macros, and hydration. A little clarity for your everyday." />
+  <meta name="twitter:title" content="MacroMuse AI | Calorie &amp; Macro Tracker, Meal Scanner" />
+  <meta name="twitter:description" content="Scan meal photos or log food by text with MacroMuse AI. Track estimated calories, protein, carbs, fat and water, and get recipe ideas from AI Chef." />
   <meta name="twitter:image" content="https://macromuse.vercel.app/hero-nutrition.webp" />
+  <meta name="twitter:image:alt" content="MacroMuse nutrition tracking illustration with a meal, fruit and water" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
 
-  <!-- Structured data: helps Google understand this as a software app -->
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "MacroMuse",
-  "alternateName": "MacroMuse AI Calorie Tracker",
-  "applicationCategory": "HealthApplication",
-  "operatingSystem": "Web, Android",
-  "description": "Track meals from photos or text, explore recipes with AI Chef, and follow calories, macros, and hydration. A little clarity for your everyday.",
-  "url": "https://macromuse.vercel.app/",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  }
-}</script>
+  <meta name="google-site-verification" content="LoqvPvLi23khtu8zaWT42EBOnnnAT9v60HbxTSSJPsk" />
 
-  <!-- Organization / brand identity — helps Google associate name variants
-       (MacroMuse, MacroMuse AI, MacroMuseAI) with this single site -->
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "MacroMuse",
-  "alternateName": [
-    "MacroMuse AI",
-    "MacroMuseAI",
-    "Macro Muse",
-    "MacroMuse AI Agent"
-  ],
-  "url": "https://macromuse.vercel.app/",
-  "description": "MacroMuse AI is an AI calorie tracker and meal scanner app.",
-  "sameAs": []
-}</script>
-
-  <!-- FAQ structured data — eligible for rich snippets in Google -->
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How does photo meal tracking work?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Upload a meal photo or write a description. MacroMuse estimates the calories, protein, carbs, fat, and portion details. Review the result, then choose to log it."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How accurate are the nutrition estimates?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "AI estimates can vary with ingredients, cooking methods, and portion sizes. A clear photo and a few details help. Review your entries and use package information when it is available."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What can I do on the Free plan?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Free includes 3 meal logs and 5 AI Chef replies per day, plus calorie, macro, water, and progress tracking. Daily allowances reset at 00:00 UTC. Saving recipes and PDF exports require Pro."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What comes with MacroMuse Pro?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Pro includes unlimited meal logs, AI Chef replies, and saved recipes, plus PDF progress exports. It is US$5 or ₹500 once for lifetime access. Activate with a code on the pricing page; the activation form does not take a payment."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I use MacroMuse on my phone?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Use it in your mobile browser, install the web app on supported devices, or get the Android APK from Downloads. AI requests and cloud saves need an internet connection."
-      }
-    }
-  ]
-}</script>
-
-    <!-- PWA: manifest + service worker -->
+  <meta name="theme-color" content="#10B981" />
+  <!-- PWA: manifest + service worker -->
   <link rel="manifest" href="/manifest.json" />
   <script>if ("serviceWorker" in navigator) { navigator.serviceWorker.register("/service-worker.js"); }</script>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9IiMxMEI5ODEiLz4KICA8cGF0aCBkPSJNMTcgNDQKICAgICAgICAgICBDMTcgMjQsIDMzIDE0LCA0OSAxNQogICAgICAgICAgIEM1MCAzMywgMzkgNDcsIDIxIDQ3CiAgICAgICAgICAgQzE4LjggNDcsIDE3IDQ1LjIsIDE3IDQzIFoiCiAgICAgICAgZmlsbD0iIzBGMTcyQSIvPgo8L3N2Zz4K" />
-
   <!-- Tailwind CSS via CDN -->
   <link rel="stylesheet" href="/app.css" />
 
@@ -134,8 +55,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
-
-
 
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
@@ -146,6 +65,146 @@
   <link rel="stylesheet" href="/dialogs.css" />
   <script src="/dialogs.js" defer></script>
   <link rel="stylesheet" href="/landing.css" />
+
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://macromuse.vercel.app/#organization",
+      "name": "MacroMuse",
+      "alternateName": "MacroMuse AI",
+      "url": "https://macromuse.vercel.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://macromuse.vercel.app/icons/icon-512.png",
+        "width": 512,
+        "height": 512
+      },
+      "email": "macromuseai@gmail.com",
+      "sameAs": [
+        "https://instagram.com/macromuseai",
+        "https://github.com/visheshsingh123/MacroMuse"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://macromuse.vercel.app/#website",
+      "name": "MacroMuse",
+      "alternateName": "MacroMuse AI",
+      "url": "https://macromuse.vercel.app/",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://macromuse.vercel.app/#organization"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://macromuse.vercel.app/#app",
+      "name": "MacroMuse",
+      "alternateName": "MacroMuse AI",
+      "url": "https://macromuse.vercel.app/",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web, Android",
+      "description": "Scan meal photos or log food by text with MacroMuse AI. Track estimated calories, protein, carbs, fat and water, and get recipe ideas from AI Chef.",
+      "image": "https://macromuse.vercel.app/hero-nutrition.webp",
+      "isAccessibleForFree": true,
+      "publisher": {
+        "@id": "https://macromuse.vercel.app/#organization"
+      },
+      "featureList": [
+        "Meal photo and text logging",
+        "Estimated calorie and macro tracking",
+        "Hydration tracking",
+        "AI Chef recipe ideas",
+        "Nutrition progress tracking"
+      ],
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "MacroMuse Free",
+          "price": "0",
+          "priceCurrency": "USD",
+          "url": "https://macromuse.vercel.app/premium"
+        },
+        {
+          "@type": "Offer",
+          "name": "MacroMuse Pro lifetime access",
+          "price": "5",
+          "priceCurrency": "USD",
+          "url": "https://macromuse.vercel.app/premium"
+        },
+        {
+          "@type": "Offer",
+          "name": "MacroMuse Pro lifetime access",
+          "price": "500",
+          "priceCurrency": "INR",
+          "url": "https://macromuse.vercel.app/premium"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does photo meal tracking work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Upload a meal photo or write a description. MacroMuse estimates the calories, protein, carbs, fat, and portion details. Review the result, then choose to log it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How accurate are the nutrition estimates?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI estimates can vary with ingredients, cooking methods, and portion sizes. A clear photo and a few details help. Review your entries and use package information when it is available."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What can I do on the Free plan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Free includes 3 meal logs and 5 AI Chef replies per day, plus calorie, macro, water, and progress tracking. Daily allowances reset at 00:00 UTC. Saving recipes and PDF exports require Pro."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What comes with MacroMuse Pro?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pro includes unlimited meal logs, AI Chef replies, and saved recipes, plus PDF progress exports. It is US$5 or ₹500 once for lifetime access. Activate with a code on the pricing page; the activation form does not take a payment."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use MacroMuse on my phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Use it in your mobile browser, install the web app on supported devices, or get the Android APK from Downloads. AI requests and cloud saves need an internet connection."
+          }
+        }
+      ],
+      "@id": "https://macromuse.vercel.app/#faq"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://macromuse.vercel.app/#webpage",
+      "url": "https://macromuse.vercel.app/",
+      "name": "MacroMuse AI | Calorie & Macro Tracker, Meal Scanner",
+      "description": "Scan meal photos or log food by text with MacroMuse AI. Track estimated calories, protein, carbs, fat and water, and get recipe ideas from AI Chef.",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://macromuse.vercel.app/#website"
+      },
+      "about": {
+        "@id": "https://macromuse.vercel.app/#app"
+      }
+    }
+  ]
+}</script>
 </head>
 
 <body class="landing-page">
@@ -161,9 +220,9 @@
 <div class="landing-nav-actions"><button id="dark-mode-toggle" class="landing-theme" role="switch" aria-checked="false" aria-label="Toggle dark mode"><svg id="dark-mode-icon-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M21 13a9 9 0 1 1-10-10 7 7 0 0 0 10 10Z"/></svg><svg id="dark-mode-icon-sun" class="hidden" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg></button><a href="/dashboard" class="landing-nav-cta">Open app <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a><button id="hamburger" class="landing-menu" data-site-menu-toggle aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu"><span id="ham-top"></span><span id="ham-mid"></span><span id="ham-bot"></span></button></div>
 </div></div><div id="mobile-menu" role="navigation" aria-label="Mobile navigation"><div class="landing-mobile-links"><a href="#how-it-works">How it works</a><a href="#features">Features</a><a href="#ai-chef">AI Chef</a><a href="#faq">FAQ</a><a href="/about">About</a><a href="/premium">Pricing</a><div class="landing-mobile-theme"><span>Dark mode</span><button id="dark-mode-toggle-mobile" role="switch" aria-checked="false" aria-label="Toggle dark mode"><span id="dark-mode-thumb-mobile"></span></button></div><a href="/dashboard" class="landing-mobile-cta site-nav-cta">Start tracking <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></div></div></nav><div class="landing-entry"><main id="landing-main">
 <header id="landing-hero" class="landing-wrap landing-hero">
-<div class="landing-hero-copy"><p class="landing-eyebrow"><span class="eyebrow-dot"></span> A LITTLE AI. A HEALTHIER EVERYDAY.</p>
+<div class="landing-hero-copy"><p class="landing-eyebrow"><span class="eyebrow-dot"></span> AI CALORIE &amp; MACRO TRACKING.</p>
 <h1>Good food.<br>Better habits.<br><em>Less guesswork.</em></h1>
-<p class="landing-hero-lead">A little clarity for every plate. Turn meal photos into nutrition insights, find something delicious to cook, and make room for feeling good.</p>
+<p class="landing-hero-lead">Scan a meal photo or describe your food to estimate calories and macros. Track your water, explore AI Chef recipes, and build everyday habits that fit your life.</p>
 <div class="landing-hero-actions"><a href="/dashboard" class="lp-button lp-button-primary">Start tracking free <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a><a href="/download" class="lp-button lp-button-outline">Get the Android app <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5"/></svg></a></div>
 <p class="landing-hero-note"><span aria-hidden="true">✓</span> Free to get started <span class="note-divider" aria-hidden="true">/</span> Made for your everyday</p></div>
 <div class="landing-hero-art"><div class="hero-orbit" aria-hidden="true"></div><span class="hero-art-caption">SMALL STEPS, GOOD THINGS.</span>
