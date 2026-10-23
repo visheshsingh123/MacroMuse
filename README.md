@@ -17,10 +17,11 @@ label. The historical startup-test APK and ZIP retain their original names.
 
 Copyright (c) 2026 Vishesh Singh. All rights reserved.
 
-MacroMuse is proprietary software. Reuse, modification, and redistribution of
-the original repository materials require written permission from the copyright
-holder, subject to the exceptions in [LICENSE](LICENSE). GitHub platform rights
-and third-party licenses continue to apply.
+MacroMuse is proprietary software, not open source. Reusing, modifying, or
+redistributing its original source code and project assets requires written
+permission, subject to the exceptions in [LICENSE](LICENSE). GitHub platform
+rights and third-party licenses continue to apply. These source-reuse
+restrictions do not prohibit ordinary use of the hosted service or official apps.
 
 For licensing permission, contact [Vishesh Singh](https://github.com/visheshsingh123).
 
