@@ -179,6 +179,12 @@ html.dark .landing-pro{background:#1e293b;border-color:#475569}
 .journal-story .landing-text-link{margin-top:auto;justify-content:space-between}
 .landing-faq{display:grid;grid-template-columns:1fr 1.35fr;gap:64px;align-items:start}
 .faq-intro{max-width:340px;font-size:14px;line-height:1.9;color:var(--lp-muted);margin:20px 0 16px!important}
+.faq-help{margin-top:16px;padding:20px;border:1px solid var(--lp-soft-line);border-radius:24px;background:var(--lp-soft)}
+.landing-page .faq-help h3{font-size:17px;letter-spacing:-.02em}
+.faq-help>p{margin-top:8px;font-size:13px;line-height:1.8;color:var(--lp-muted)}
+.faq-help-actions{display:flex;flex-wrap:wrap;gap:4px 22px;margin-top:8px}
+.faq-help-actions>a{display:inline-flex;align-items:center;gap:9px;min-height:44px;font-size:12px;font-weight:600;color:var(--lp-accent)}
+.faq-help-actions>a:hover{text-decoration:underline;text-underline-offset:4px}
 .landing-faq-list{border:1px solid var(--lp-line);border-radius:24px;overflow:hidden;background:var(--lp-card)}
 .landing-faq-list details{padding:0 24px;border-bottom:1px solid var(--lp-line)}
 .landing-faq-list details:last-child{border:0}
