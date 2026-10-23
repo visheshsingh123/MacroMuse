@@ -150,7 +150,7 @@ html.dark .lp-button-primary:hover{background:#a7f3d0}
 .recipe-preview-macros>span{font-size:10px;padding:5px 8px;border-radius:6px;border:1px solid var(--lp-line);background:var(--lp-paper)}
 .recipe-preview-note{display:block;font-size:9px;line-height:1.7;color:var(--lp-muted);margin-top:12px}
 /* One-time Pro plan, clearly separated without introducing another palette. */
-.landing-pro{display:grid;grid-template-columns:1.4fr 1fr;gap:48px;background:#0f172a;color:#f8fafc;border:1px solid #334155;border-radius:24px;padding:44px;margin-block:24px;scroll-margin-top:100px}
+.landing-pro{zoom:.9;width:90%;margin-inline:auto;display:grid;grid-template-columns:1.4fr 1fr;gap:48px;background:#0f172a;color:#f8fafc;border:1px solid #334155;border-radius:24px;padding:44px;margin-block:24px;scroll-margin-top:100px}
 html.dark .landing-pro{background:#1e293b;border-color:#475569}
 .landing-pro .landing-eyebrow{color:#6ee7b7}
 .landing-pro h2{max-width:420px;font-size:34px}
