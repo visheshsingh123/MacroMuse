@@ -140,7 +140,7 @@ html[data-usage-plan="free"] .loading-allowance { display:flex; }
   .loading-meal-copy { grid-column:2; }
   .loading-meal-time { grid-column:2; height:8px; margin-top:-9px; }
   .loading-meal-delete { grid-column:3; grid-row:1/3; }
-  .loading-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .loading-actions { display:none; }
   .loading-actions .loading-card { padding:16px; }
   .loading-action { min-height:110px; }
   .loading-action-heading { flex-wrap:wrap; gap:8px; }

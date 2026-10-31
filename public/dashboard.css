@@ -70,7 +70,7 @@ html.dark #dashboard-page #water-drops button.bg-white,body.dark #dashboard-page
   #dashboard-page .dashboard-nutrition > div:last-child { grid-column:1/-1; }
   #dashboard-page .dashboard-nutrition > div:nth-child(3) { gap:12px; }
   #dashboard-page .dashboard-recent { padding:20px; }
-  #dashboard-page .dashboard-quick-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #dashboard-page .dashboard-quick-actions { display:none; }
   #dashboard-page .dashboard-quick-actions > * { padding:16px; }
   #dashboard-page #scan-btn > div,#dashboard-page #ai-chef-btn > div { flex-wrap:wrap; font-size:16px; }
 }
