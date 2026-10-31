@@ -111,15 +111,15 @@ html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:
   box-shadow:inset 0 1px 0 #ffffff1a,0 6px 24px #02061730;
 }
 html body :is(#bottom-nav,.mobile-quick-actions) {
-  --ng-nav-glass:var(--quick-nav-glass,#ffffffb3);
-  --ng-nav-solid:var(--quick-nav-solid,#fff);
+  --ng-nav-glass:#ffffffb3;
+  --ng-nav-solid:#fff;
   background:var(--ng-nav-solid)!important;
   border-top:1px solid #ffffff80!important;
   box-shadow:inset 0 1px 0 #ffffff80,0 -6px 24px #0f172a0d;
 }
 html.dark body :is(#bottom-nav,.mobile-quick-actions),html body.dark :is(#bottom-nav,.mobile-quick-actions) {
-  --ng-nav-glass:var(--quick-nav-glass,#1e293bf2);
-  --ng-nav-solid:var(--quick-nav-solid,#1e293b);
+  --ng-nav-glass:#1e293bf2;
+  --ng-nav-solid:#1e293b;
   background:var(--ng-nav-solid)!important;
   border-top-color:#ffffff26!important;
   box-shadow:inset 0 1px 0 #ffffff14,0 -6px 24px #02061730;
@@ -194,7 +194,3 @@ html body:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#setting
 }
 html body:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page))
 :is(button.bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary):not(.app-dialog-danger):hover:not(:disabled){background:var(--ng-action-hover)!important}
-.mobile-quick-actions{--quick-nav-glass:#10b981b3;--quick-nav-solid:#10b981}
-html.dark .mobile-quick-actions,body.dark .mobile-quick-actions{--quick-nav-glass:#064e3bf2;--quick-nav-solid:#064e3b}
-html body .mobile-quick-actions .quick-action{color:#0f172a}
-html.dark body .mobile-quick-actions .quick-action,body.dark .mobile-quick-actions .quick-action{color:#e2e8f0}
