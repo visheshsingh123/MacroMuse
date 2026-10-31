@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const script = readFileSync(new URL('../public/reminders.js', import.meta.url), 'utf8');
 const flush = () => new Promise(resolve => setImmediate(resolve));
-function fixture({ workerPending = false, supported = true, preference = '0', permission = 'default', requestedPermission = 'granted', available = false, pushPending = false, existingSubscription = false, oldKey = false, brave = false } = {}) {
+function fixture({ workerPending = false, supported = true, preference = '0', permission = 'default', requestedPermission = 'granted', available = false, pushPending = false, existingSubscription = false, oldKey = false, brave = false, rememberedOwner } = {}) {
   const timers = new Map(), storage = new Map(), events = {};
   if (preference !== null) storage.set('nutriglance_notifications', preference);
   const elements = Object.fromEntries(['notif-toggle', 'notif-thumb', 'notif-status', 'notif-retry', 'notif-test'].map(id => [id, {
@@ -15,7 +15,7 @@ function fixture({ workerPending = false, supported = true, preference = '0', pe
     classList: { toggle() {} },
   }]));
   const state = { available, permissions: 0, posts: 0, unsubscribed: 0, subscribed: existingSubscription, subscribeCalls: 0, requests: [], tokenPending: false, postError: false, notificationError: false, notifications: [] };
-  if (existingSubscription) storage.set('nutriglance_reminder_owner', 'alice');
+  if (rememberedOwner || existingSubscription) storage.set('nutriglance_reminder_owner', rememberedOwner || 'alice');
   const sub = { options: { applicationServerKey: Uint8Array.from({ length: 65 }, () => oldKey ? 9 : 4).buffer }, endpoint: 'https://fcm.googleapis.com/fcm/send/test', toJSON() { return { endpoint: this.endpoint }; }, async unsubscribe() { state.unsubscribed++; state.subscribed = false; return true; } };
   const reg = { getNotifications: async () => [], showNotification: async (title, options) => {
     if (state.notificationError) throw new Error('Browser could not display notification');
@@ -180,7 +180,8 @@ test('an unavailable reminder switch remains clickable and retries without promp
 test('a stalled service worker times out and releases the reminder controls', async () => {
   const f = fixture({ workerPending: true }); await flush();
   assert.equal(f.elements['notif-toggle'].disabled, true);
-  assert.match(f.elements['notif-status'].textContent, /Checking reminders/);
+  assert.match(f.elements['notif-status'].textContent, /^Off/);
+  assert.equal(f.elements['notif-toggle'].attrs['aria-busy'], 'false');
   f.expire(); await flush();
   assert.equal(f.elements['notif-toggle'].disabled, false);
   assert.match(f.elements['notif-status'].textContent, /timed out/);
@@ -292,4 +293,64 @@ test('server network failures are distinguished from browser push failures', asy
   await f.events.focus();
   assert.match(f.elements['notif-status'].textContent, /reach the reminder server/);
   assert.doesNotMatch(f.elements['notif-status'].textContent, /Google services|push service/);
+});
+
+test('a saved same-account On state paints synchronously before a stalled worker or server check', async () => {
+  const f = fixture({ preference: '1', permission: 'granted', existingSubscription: true, workerPending: true });
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.equal(f.elements['notif-toggle'].attrs['aria-busy'], 'false');
+  assert.match(f.elements['notif-status'].textContent, /^On/);
+  assert.equal(f.state.posts, 0);
+  await flush();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  f.expire();await flush();
+  assert.match(f.elements['notif-status'].textContent, /timed out/);
+});
+
+test('cached Off, denied permission and a different owner never paint a cached On state', async () => {
+  for (const options of [
+    { preference: '0', permission: 'granted', rememberedOwner: 'alice' },
+    { preference: '1', permission: 'denied', rememberedOwner: 'alice' },
+    { preference: '1', permission: 'granted', rememberedOwner: 'someone-else' },
+  ]) {
+    const f = fixture({ ...options, workerPending: true });
+    assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+    assert.equal(f.elements['notif-toggle'].attrs['aria-busy'], 'false');
+    f.expire();await flush();
+  }
+});
+
+test('background verification corrects a missing native subscription without replaying notifications', async () => {
+  const f = fixture({ preference: '1', permission: 'granted', rememberedOwner: 'alice', available: true, pushPending: true });
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  await flush();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+  assert.equal(f.storage.get('nutriglance_reminder_owner'), undefined);
+  assert.equal(f.state.notifications.length, 0);
+  f.state.completePush();await flush();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.equal(f.storage.get('nutriglance_reminder_owner'), 'alice');
+  assert.equal(f.state.notifications.length, 0);
+});
+
+test('temporary revalidation write failures keep an already confirmed native subscription active', async () => {
+  const f = fixture({ preference: '1', permission: 'granted', existingSubscription: true, available: true });
+  f.state.postError = true;
+  await flush();
+  assert.equal(f.state.unsubscribed, 0);
+  assert.equal(f.state.subscribed, true);
+  assert.equal(f.storage.get('nutriglance_reminder_owner'), 'alice');
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.match(f.elements['notif-status'].textContent, /unavailable/);
+});
+
+test('an On state painted from cache can be explicitly disabled after verification times out', async () => {
+  const f = fixture({ preference: '1', permission: 'granted', existingSubscription: true, workerPending: true, available: true });
+  await flush();f.expire();await flush();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  await f.click();
+  assert.equal(f.state.unsubscribed, 1);
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+  assert.equal(f.storage.get('nutriglance_notifications'), '0');
+  assert.equal(f.state.requests.at(-1).enabled, false);
 });

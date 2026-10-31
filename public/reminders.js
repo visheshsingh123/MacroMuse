@@ -11,6 +11,8 @@
     'serviceWorker' in navigator && 'PushManager' in window;
   let user = null;
   let subscription = null;
+  let subscriptionChecked = false;
+  let refreshing = false;
   let publicKey = null;
   let busy = false;
   let busyMessage = 'Checking reminders…';
@@ -29,14 +31,21 @@
   const enabled = () => supported && Notification.permission === 'granted' && subscription &&
     localStorage.getItem(preferenceKey) === '1' && localStorage.getItem(ownerKey) === user?.uid;
 
+  // The owner flag is written only after a successful subscription save.
+  // It paints the last confirmed state, never authorizes a push request.
+  const cachedOn = () => Boolean(user && supported && Notification.permission === 'granted' &&
+    localStorage.getItem(preferenceKey) === '1' && localStorage.getItem(ownerKey) === user.uid);
+
+  const displayedOn = () => Boolean(enabled() || !subscriptionChecked && cachedOn());
+
   function render(message = errorMessage) {
     if (!toggle) return;
-    const on = Boolean(enabled());
+    const on = displayedOn();
     const wanted = preferred();
     toggle.setAttribute('aria-checked', String(on));
     toggle.disabled = busy;
-    toggle.setAttribute('aria-busy', String(busy));
-    status.classList.toggle('inline-loading', busy);
+    toggle.setAttribute('aria-busy', String(busy && !refreshing));
+    status.classList.toggle('inline-loading', busy && !refreshing);
     toggle.classList.toggle('bg-brand', on);
     toggle.classList.toggle('bg-slate-200', !on);
     thumb.classList.toggle('translate-x-5', on);
@@ -51,15 +60,16 @@
       testButton.classList.toggle('hidden', !on || !serviceAvailable);
       testButton.disabled = busy;
     }
-    status.textContent = busy ? busyMessage : message || (!supported
+    status.textContent = busy && !refreshing ? busyMessage : message || (!supported
       ? 'Reminders aren’t supported in this browser. On iPhone, add MacroMuse to your Home Screen first.'
       : !user ? 'Sign in to manage reminders.'
         : Notification.permission === 'denied'
           ? 'Notifications are blocked. Allow them in your browser’s site settings to enable reminders.'
-          : !serviceAvailable ? 'Reminders aren’t available yet. Please try again later.'
+          : on ? 'On · 1 PM and 7 PM IST, even when the app is closed.'
+            : refreshing ? wanted && Notification.permission === 'granted' ? 'Off · Restoring reminders in the background.' : 'Off · Water and meal reminders at 1 PM and 7 PM IST.'
+            : !serviceAvailable ? 'Reminders aren’t available yet. Please try again later.'
             : wanted && Notification.permission === 'default' ? 'Not active · Allow browser notifications to receive reminders.'
-              : enabled() ? 'On · 1 PM and 7 PM IST, even when the app is closed.'
-                : wanted ? 'Not active · Connecting reminders. Please retry if this persists.'
+              : wanted ? 'Not active · Connecting reminders. Please retry if this persists.'
               : 'Off · Water and meal reminders at 1 PM and 7 PM IST.');
   }
 
@@ -101,7 +111,7 @@
       removed = await withTimeout(sub.unsubscribe());
     }
     if (!removed) throw new Error('Couldn’t turn off reminders. Please try again.');
-    subscription = null;
+    subscription = null;subscriptionChecked = true;
     localStorage.setItem(preferenceKey, '0');
     localStorage.removeItem(ownerKey);
     if (reg) await withTimeout(dismiss(reg)).catch(() => {});
@@ -120,17 +130,19 @@
     return error;
   }
 
-  async function subscribe(reg) {
+  async function subscribe(reg, existing) {
     const requestGeneration = generation;
     const requestUser = user;
     const bytes = Uint8Array.from(atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
-    let sub;
-    try { sub = await withTimeout(reg.pushManager.getSubscription()); }
+    let sub = existing;
+    try { if (existing === undefined) sub = await withTimeout(reg.pushManager.getSubscription()); }
     catch (error) { throw pushRegistrationError(error); }
+    let previouslySaved = Boolean(sub && cachedOn());
     const savedKey = sub?.options?.applicationServerKey;
     if (savedKey && (new Uint8Array(savedKey).length !== bytes.length || new Uint8Array(savedKey).some((value, index) => value !== bytes[index]))) {
       if (!await withTimeout(sub.unsubscribe())) throw new ReminderError('Couldn’t refresh this device’s notification subscription. Please try again.');
-      sub = null;
+      sub = null;previouslySaved = false;
+      localStorage.removeItem(ownerKey);
     }
     if (!sub) {
       busyMessage = 'Registering this browser for reminders…';render();
@@ -147,12 +159,23 @@
       throw new ReminderError('The account or notification preference changed.');
     }
     busyMessage = 'Saving reminder subscription…';render();
-    try { await save(true, sub); } catch (error) { await withTimeout(sub.unsubscribe()).catch(() => {}); subscription = null; throw error; }
+    try { await save(true, sub); } catch (error) {
+      if (previouslySaved && generation === requestGeneration && user?.uid === requestUser.uid) {
+        // A temporary server outage must not destroy a working saved subscription.
+        subscription = sub;subscriptionChecked = true;
+      } else {
+        await withTimeout(sub.unsubscribe()).catch(() => {});
+        if (generation === requestGeneration && user?.uid === requestUser.uid) {
+          subscription = null;subscriptionChecked = true;localStorage.removeItem(ownerKey);
+        }
+      }
+      throw error;
+    }
     if (generation !== requestGeneration || user?.uid !== requestUser.uid) {
       await withTimeout(sub.unsubscribe());
       throw new Error('The account or notification preference changed.');
     }
-    subscription = sub;
+    subscription = sub;subscriptionChecked = true;
     localStorage.setItem(ownerKey, user.uid);
     localStorage.setItem(preferenceKey, '1');
   }
@@ -222,24 +245,36 @@
             'Couldn’t update reminders. Please try again.';
     } finally { busy = false; render(); }
   }
-  toggle?.addEventListener('click', () => updateReminders(!enabled()));
+  toggle?.addEventListener('click', () => updateReminders(!displayedOn()));
 
   async function refresh() {
     if (!supported || !user || busy) { render(); return; }
-    busy = true;
+    busy = true;refreshing = true;
+    const owner = user.uid;
+    let revision = generation;
+    const current = () => user?.uid === owner && generation === revision;
     busyMessage = 'Checking reminders…';
     render();
     let serverReady = false;
     try {
       const reg = await registration();
-      try { subscription = await withTimeout(reg.pushManager.getSubscription()); }
+      if (!current()) return;
+      let found;
+      try { found = await withTimeout(reg.pushManager.getSubscription()); }
       catch (error) { throw pushRegistrationError(error); }
+      if (!current()) return;
+      subscription = found;subscriptionChecked = true;
+      if (!subscription && localStorage.getItem(ownerKey) === owner) localStorage.removeItem(ownerKey);
+      render();
       // A browser subscription must never follow another user's saved preference.
       if (subscription && localStorage.getItem(ownerKey) !== user.uid) {
         if (!await withTimeout(subscription.unsubscribe())) throw new Error('Could not remove previous subscription');
         subscription = null;
       }
-      if (subscription && (localStorage.getItem(preferenceKey) !== '1' || Notification.permission === 'denied')) await disable();
+      if (subscription && (localStorage.getItem(preferenceKey) !== '1' || Notification.permission === 'denied')) {
+        await disable();revision = generation;
+      }
+      if (!current()) return;
       busyMessage = 'Connecting to the reminder server…';render();
       let response;
       try { response = await fetch('/api/reminders', { cache: 'no-store', signal: AbortSignal.timeout(15000) }); }
@@ -248,20 +283,27 @@
           ? 'The reminder server request timed out. Please retry.'
           : 'Couldn’t reach the reminder server. Check your connection and retry.');
       }
+      if (!current()) return;
       if (!response.ok) { publicKey = null; throw await responseError(response); }
       try {
-        publicKey = (await response.json()).publicKey;
+        const config = await response.json();
+        if (!current()) return;
+        publicKey = config.publicKey;
         if (typeof publicKey !== 'string' || !/^[A-Za-z0-9_-]+={0,2}$/.test(publicKey) || atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')).length !== 65) throw new Error('Invalid key');
       } catch { throw new ReminderError('The reminder server returned an invalid setup response. Reload Settings and retry.'); }
       serviceAvailable = true;serverReady = true;
       // Restore the default preference without prompting if browser permission already exists.
-      if (preferred() && Notification.permission === 'granted') await subscribe(reg);
+      if (preferred() && Notification.permission === 'granted') await subscribe(reg, subscription);
       errorMessage = '';
     } catch (error) {
+      if (!current()) return;
       if (!serverReady) { serviceAvailable = false;publicKey = null; }
       errorMessage = error instanceof ReminderError ? error.message : 'Couldn’t initialize notifications in this browser. Reload Settings and retry.';
     }
-    finally { busy = false; render(); }
+    finally {
+      busy = false;refreshing = false;render();
+      if (user && user.uid !== owner) refresh();
+    }
   }
 
 
@@ -282,7 +324,11 @@
     if (!auth || auth === attachedAuth) return;
     attachedAuth = auth;
     auth.onAuthStateChanged(async currentUser => {
+      if (user?.uid !== currentUser?.uid) {
+        generation++;subscription = null;subscriptionChecked = false;errorMessage = '';
+      }
       user = currentUser;
+      render();
       if (user && localStorage.getItem(preferenceKey) === null) localStorage.setItem(preferenceKey, '1');
       if (!user && supported) {
         try { await disable(); } catch { /* Retry when the app next opens. */ }

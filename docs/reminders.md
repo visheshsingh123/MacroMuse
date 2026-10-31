@@ -57,3 +57,7 @@ Phone and PC subscriptions are independent; enabling the phone does not authoriz
 The UI now distinguishes waiting for permission, browser push registration, backend saving, and test delivery. Browser push-service failures show actionable browser guidance instead of being mislabeled as HTTP request timeouts. A blocked push-service setting cannot be changed by website code.
 
 A valid reminder-server configuration remains available after a browser-only registration failure, so the switch can retry directly after the browser setting is fixed. Network failures now explicitly identify the reminder-server request, while invalid setup responses and push-service failures have separate messages. A PC with existing notification permission reconnects with one click after a temporary server outage.
+
+## Instant saved switch state
+
+Settings immediately paints the last confirmed device state from the existing account-owned preference and subscription-owner flag. It checks the browser's current notification permission before displaying a cached On state. Verification runs without a loading spinner; a missing native subscription clears the cached On state, and successful silent repair restores it without showing another notification. This cached display never authorizes push API calls. Temporary server revalidation failures do not unsubscribe an already confirmed browser subscription; the status shows the error and allows retry. Explicit new subscriptions still require a successful backend save.
