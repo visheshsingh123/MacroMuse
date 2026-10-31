@@ -59,3 +59,65 @@
     targets.forEach(target => target.classList.add('is-revealed'));
   });
 })();
+
+// The requested hero headline gets a single, accessible letter reveal.
+(() => {
+  const heading = document.querySelector('#landing-hero h1');
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!heading || motion.matches || !heading.animate || !('IntersectionObserver' in window)) return;
+  let restore = () => {};
+  const observer = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    observer.disconnect();
+    if (motion.matches) return;
+
+    const original = [...heading.childNodes];
+    const visual = document.createElement('span');
+    visual.setAttribute('aria-hidden', 'true');
+    visual.append(...original.map(node => node.cloneNode(true)));
+    const walker = document.createTreeWalker(visual, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    for (const text of textNodes) {
+      const fragment = document.createDocumentFragment();
+      for (const part of text.textContent.split(/(\s+)/)) {
+        if (!part || /^\s+$/.test(part)) {
+          fragment.append(document.createTextNode(part));
+          continue;
+        }
+        const word = document.createElement('span');
+        word.className = 'hero-reveal-word';
+        for (const character of Array.from(part)) {
+          const letter = document.createElement('span');
+          letter.className = 'hero-reveal-letter';
+          letter.textContent = character;
+          word.append(letter);
+        }
+        fragment.append(word);
+      }
+      text.replaceWith(fragment);
+    }
+    const accessible = document.createElement('span');
+    accessible.className = 'hero-heading-accessible';
+    accessible.append(...original);
+    heading.replaceChildren(accessible, visual);
+    const animations = [...visual.querySelectorAll('.hero-reveal-letter')].map((letter, index) => letter.animate([
+      { opacity: 0, filter: 'blur(5px)', top: '.16em' },
+      { opacity: 1, filter: 'blur(0px)', top: '0em' },
+    ], { duration: 800, delay: index * 20, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }));
+    let restored = false;
+    restore = () => {
+      if (restored) return;
+      restored = true;
+      heading.replaceChildren(...original);
+      animations.forEach(animation => animation.cancel());
+    };
+    Promise.allSettled(animations.map(animation => animation.finished)).then(restore);
+  }, { threshold: .15 });
+  observer.observe(heading);
+  motion.addEventListener('change', event => {
+    if (!event.matches) return;
+    observer.disconnect();
+    restore();
+  });
+})();
