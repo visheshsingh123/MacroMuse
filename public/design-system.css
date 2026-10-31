@@ -93,3 +93,56 @@ html.dark body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta),body.dark
 /* Keep bottom navigation icons uniform across every mobile page. */
 #bottom-nav .bottom-nav-link{min-width:0;gap:4px;line-height:1.2;padding:9px 2px 8px;text-align:center;white-space:nowrap}
 #bottom-nav .bottom-nav-link>svg{display:block;width:22px;height:22px;flex:0 0 22px;stroke-width:2;overflow:visible}
+
+/* Glass chrome shared by public pages, the app, and mobile navigation. */
+html body nav.site-nav .nav-link { color:var(--ng-nav-ink)!important; }
+html body nav.site-nav:is(.bg-brand,.site-nav) {
+  --ng-nav-glass:#10b981d9;
+  --ng-nav-solid:#10b981;
+  background:var(--ng-nav-solid)!important;
+  border-bottom:1px solid #ffffff40;
+  box-shadow:inset 0 1px 0 #ffffff40,0 6px 24px #064e3b12;
+}
+html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav) {
+  --ng-nav-glass:#064e3bdc;
+  --ng-nav-solid:#064e3b;
+  background:var(--ng-nav-solid)!important;
+  border-bottom-color:#6ee7b733;
+  box-shadow:inset 0 1px 0 #ffffff1a,0 6px 24px #02061730;
+}
+html body #bottom-nav {
+  --ng-nav-glass:#ffffffdc;
+  --ng-nav-solid:#fff;
+  background:var(--ng-nav-solid)!important;
+  border-top:1px solid #ffffff80!important;
+  box-shadow:inset 0 1px 0 #ffffff80,0 -6px 24px #0f172a0d;
+}
+html.dark body #bottom-nav,html body.dark #bottom-nav {
+  --ng-nav-glass:#1e293bdc;
+  --ng-nav-solid:#1e293b;
+  background:var(--ng-nav-solid)!important;
+  border-top-color:#ffffff26!important;
+  box-shadow:inset 0 1px 0 #ffffff14,0 -6px 24px #02061730;
+}
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  html body nav.site-nav:is(.bg-brand,.site-nav),html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav),
+  html body #bottom-nav,html.dark body #bottom-nav,html body.dark #bottom-nav {
+    background:linear-gradient(120deg,#ffffff24,transparent 55%,#ffffff08),var(--ng-nav-glass)!important;
+    -webkit-backdrop-filter:blur(20px) saturate(150%);
+    backdrop-filter:blur(20px) saturate(150%);
+  }
+}
+@media (prefers-reduced-transparency:reduce) {
+  html body nav.site-nav:is(.bg-brand,.site-nav),html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav),
+  html body #bottom-nav,html.dark body #bottom-nav,html body.dark #bottom-nav {
+    background:var(--ng-nav-solid)!important;
+    -webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+}
+@media (forced-colors:active) {
+  html body nav.site-nav:is(.bg-brand,.site-nav),html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav),
+  html body #bottom-nav,html.dark body #bottom-nav,html body.dark #bottom-nav {
+    background:Canvas!important;border-color:CanvasText!important;
+    -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+  }
+}
