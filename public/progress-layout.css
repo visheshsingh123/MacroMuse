@@ -61,6 +61,11 @@ html.dark #progress-page #today-ring-kcal,body.dark #progress-page #today-ring-k
 html.dark #progress-page .progress-today svg > text:last-child,body.dark #progress-page .progress-today svg > text:last-child { fill:#94a3b8; }
 html.dark #progress-page .progress-tip,body.dark #progress-page .progress-tip { background:#172333!important; }
 html.dark .progress-empty-icon,body.dark .progress-empty-icon { background:#12382e; color:#6ee7b7; }
+@media(min-width:768px) {
+  .progress-workspace { align-items:stretch; }
+  #progress-page .progress-calendar { display:flex; flex-direction:column; flex:1 0 auto; }
+  #progress-page .progress-calendar #calendar-grid { flex:1 0 auto; align-content:space-between; }
+}
 @media(max-width:1000px) {
   .progress-workspace { grid-template-columns:260px minmax(0,1fr); gap:20px; }
   #progress-page .progress-card { padding:20px; }
