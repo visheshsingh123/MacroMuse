@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="/app-interactions.css" />
   <script src="/app-interactions.js"></script>
   <script src="/chef-recipes.js"></script>
+  <script src="/chef-chat-cache.js"></script>
   <script src="/saved-recipes.js"></script>
   <link rel="stylesheet" href="/chef-recipes.css" />
   <script src="/nutrition-goals.js"></script>
@@ -486,6 +487,34 @@
     // Running conversation sent to the API (system prompt is added at call time)
     let history = [];
     let conversationVersion = 0;
+    let conversationOwner = null;
+    let cachedMessages = [];
+
+    function rememberMessage(role, content, context = false) {
+      const message = { role, content, context };
+      cachedMessages.push(message);
+      cachedMessages = cachedMessages.slice(-60);
+      window.NutriChefChatCache.write(conversationOwner, cachedMessages);
+      return message;
+    }
+
+    function restoreConversation(uid) {
+      if (uid === conversationOwner) return;
+      conversationOwner = uid;
+      conversationVersion++;
+      cachedMessages = window.NutriChefChatCache.read(uid);
+      history = cachedMessages.filter(message => message.context).map(({ role, content }) => ({ role, content }));
+      chatLog.querySelectorAll('.chat-msg').forEach((element, index) => { if (index > 0) element.remove(); });
+      for (const message of cachedMessages) {
+        let recipeReply;
+        if (message.role === 'assistant') {
+          try { recipeReply = window.NutriRecipes.parse(message.content); } catch {}
+        }
+        const wrapper = addMessage(message.role, recipeReply ? recipeReply.message : message.content);
+        if (recipeReply?.recipes.length) window.NutriRecipes.render(wrapper.lastElementChild, recipeReply.recipes, uid);
+      }
+      scrollToBottom();
+    }
 
     function scrollToBottom() {
       chatLog.scrollTop = chatLog.scrollHeight;
@@ -565,8 +594,10 @@
       if (!trimmed || sendBtn.disabled) return;
       const requestUid = window.nutriGlanceReminderAuth?.currentUser?.uid;
       const version = conversationVersion;
+      if (!window.NutriSecurity.isCurrent(requestUid)) return;
 
       addMessage('user', trimmed);
+      const userMessage = rememberMessage('user', trimmed);
       chatInput.value = '';
       sendBtn.disabled = true;
       addTypingIndicator();
@@ -577,15 +608,21 @@
         removeTypingIndicator();
         let result;
         try { result = window.NutriRecipes.parse(reply); }
-        catch { addMessage('assistant', 'I couldn’t finish formatting those recipes. Please ask me to try again.'); return; }
+        catch {
+          const message = 'I couldn’t finish formatting those recipes. Please ask me to try again.';
+          addMessage('assistant', message);rememberMessage('assistant', message);return;
+        }
         const wrapper = addMessage('assistant', result ? result.message : reply);
         if (result?.recipes.length) window.NutriRecipes.render(wrapper.lastElementChild, result.recipes, requestUid);
         history.push({ role: 'user', content: trimmed });
         history.push({ role: 'assistant', content: reply });
+        userMessage.context = true;
+        rememberMessage('assistant', reply, true);
       } catch (err) {
         if (version === conversationVersion && window.NutriSecurity.isCurrent(requestUid)) {
           removeTypingIndicator();
-          addMessage('assistant', err.code === 'FREE_QUOTA_EXCEEDED' ? err.message : `Sorry, I ran into a problem: ${err.message}`);
+          const message = err.code === 'FREE_QUOTA_EXCEEDED' ? err.message : `Sorry, I ran into a problem: ${err.message}`;
+          addMessage('assistant', message);rememberMessage('assistant', message);
         }
       } finally {
         sendBtn.disabled = false;
@@ -605,6 +642,8 @@
     clearBtn.addEventListener('click', () => {
       conversationVersion++;
       history = [];
+      cachedMessages = [];
+      window.NutriChefChatCache.clear(conversationOwner);
       chatLog.querySelectorAll('.chat-msg').forEach((el, i) => { if (i > 0) el.remove(); });
     });
 
@@ -846,9 +885,10 @@
 
     auth.onAuthStateChanged(async user => {
       if (user && !window.NutriSecurity.bindSession(user)) return;
-      if (!user) { window.NutriSecurity.bindSession(null);window.NutriUsage.connect(null); }
+      if (!user) { window.NutriSecurity.bindSession(null);window.NutriUsage.connect(null);restoreConversation(null); }
       if (!user) { window.NutriRecipes.setLogger(null);window.location.href = '/login'; return; }
 
+      restoreConversation(user.uid);
       const profile = await window.NutriOnboarding.ensureProfile({ user, db, doc, getDoc, setDoc });
       if (!profile || !window.NutriSecurity.isCurrent(user.uid)) return;
       window.NutriAvatar?.connect(user.uid);

@@ -156,7 +156,7 @@
     if (uid !== currentUid || uid !== auth.currentUser?.uid || uid !== localStorage.getItem(ownerKey)) throw new Error('Your account changed. Please try again.');
     return response;
   }
-  const cacheKeys = new Set(['profile', 'saved_recipes']);
+  const cacheKeys = new Set(['profile', 'saved_recipes', 'chef_chat']);
   function readCache(owner, key, maxAge = 5 * 60 * 1000) {
     if (!cacheKeys.has(key) || !window.NutriSecurity.isCurrent(owner)) return null;
     try {
