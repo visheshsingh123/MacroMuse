@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const script = readFileSync(new URL('../public/reminders.js', import.meta.url), 'utf8');
 const flush = () => new Promise(resolve => setImmediate(resolve));
-function fixture({ workerPending = false, supported = true, preference = '0', permission = 'default', requestedPermission = 'granted', available = false, pushPending = false, existingSubscription = false, oldKey = false } = {}) {
+function fixture({ workerPending = false, supported = true, preference = '0', permission = 'default', requestedPermission = 'granted', available = false, pushPending = false, existingSubscription = false, oldKey = false, brave = false } = {}) {
   const timers = new Map(), storage = new Map(), events = {};
   if (preference !== null) storage.set('nutriglance_notifications', preference);
   const elements = Object.fromEntries(['notif-toggle', 'notif-thumb', 'notif-status', 'notif-retry', 'notif-test'].map(id => [id, {
@@ -24,6 +24,7 @@ function fixture({ workerPending = false, supported = true, preference = '0', pe
     getSubscription: async () => state.subscribed ? sub : null,
     subscribe: async () => {
       state.subscribeCalls++;
+      if (state.subscribeError) throw state.subscribeError;
       if (pushPending) return new Promise(resolve => { state.completePush = () => { state.subscribed = true;resolve(sub); }; });
       state.subscribed = true; return sub;
     },
@@ -31,11 +32,12 @@ function fixture({ workerPending = false, supported = true, preference = '0', pe
   const notification = { permission, async requestPermission() { state.permissions++; this.permission = requestedPermission; return requestedPermission; } };
   const context = {
     document: { getElementById: id => elements[id] },
-    navigator: { serviceWorker: { register: async () => reg, ready: workerPending ? new Promise(() => {}) : Promise.resolve(reg), getRegistration: async () => reg } },
+    navigator: { userAgent: 'Desktop test browser', ...(brave ? { brave: {} } : {}), serviceWorker: { register: async () => reg, ready: workerPending ? new Promise(() => {}) : Promise.resolve(reg), getRegistration: async () => reg } },
     Notification: notification, Uint8Array, AbortSignal, atob,
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) },
     setTimeout: fn => { const id = Symbol(); timers.set(id, fn); return id; }, clearTimeout: id => timers.delete(id),
     fetch: async (_url, options) => {
+      if (state.fetchError) throw state.fetchError;
       if (options.method === 'POST') { state.posts++;state.requests.push(JSON.parse(options.body)); }
       const ok = state.available && !(options.method === 'POST' && state.postError);
       return { ok, status: ok ? 200 : 503, json: async () => ok ? { publicKey: Buffer.alloc(65, 4).toString('base64url') } : { error: 'Reminders are temporarily unavailable. Please try again later.' } };
@@ -237,4 +239,57 @@ test('test notifications use the saved endpoint and surface delivery failures', 
   await f.testNotification();
   assert.match(f.elements['notif-status'].textContent, /unavailable/);
   assert.equal(f.elements['notif-toggle'].disabled, false);
+});
+
+test('desktop Brave push failures explain its messaging setting instead of claiming a request timeout', async () => {
+  const f = fixture({ available: true, brave: true });await flush();
+  f.state.subscribeError = Object.assign(new Error('Registration failed - push service error'), { name: 'AbortError' });
+  await f.click();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+  assert.match(f.elements['notif-status'].textContent, /Use Google services for push messaging/);
+  assert.doesNotMatch(f.elements['notif-status'].textContent, /request timed out/);
+  assert.equal(f.state.posts, 0);
+  assert.equal(f.state.notifications.length, 1);
+  f.state.subscribeError = null;
+  await f.click();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.equal(f.state.posts, 1);
+});
+
+test('other browsers get a push-service connection error rather than Brave-specific settings', async () => {
+  const f = fixture({ available: true });await flush();
+  f.state.subscribeError = Object.assign(new Error('Push unavailable'), { name: 'AbortError' });
+  await f.click();
+  assert.match(f.elements['notif-status'].textContent, /couldn’t connect to its push service/);
+  assert.doesNotMatch(f.elements['notif-status'].textContent, /Brave|timed out/);
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+});
+
+test('a PC push failure during automatic reconnect keeps valid server setup retryable', async () => {
+  const f = fixture({ preference: '1', permission: 'granted', available: true, brave: true });
+  f.state.subscribeError = Object.assign(new Error('Push registration failed'), { name: 'AbortError' });
+  await flush();
+  assert.match(f.elements['notif-status'].textContent, /Use Google services for push messaging/);
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'false');
+  f.state.subscribeError = null;
+  await f.click();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.equal(f.state.notifications.at(-1).title, 'MacroMuse reminders are on');
+});
+
+test('a permitted PC reconnects in one click after the server recovers', async () => {
+  const f = fixture({ preference: '1', permission: 'granted', available: false });await flush();
+  f.state.available = true;
+  await f.click();
+  assert.equal(f.elements['notif-toggle'].attrs['aria-checked'], 'true');
+  assert.doesNotMatch(f.elements['notif-status'].textContent, /Tap the switch again/);
+  assert.equal(f.state.notifications.at(-1).title, 'MacroMuse reminders are on');
+});
+
+test('server network failures are distinguished from browser push failures', async () => {
+  const f = fixture({ available: true });await flush();
+  f.state.fetchError = new TypeError('Failed to fetch');
+  await f.events.focus();
+  assert.match(f.elements['notif-status'].textContent, /reach the reminder server/);
+  assert.doesNotMatch(f.elements['notif-status'].textContent, /Google services|push service/);
 });

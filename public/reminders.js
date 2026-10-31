@@ -13,6 +13,7 @@
   let subscription = null;
   let publicKey = null;
   let busy = false;
+  let busyMessage = 'Checking reminders…';
   let serviceAvailable = false;
   let errorMessage = '';
   let generation = 0;
@@ -50,7 +51,7 @@
       testButton.classList.toggle('hidden', !on || !serviceAvailable);
       testButton.disabled = busy;
     }
-    status.textContent = busy ? 'Checking reminders…' : message || (!supported
+    status.textContent = busy ? busyMessage : message || (!supported
       ? 'Reminders aren’t supported in this browser. On iPhone, add MacroMuse to your Home Screen first.'
       : !user ? 'Sign in to manage reminders.'
         : Notification.permission === 'denied'
@@ -107,29 +108,45 @@
   }
   window.nutriGlanceDisableReminders = disable;
 
+  function pushRegistrationError(error) {
+    const desktopBrave = Boolean(navigator.brave) && !/Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    const timedOut = error instanceof ReminderError && error.message.includes('timed out');
+    if (desktopBrave && (timedOut || ['AbortError', 'NetworkError', 'NotSupportedError'].includes(error.name))) {
+      return new ReminderError(`${timedOut ? 'Push registration timed out. ' : ''}In Brave Settings → Privacy and security, enable “Use Google services for push messaging”, then retry reminders.`);
+    }
+    if (['AbortError', 'NetworkError'].includes(error.name)) {
+      return new ReminderError('This browser couldn’t connect to its push service. Check browser notification settings and your connection, then retry reminders.');
+    }
+    return error;
+  }
+
   async function subscribe(reg) {
     const requestGeneration = generation;
     const requestUser = user;
     const bytes = Uint8Array.from(atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
-    let sub = await withTimeout(reg.pushManager.getSubscription());
+    let sub;
+    try { sub = await withTimeout(reg.pushManager.getSubscription()); }
+    catch (error) { throw pushRegistrationError(error); }
     const savedKey = sub?.options?.applicationServerKey;
     if (savedKey && (new Uint8Array(savedKey).length !== bytes.length || new Uint8Array(savedKey).some((value, index) => value !== bytes[index]))) {
       if (!await withTimeout(sub.unsubscribe())) throw new ReminderError('Couldn’t refresh this device’s notification subscription. Please try again.');
       sub = null;
     }
     if (!sub) {
+      busyMessage = 'Registering this browser for reminders…';render();
       const pending = reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: bytes });
       try { sub = await withTimeout(pending); }
       catch (error) {
         // A late browser result must not silently enable a timed-out setup.
         pending.then(late => late.unsubscribe()).catch(() => {});
-        throw error;
+        throw pushRegistrationError(error);
       }
     }
     if (generation !== requestGeneration || user?.uid !== requestUser.uid) {
       await withTimeout(sub.unsubscribe());
       throw new ReminderError('The account or notification preference changed.');
     }
+    busyMessage = 'Saving reminder subscription…';render();
     try { await save(true, sub); } catch (error) { await withTimeout(sub.unsubscribe()).catch(() => {}); subscription = null; throw error; }
     if (generation !== requestGeneration || user?.uid !== requestUser.uid) {
       await withTimeout(sub.unsubscribe());
@@ -140,18 +157,39 @@
     localStorage.setItem(preferenceKey, '1');
   }
 
+  async function confirmEnabled(reg) {
+    render();
+    try {
+      await withTimeout(reg.showNotification('MacroMuse reminders are on', {
+        body: 'Meal and water reminders are enabled for 1 PM and 7 PM IST.',
+        tag: 'nutriglance-reminder-enabled', renotify: false,
+        icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
+      }));
+    } catch {
+      errorMessage = 'Reminders are on, but the confirmation could not be shown. Check notification settings for this app and browser on your device.';
+    }
+  }
+
   async function updateReminders(turnOn) {
     if (busy) return;
     if (!user || !supported) { render(); return; }
     if (turnOn && !serviceAvailable) {
       await refresh();
-      if (serviceAvailable) {
+      if (enabled()) {
+        busy = true;busyMessage = 'Finishing reminder setup…';render();
+        try { await confirmEnabled(await registration()); }
+        catch { errorMessage = 'Reminders are on. Use Send test notification to check delivery.'; }
+        finally { busy = false;render(); }
+      } else if (serviceAvailable && Notification.permission === 'granted') {
+        await updateReminders(true);
+      } else if (serviceAvailable) {
         errorMessage = 'Reminders are ready. Tap the switch again to allow notifications.';
         render();
       }
       return;
     }
     busy = true;
+    busyMessage = turnOn ? 'Waiting for notification permission…' : 'Turning reminders off…';
     errorMessage = '';
     render();
     try {
@@ -173,17 +211,7 @@
             });
           } catch { /* Still try the enabled confirmation after setup. */ }
           await subscribe(reg);
-          render();
-          try {
-            // Update the same notification immediately when the switch becomes active.
-            await withTimeout(reg.showNotification('MacroMuse reminders are on', {
-              body: 'Meal and water reminders are enabled for 1 PM and 7 PM IST.',
-              tag: 'nutriglance-reminder-enabled', renotify: false,
-              icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
-            }));
-          } catch {
-            errorMessage = 'Reminders are on, but the confirmation could not be shown. Check notification settings for this app and browser on your device.';
-          }
+          await confirmEnabled(reg);
         }
       }
     } catch (error) {
@@ -199,30 +227,39 @@
   async function refresh() {
     if (!supported || !user || busy) { render(); return; }
     busy = true;
+    busyMessage = 'Checking reminders…';
     render();
+    let serverReady = false;
     try {
       const reg = await registration();
-      subscription = await withTimeout(reg.pushManager.getSubscription());
+      try { subscription = await withTimeout(reg.pushManager.getSubscription()); }
+      catch (error) { throw pushRegistrationError(error); }
       // A browser subscription must never follow another user's saved preference.
       if (subscription && localStorage.getItem(ownerKey) !== user.uid) {
         if (!await withTimeout(subscription.unsubscribe())) throw new Error('Could not remove previous subscription');
         subscription = null;
       }
       if (subscription && (localStorage.getItem(preferenceKey) !== '1' || Notification.permission === 'denied')) await disable();
-      const response = await fetch('/api/reminders', { cache: 'no-store', signal: AbortSignal.timeout(15000) });
-      serviceAvailable = response.ok;
-      if (!response.ok) { publicKey = null; throw await responseError(response); }
-      publicKey = (await response.json()).publicKey;
-      if (typeof publicKey !== 'string' || !/^[A-Za-z0-9_-]+={0,2}$/.test(publicKey) || atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')).length !== 65) {
-        throw new ReminderError('Reminders are temporarily unavailable. Please try again later.');
+      busyMessage = 'Connecting to the reminder server…';render();
+      let response;
+      try { response = await fetch('/api/reminders', { cache: 'no-store', signal: AbortSignal.timeout(15000) }); }
+      catch (error) {
+        throw new ReminderError(['TimeoutError', 'AbortError'].includes(error.name)
+          ? 'The reminder server request timed out. Please retry.'
+          : 'Couldn’t reach the reminder server. Check your connection and retry.');
       }
+      if (!response.ok) { publicKey = null; throw await responseError(response); }
+      try {
+        publicKey = (await response.json()).publicKey;
+        if (typeof publicKey !== 'string' || !/^[A-Za-z0-9_-]+={0,2}$/.test(publicKey) || atob(publicKey.replace(/-/g, '+').replace(/_/g, '/')).length !== 65) throw new Error('Invalid key');
+      } catch { throw new ReminderError('The reminder server returned an invalid setup response. Reload Settings and retry.'); }
+      serviceAvailable = true;serverReady = true;
       // Restore the default preference without prompting if browser permission already exists.
       if (preferred() && Notification.permission === 'granted') await subscribe(reg);
       errorMessage = '';
     } catch (error) {
-      serviceAvailable = false;
-      publicKey = null;
-      errorMessage = error instanceof ReminderError ? error.message : 'Couldn’t load reminders. Check your connection and try again.';
+      if (!serverReady) { serviceAvailable = false;publicKey = null; }
+      errorMessage = error instanceof ReminderError ? error.message : 'Couldn’t initialize notifications in this browser. Reload Settings and retry.';
     }
     finally { busy = false; render(); }
   }
@@ -230,7 +267,7 @@
 
   testButton?.addEventListener('click', async () => {
     if (busy || !enabled()) return;
-    busy = true;errorMessage = '';render();
+    busy = true;busyMessage = 'Sending test notification…';errorMessage = '';render();
     try {
       await save(true, subscription, 'test');
       errorMessage = 'Test notification sent. If it doesn’t appear, check notification settings for this app and browser on your device.';

@@ -49,3 +49,11 @@ After fixing the deployment, use **Retry reminders** in Settings to check availa
 - A Firestore transaction claims each device's daily slot before delivery, preventing duplicate sends from overlapping cron invocations. A failed send is counted and is not retried in that slot, favoring no duplicate notifications. Monitor `failed` in the cron response/logs.
 - The app's existing hydration sync uses UTC date document IDs; the cron reads the same IDs. Meal checks use IST boundaries and ISO `loggedAt` values.
 - Run `npm test` for reminder policy, endpoint authentication/validation, subscription ownership, scheduling, duplicate prevention, and service-worker behavior. Client behavior was additionally checked in Chromium with mocked browser permission/push APIs; actual closed-app delivery requires the deployed credentials and a real subscribed device.
+
+## Desktop Brave allows the local notification but cannot switch on reminders
+
+Phone and PC subscriptions are independent; enabling the phone does not authorize the PC browser. In desktop Brave, open **Settings → Privacy and security**, enable **Use Google services for push messaging**, then return to Settings and retry reminders. Grant the website notification permission as well. If Brave requests a restart, restart it first. The local permission confirmation can work even while this push-service setting prevents registration.
+
+The UI now distinguishes waiting for permission, browser push registration, backend saving, and test delivery. Browser push-service failures show actionable browser guidance instead of being mislabeled as HTTP request timeouts. A blocked push-service setting cannot be changed by website code.
+
+A valid reminder-server configuration remains available after a browser-only registration failure, so the switch can retry directly after the browser setting is fixed. Network failures now explicitly identify the reminder-server request, while invalid setup responses and push-service failures have separate messages. A PC with existing notification permission reconnects with one click after a temporary server outage.
