@@ -206,3 +206,17 @@ html.dark .landing-pro{background:#1e293b;border-color:#475569}
   .landing-reveal:focus-within{opacity:1;filter:none;transform:none}
 }
 @media print{.landing-reveal{opacity:1!important;filter:none!important;transform:none!important}}
+
+/* Slow emerald light clouds and a static grain texture, behind homepage content. */
+.landing-page{isolation:isolate;--ambient-emerald:#10b98130;--ambient-mint:#6ee7b747;--ambient-deep:#0596691f;--ambient-grain:.035}
+html.dark body.landing-page{--ambient-emerald:#10b98138;--ambient-mint:#6ee7b738;--ambient-deep:#05966933;--ambient-grain:.06}
+.landing-ambient{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;contain:strict}
+.landing-ambient::before,.landing-ambient::after{content:'';position:absolute;inset:-25%;background-repeat:no-repeat;transform-origin:center;animation:ambient-drift 26s ease-in-out infinite alternate}
+.landing-ambient::before{background-image:radial-gradient(ellipse at 74% 24%,var(--ambient-mint),transparent 38%),radial-gradient(ellipse at 28% 68%,var(--ambient-emerald),transparent 43%)}
+.landing-ambient::after{background-image:radial-gradient(ellipse at 64% 78%,var(--ambient-deep),transparent 40%),radial-gradient(ellipse at 36% 22%,var(--ambient-emerald),transparent 32%);animation-name:ambient-drift-secondary;animation-duration:32s;animation-delay:-12s}
+.landing-grain{position:absolute;inset:0;z-index:1;background:url('/landing-grain.svg') repeat;opacity:var(--ambient-grain)}
+@keyframes ambient-drift{from{transform:translate3d(-6%,-3%,0) rotate(-9deg) scale(1)}to{transform:translate3d(6%,5%,0) rotate(9deg) scale(1.08)}}
+@keyframes ambient-drift-secondary{from{transform:translate3d(5%,-5%,0) rotate(8deg) scale(1.08)}to{transform:translate3d(-5%,5%,0) rotate(-8deg) scale(1)}}
+@media(max-width:767px){.landing-ambient::before,.landing-ambient::after{inset:-15%;animation-duration:34s}.landing-grain{background-size:128px 128px}}
+@media(prefers-reduced-motion:reduce){.landing-ambient::before,.landing-ambient::after{animation:none;transform:none}}
+@media(forced-colors:active),print{.landing-ambient{display:none}}
