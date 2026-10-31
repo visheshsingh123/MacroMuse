@@ -97,28 +97,28 @@ html.dark body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta),body.dark
 /* Glass chrome shared by public pages, the app, and mobile navigation. */
 html body nav.site-nav .nav-link { color:var(--ng-nav-ink)!important; }
 html body nav.site-nav:is(.bg-brand,.site-nav) {
-  --ng-nav-glass:#10b981d9;
+  --ng-nav-glass:#10b981b3;
   --ng-nav-solid:#10b981;
   background:var(--ng-nav-solid)!important;
   border-bottom:1px solid #ffffff40;
   box-shadow:inset 0 1px 0 #ffffff40,0 6px 24px #064e3b12;
 }
 html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav) {
-  --ng-nav-glass:#064e3bdc;
+  --ng-nav-glass:#064e3bf2;
   --ng-nav-solid:#064e3b;
   background:var(--ng-nav-solid)!important;
   border-bottom-color:#6ee7b733;
   box-shadow:inset 0 1px 0 #ffffff1a,0 6px 24px #02061730;
 }
 html body #bottom-nav {
-  --ng-nav-glass:#ffffffdc;
+  --ng-nav-glass:#ffffffb3;
   --ng-nav-solid:#fff;
   background:var(--ng-nav-solid)!important;
   border-top:1px solid #ffffff80!important;
   box-shadow:inset 0 1px 0 #ffffff80,0 -6px 24px #0f172a0d;
 }
 html.dark body #bottom-nav,html body.dark #bottom-nav {
-  --ng-nav-glass:#1e293bdc;
+  --ng-nav-glass:#1e293bf2;
   --ng-nav-solid:#1e293b;
   background:var(--ng-nav-solid)!important;
   border-top-color:#ffffff26!important;
@@ -184,15 +184,15 @@ html body :is(#dashboard-page,#meals-page,#chef-page) .daily-usage-exhausted {
 html body #settings-page #settings-account { border-color:#f8717166!important; }
 @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
   :is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page) {
-    --app-card-fill:#ffffffbf;
-    --app-card-mint:#ecfdf5c9;
-    --app-card-warning:#fffbebeb;
+    --app-card-fill:#ffffff99;
+    --app-card-mint:#ecfdf5a3;
+    --app-card-warning:#fffbebe6;
     --app-card-blur:blur(16px) saturate(135%);
   }
   :is(html.dark,body.dark) :is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page) {
-    --app-card-fill:#1e293bc9;
-    --app-card-mint:#12382ec9;
-    --app-card-warning:#302719eb;
+    --app-card-fill:#1e293beb;
+    --app-card-mint:#12382eeb;
+    --app-card-warning:#302719f5;
   }
 }
 @media (prefers-reduced-transparency:reduce),(forced-colors:active) {
