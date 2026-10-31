@@ -218,7 +218,7 @@ html.dark body,body.dark {
 html:root body :is(.ng-button,.lp-button,.site-nav-cta,.site-nav a.bg-charcoal,.btn-primary,.google-btn,.download-primary,.download-secondary,
 button.bg-brand,button.bg-charcoal,button[type=submit],.quick-action,.empty-action,.chef-recipe-log,.chef-recipe-save,.meal-delete,.suggestion-chip,.danger-btn,.daily-usage a,
 .range-btn,.chef-view-tabs button,.premium-currency button,[id$="-cancel-btn"],[id$="-retry-btn"],#export-pdf-btn,#clear-btn,#clear-all-btn,#signout-btn,#reset-meal-filters,#clear-chat-btn) {
-  background:linear-gradient(120deg,var(--glass-button-shine),transparent 55%,#ffffff08),var(--glass-button-tint,var(--glass-button-fill))!important;
+  background:var(--glass-button-overlay,linear-gradient(120deg,var(--glass-button-shine),transparent 55%,#ffffff08)),var(--glass-button-tint,var(--glass-button-fill))!important;
   color:var(--glass-button-ink,var(--ng-ink))!important;
   border:1px solid var(--glass-button-edge)!important;
   box-shadow:inset 0 1px 0 var(--glass-button-shine),0 3px 12px #0f172a0d!important;
@@ -244,3 +244,29 @@ html.dark body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta),body.dark
 }
 html body :is(button,a):hover:not(:disabled) { --glass-button-shine:#ffffff60;--glass-button-edge:#05966966; }
 html.dark body :is(button,a):hover:not(:disabled),body.dark :is(button,a):hover:not(:disabled) { --glass-button-shine:#ffffff30;--glass-button-edge:#6ee7b766; }
+
+/* A remembered preference swaps glass for opaque surfaces across every page. */
+html[data-liquid-glass="off"] body,
+html[data-liquid-glass="off"] body.dark {
+  --glass-button-fill:#fff;--glass-button-primary:#10b981;--glass-button-danger:#fff1f2;
+  --glass-button-blur:none;--glass-button-shine:transparent;
+}
+html.dark[data-liquid-glass="off"] body,html[data-liquid-glass="off"] body.dark {
+  --glass-button-fill:#1e293b;--glass-button-primary:#6ee7b7;--glass-button-danger:#451a1a;
+}
+html[data-liquid-glass="off"] body :is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page) {
+  --app-card-fill:#fff;--app-card-mint:#ecfdf5;--app-card-warning:#fffbeb;
+  --app-card-blur:none;--app-card-sheen:transparent;--app-card-shadow:transparent;
+}
+html.dark[data-liquid-glass="off"] body :is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page),
+html[data-liquid-glass="off"] body.dark :is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page) {
+  --app-card-fill:#1e293b;--app-card-mint:#12382e;--app-card-warning:#302719;
+}
+html[data-liquid-glass="off"] body :is(nav.site-nav,#bottom-nav,.mobile-quick-actions) {
+  background:var(--ng-nav-solid)!important;
+  -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+}
+html[data-liquid-glass="off"] body :is(button,a) {
+  background-image:none!important;
+  --glass-button-overlay:none;--glass-button-shine:transparent!important;
+}

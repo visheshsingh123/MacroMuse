@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="/appearance.js"></script>
   <!-- Restore the saved theme before stylesheets or account scripts can delay paint. -->
   <script>
     (() => {
@@ -454,6 +455,24 @@
                       aria-label="Toggle dark mode">
                 <span id="dark-mode-thumb"
                       class="inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-200 translate-x-0.5 mt-0.5"></span>
+              </button>
+            </div>
+
+            <!-- Liquid glass -->
+            <div class="setting-row flex items-center justify-between px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="3"/><path d="M8 16v2a3 3 0 0 0 3 3h7a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3h-2"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-charcoal">Liquid glass</p>
+                  <p id="liquid-glass-description" class="text-xs text-muted">Translucent cards, buttons and navigation</p>
+                </div>
+              </div>
+              <button id="liquid-glass-toggle" type="button" role="switch" aria-checked="true"
+                      aria-label="Liquid glass" aria-describedby="liquid-glass-description"
+                      class="relative inline-flex w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none bg-slate-200">
+                <span id="liquid-glass-thumb" class="inline-block w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-200 translate-x-0.5 mt-0.5"></span>
               </button>
             </div>
 
