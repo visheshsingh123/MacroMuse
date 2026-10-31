@@ -165,16 +165,23 @@
           if (permission === 'default') errorMessage = 'Permission wasn’t granted. Reminders are off.';
         } else {
           const reg = await registration();
-          let confirmationFailed = false;
           try {
             await reg.showNotification('MacroMuse notifications allowed', {
               body: 'Notifications can appear on this device. Check Settings for reminder setup status.',
               tag: 'nutriglance-reminder-enabled', renotify: true,
               icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
             });
-          } catch { confirmationFailed = true; }
+          } catch { /* Still try the enabled confirmation after setup. */ }
           await subscribe(reg);
-          if (confirmationFailed) {
+          render();
+          try {
+            // Update the same notification immediately when the switch becomes active.
+            await withTimeout(reg.showNotification('MacroMuse reminders are on', {
+              body: 'Meal and water reminders are enabled for 1 PM and 7 PM IST.',
+              tag: 'nutriglance-reminder-enabled', renotify: false,
+              icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
+            }));
+          } catch {
             errorMessage = 'Reminders are on, but the confirmation could not be shown. Check notification settings for this app and browser on your device.';
           }
         }

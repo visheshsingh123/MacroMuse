@@ -19,7 +19,7 @@ function fixture({ workerPending = false, supported = true, preference = '0', pe
   const sub = { options: { applicationServerKey: Uint8Array.from({ length: 65 }, () => oldKey ? 9 : 4).buffer }, endpoint: 'https://fcm.googleapis.com/fcm/send/test', toJSON() { return { endpoint: this.endpoint }; }, async unsubscribe() { state.unsubscribed++; state.subscribed = false; return true; } };
   const reg = { getNotifications: async () => [], showNotification: async (title, options) => {
     if (state.notificationError) throw new Error('Browser could not display notification');
-    state.notifications.push({ title, options, posts: state.posts });
+    state.notifications.push({ title, options, posts: state.posts, checked: elements['notif-toggle'].attrs['aria-checked'] });
   }, pushManager: {
     getSubscription: async () => state.subscribed ? sub : null,
     subscribe: async () => {
@@ -61,7 +61,7 @@ test('a pending default preference stays visibly off until permission and regist
   await f.allow();
   assert.equal(f.state.permissions, 1);
   assert.equal(f.state.posts, 1);
-  assert.equal(f.state.notifications.length, 1);
+  assert.equal(f.state.notifications.length, 2);
   assert.match(f.elements['notif-status'].textContent, /1 PM and 7 PM IST/);
 });
 
@@ -79,21 +79,27 @@ test('explicitly enabling confirms permission immediately, without repeating on 
   const f = fixture({ available: true, permission: 'granted' }); await flush();
   assert.equal(f.state.notifications.length, 0);
   await f.click();
-  assert.equal(f.state.notifications.length, 1);
+  assert.equal(f.state.notifications.length, 2);
   const notice = f.state.notifications[0];
   assert.equal(notice.posts, 0);
   assert.equal(notice.title, 'MacroMuse notifications allowed');
   assert.match(notice.options.body, /Check Settings/);
   assert.equal(notice.options.tag, 'nutriglance-reminder-enabled');
   assert.equal(notice.options.data.url, '/dashboard');
+  const enabledNotice = f.state.notifications[1];
+  assert.equal(enabledNotice.title, 'MacroMuse reminders are on');
+  assert.equal(enabledNotice.checked, 'true');
+  assert.equal(enabledNotice.posts, 1);
+  assert.equal(enabledNotice.options.tag, notice.options.tag);
+  assert.equal(enabledNotice.options.renotify, false);
   assert.equal(f.storage.get('nutriglance_notifications'), '1');
   await f.events.focus();
-  assert.equal(f.state.notifications.length, 1);
-  await f.click();
-  assert.equal(f.state.notifications.length, 1);
-  assert.equal(f.state.subscribed, false);
+  assert.equal(f.state.notifications.length, 2);
   await f.click();
   assert.equal(f.state.notifications.length, 2);
+  assert.equal(f.state.subscribed, false);
+  await f.click();
+  assert.equal(f.state.notifications.length, 4);
 });
 
 test('declined permission never notifies; a save failure does not claim reminders are enabled', async () => {
