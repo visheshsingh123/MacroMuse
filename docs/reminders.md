@@ -1,14 +1,12 @@
 # Twice-daily Web Push reminders
 
-Meal Reminders defaults to on for signed-in users without a saved reminder preference on that browser. Existing off choices are preserved. The switch represents the saved preference; its status explains whether notifications are active, awaiting permission, blocked, or unavailable. In Settings, **Allow notifications** requests browser permission after a click. No permission prompt appears automatically on page load. If permission is already granted, an on preference subscribes automatically. Delivery starts only after the server saves the subscription.
+Meal Reminders keeps the existing device preference, including existing opt-outs. The switch shows **On only when notification permission is granted and this account's push subscription has been saved**. Pending permission or registration stays visibly off with an explanatory status. Clicking the switch finishes enabling reminders rather than silently cancelling a pending preference. No permission prompt appears automatically on page load; an on preference with permission already granted reconnects without prompting.
 
-Turning reminders on in Settings, or choosing **Allow notifications**, displays
-an immediate “MacroMuse reminders enabled” notification after permission is
-granted and the subscription is saved. It is displayed locally through the
-service worker and opens the dashboard when tapped; it does not wait for the
-scheduled push job or test the remote push-delivery path. Reloading a page or
-restoring a subscription does not repeat this confirmation. If the browser
-cannot display it, Settings explains that reminders are still enabled.
+After an explicit enable click and granted permission, the service worker immediately displays **“MacroMuse notifications allowed”** before waiting for the push service or backend registration. This confirms local permission and display only; Settings reports whether scheduled reminder setup succeeds. A blocked display is explained without undoing an otherwise valid subscription. Reloading or silently restoring subscriptions does not repeat this confirmation.
+
+Once registration succeeds, **Send test notification** sends an authenticated request through the real server-to-push-service path to that device's stored subscription. Other accounts' subscriptions cannot be tested. The endpoint is rate limited, returns delivery failures, and removes expired endpoints. “Sent” means the push service accepted it; actual display still depends on browser and OS notification settings. Test pushes do not consume a scheduled reminder slot.
+
+Push setup has bounded waits, and late results from a timed-out subscription are unsubscribed. If the application server key changes, the browser subscription is replaced before saving it again. Keep VAPID keys stable in production whenever possible.
 
 Vercel runs two jobs at 07:30 and 13:30 UTC (1 PM and 7 PM IST). Delivery works with the page closed on browsers that support Web Push. On iPhone/iPad, the user must install the site to their Home Screen first (iOS/iPadOS 16.4+).
 
@@ -32,9 +30,9 @@ Each job sends at most one combined notification per device. Water reminders sto
 
    Firestore permissions are additive: remove or restrict any existing broad wildcard rule that also grants access to this collection. Keep the existing rules for `users/{uid}` and its meal/progress collections. The server uses the Admin SDK; browser clients must have no read or write access to push endpoints or encryption keys. Use the Firebase Rules simulator to verify an authenticated client cannot read or write `reminderSubscriptions`.
 4. Redeploy on Vercel, then check Project → Cron Jobs for both schedules. No Firebase service-account, VAPID private key, or cron secret belongs in public files or Git. The setup values are not currently supplied by this repository.
-5. On the deployed HTTPS site, sign in and open Meal Reminders in Settings. New preferences start on; use **Allow notifications** and grant browser permission. For an existing off preference, turn the switch on. Confirm the active status and saved preference after reload, close the page, and check delivery at the next reminder time. Test disabling the toggle on the same device and confirm future pushes stop.
+5. On the deployed HTTPS site, sign in and open Meal Reminders in Settings. Turn the switch on (or use **Allow notifications** for a pending preference), and grant browser permission. Confirm the active status after reload, use **Send test notification**, close the page, and check delivery at the next reminder time. Test disabling the toggle on the same device and confirm future pushes stop.
 
-Without the production variables, `/api/reminders` returns 503 and Settings shows that reminders are not available, even if the saved preference is on. Only a saved subscription and granted browser permission produce the active delivery status.
+Without the production variables, `/api/reminders` returns 503 and Settings shows that reminders are not available, even if an earlier saved preference requested reminders. Only a saved subscription and granted browser permission produce the active delivery status.
 
 ## Troubleshooting a switch that will not turn on
 
@@ -42,7 +40,7 @@ Check that all five variable names above exist in Vercel's **Production** enviro
 
 Open Settings and inspect the failed `/api/reminders` request in Vercel Logs. Missing configuration logs list variable names only. Invalid Firebase credentials and invalid VAPID settings have separate messages; server initialization failures return 503 instead of incorrectly asking the user to sign in again. Never share secret values or the service-account JSON in chat or logs.
 
-After fixing the deployment, use **Retry reminders** in Settings to check availability. Availability checks do not request notification permission. If the preference is off, enable the switch; if browser permission is pending, use **Allow notifications**. The switch remains clickable during an outage so the preference can be turned off; it is disabled only while a request is running. Service-worker readiness has a 15-second timeout so a stalled worker cannot permanently disable the controls. If notifications are blocked, allow them in the browser's site settings first. A successful subscription should remain active after reload; confirm actual delivery with a real device at the next scheduled time.
+After fixing the deployment, use **Retry reminders** in Settings to check availability. Availability checks do not request notification permission. If the preference is off, enable the switch; if browser permission is pending, use **Allow notifications**. The switch remains clickable during an outage to retry setup or turn off an existing active subscription; it is disabled only while a request is running. Service-worker readiness has a 15-second timeout so a stalled worker cannot permanently disable the controls. If notifications are blocked, allow them in the browser's site settings first. A successful subscription should remain active after reload; confirm actual delivery with a real device at the next scheduled time.
 
 ## Operational details
 

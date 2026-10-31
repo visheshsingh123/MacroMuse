@@ -163,12 +163,55 @@ test('service worker displays push payload and opens/focuses the dashboard', asy
     clients: { matchAll: async () => windows, openWindow: async url => opened.push(url) },
   };
   vm.runInNewContext(readFileSync(new URL('../public/service-worker.js', import.meta.url), 'utf8'), { self, URL });
-  events.push({ data: { json: () => ({ body: 'Drink water', tag: 'nutriglance-reminder-test' }) }, waitUntil: promise => waited = promise });
+  events.push({ data: { json: () => ({ title: 'MacroMuse test notification', body: 'Drink water', tag: 'nutriglance-reminder-test' }) }, waitUntil: promise => waited = promise });
   await waited;
+  assert.equal(displayed[0][0], 'MacroMuse test notification');
   assert.equal(displayed[0][1].body, 'Drink water');
   assert.equal(displayed[0][1].data.url, '/dashboard');
   const click = () => events.notificationclick({ notification: { tag: 'nutriglance-reminder-test', close() {} }, waitUntil: promise => waited = promise });
   click(); await waited; assert.equal(opened[0], 'https://example.com/dashboard');
   windows = [{ url: 'https://example.com/dashboard', focus: async () => focused++ }];
   click(); await waited; assert.equal(focused, 1); assert.equal(opened.length, 1);
+});
+
+test('test pushes require authentication and an active subscription owned by the caller', async () => {
+  const fixture = fakeServices();
+  let quotaCalls = 0;
+  const handler = createReminderHandler({ isConfigured: () => true, getServices: () => fixture.services, quota: async () => { quotaCalls++; } });
+  let res = response();await handler({ ...post({ action: 'test', endpoint: subscription.endpoint }), headers: {} }, res);
+  assert.equal(res.code, 401);assert.equal(fixture.sent.length, 0);
+  res = response();await handler(post({ action: 'test', endpoint: 'https://localhost/private' }), res);
+  assert.equal(res.code, 400);
+  await handler(post({ enabled: true, subscription }), response());
+  const path = [...fixture.records.keys()][0];
+  fixture.records.get(path).uid = 'someone-else';
+  res = response();await handler(post({ action: 'test', endpoint: subscription.endpoint }), res);
+  assert.equal(res.code, 403);assert.equal(fixture.sent.length, 0);
+  fixture.records.get(path).uid = 'user-1';fixture.records.get(path).enabled = false;
+  res = response();await handler(post({ action: 'test', endpoint: subscription.endpoint }), res);
+  assert.equal(res.code, 403);assert.equal(fixture.sent.length, 0);
+  fixture.records.get(path).enabled = true;
+  res = response();await handler(post({ action: 'test', endpoint: subscription.endpoint }), res);
+  assert.equal(res.code, 200);assert.deepEqual(res.body, { sent: true });
+  assert.equal(fixture.sent.length, 1);assert.equal(fixture.sent[0].payload.title, 'MacroMuse test notification');
+  assert.equal(fixture.sent[0].options.TTL, 60);assert(quotaCalls >= 4);
+  assert.equal(fixture.records.get(path).lastDelivery, undefined);
+});
+
+test('failed test pushes surface delivery errors without claiming success; expired endpoints are removed', async () => {
+  for (const [suffix, expected] of [['-expired', 410], ['-failed', 502]]) {
+    const fixture = fakeServices();
+    const handler = createReminderHandler({ isConfigured: () => true, getServices: () => fixture.services, quota: async () => {} });
+    const sub = { ...subscription, endpoint: subscription.endpoint + suffix };
+    await handler(post({ enabled: true, subscription: sub }), response());
+    const res = response();await handler(post({ action: 'test', endpoint: sub.endpoint }), res);
+    assert.equal(res.code, expected);assert.equal(fixture.sent.length, 0);
+    assert.equal(fixture.records.size, expected === 410 ? 0 : 1);
+  }
+});
+
+test('Edge Windows push destinations are accepted without widening to lookalike hosts', () => {
+  assert(validEndpoint('https://wns2-test.notify.windows.com/w/?token=example'));
+  assert(!validEndpoint('https://notify.windows.com.evil.example/w/'));
+  assert(!validEndpoint('https://fake-notify.windows.com/w/'));
 });

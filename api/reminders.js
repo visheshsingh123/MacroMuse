@@ -17,21 +17,41 @@ export function createReminderHandler({ getServices = services, isConfigured = c
     }
     const token = req.headers.authorization?.match(/^Bearer (.+)$/)?.[1];
     if (!token) return res.status(401).json({ error: 'Please sign in again.' });
-    let auth, db, uid;
+    let auth, db, webpush, uid;
     try {
-      ({ auth, db } = getServices());
+      ({ auth, db, webpush } = getServices());
     } catch { return res.status(503).json({ error: 'Reminders are temporarily unavailable. Please try again later.' }); }
     try {
       const decoded = await auth.verifyIdToken(token, true);
       if (!decoded.uid || decoded.firebase?.sign_in_provider === 'anonymous') throw new Error('Sign in required');
       uid = decoded.uid;
     } catch { return res.status(401).json({ error: 'Please sign in again.' }); }
-    const { enabled, subscription, endpoint } = req.body || {};
-    if (typeof enabled !== 'boolean' || !validEndpoint(enabled ? subscription?.endpoint : endpoint) ||
+    const { enabled, subscription, endpoint, action } = req.body || {};
+    if (action !== undefined && action !== 'test') return res.status(400).json({ error: 'Invalid reminder action.' });
+    const testing = action === 'test';
+    if (testing ? !validEndpoint(endpoint) : typeof enabled !== 'boolean' || !validEndpoint(enabled ? subscription?.endpoint : endpoint) ||
         (enabled && !validSubscription(subscription))) return res.status(400).json({ error: 'Invalid notification subscription.' });
-    const ref = db.collection('reminderSubscriptions').doc(subscriptionId(enabled ? subscription.endpoint : endpoint));
+    const ref = db.collection('reminderSubscriptions').doc(subscriptionId(!testing && enabled ? subscription.endpoint : endpoint));
     try {
       await quota(db, uid, 'subscriptions');
+      if (testing) {
+        const snap = await ref.get();
+        const record = snap.data();
+        if (!record?.enabled || record.uid !== uid) throw new HttpError(403, 'Enable reminders on this device before sending a test.');
+        try {
+          await webpush.sendNotification(record.subscription, JSON.stringify({
+            title: 'MacroMuse test notification', body: 'Your meal and water reminders can reach this device.',
+            tag: 'nutriglance-reminder-test',
+          }), { TTL: 60, urgency: 'high', timeout: 10_000 });
+        } catch (error) {
+          if ([404, 410].includes(error.statusCode)) {
+            await ref.delete();
+            throw new HttpError(410, 'This device’s subscription expired. Turn reminders off and on again.');
+          }
+          throw new HttpError(502, 'Push delivery failed. Retry reminders, then send another test notification.');
+        }
+        return res.status(200).json({ sent: true });
+      }
       if (enabled) {
         await db.runTransaction(async transaction => {
           const snap = await transaction.get(ref);

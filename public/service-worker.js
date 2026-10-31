@@ -1,5 +1,5 @@
 // Public app files only. Account data remains in owner-scoped app storage.
-const CACHE_NAME = 'nutriglance-v94';
+const CACHE_NAME = 'nutriglance-v95';
 const LIBRARY_CACHE = 'nutriglance-public-libraries-v1';
 const PAGES = [
   "/",
@@ -153,7 +153,8 @@ self.addEventListener('push', event => {
     let payload;
     try { payload = event.data?.json(); } catch { return; }
     if (!payload || typeof payload.body !== 'string') return;
-    await self.registration.showNotification('A little check-in from MacroMuse', {
+    const title = typeof payload.title === 'string' && payload.title.trim() ? payload.title.slice(0, 80) : 'A little check-in from MacroMuse';
+    await self.registration.showNotification(title, {
       body: payload.body.slice(0, 300), tag: String(payload.tag || 'nutriglance-reminder').slice(0, 100),
       icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
     });
