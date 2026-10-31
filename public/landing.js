@@ -102,9 +102,9 @@
     accessible.append(...original);
     heading.replaceChildren(accessible, visual);
     const animations = [...visual.querySelectorAll('.hero-reveal-letter')].map((letter, index) => letter.animate([
-      { opacity: 0, filter: 'blur(5px)', top: '.16em' },
+      { opacity: 0, filter: 'blur(10px)', top: '.05em' },
       { opacity: 1, filter: 'blur(0px)', top: '0em' },
-    ], { duration: 800, delay: index * 20, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }));
+    ], { duration: 800, delay: index * 45, easing: 'cubic-bezier(.25,.46,.45,.94)', fill: 'both' }));
     let restored = false;
     restore = () => {
       if (restored) return;
