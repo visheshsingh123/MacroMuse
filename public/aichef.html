@@ -25,6 +25,7 @@
   <script src="/app-interactions.js"></script>
   <script src="/chef-recipes.js"></script>
   <script src="/chef-chat-cache.js"></script>
+  <script src="/chef-message-reveal.js"></script>
   <script src="/saved-recipes.js"></script>
   <link rel="stylesheet" href="/chef-recipes.css" />
   <script src="/nutrition-goals.js"></script>
@@ -520,7 +521,7 @@
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
-    function addMessage(role, text) {
+    function addMessage(role, text, { animate = false } = {}) {
       const wrapper = document.createElement('div');
       wrapper.className = `chat-msg flex items-start gap-2.5 ${role === 'user' ? 'justify-end' : ''}`;
 
@@ -533,7 +534,11 @@
             </svg>
           </div>
           <div class="bg-slate-50 text-charcoal text-sm rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[80%] leading-relaxed whitespace-pre-line"></div>`;
-        wrapper.querySelector('div:last-child').textContent = text;
+        const replyText = document.createElement('span');
+        replyText.className = 'chef-reply-text';
+        replyText.textContent = text;
+        wrapper.lastElementChild.appendChild(replyText);
+        if (animate) window.NutriChefReveal?.start(replyText, text);
       } else {
         wrapper.innerHTML = `
           <div class="bg-brand text-white text-sm rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%] leading-relaxed whitespace-pre-line"></div>`;
@@ -612,7 +617,7 @@
           const message = 'I couldn’t finish formatting those recipes. Please ask me to try again.';
           addMessage('assistant', message);rememberMessage('assistant', message);return;
         }
-        const wrapper = addMessage('assistant', result ? result.message : reply);
+        const wrapper = addMessage('assistant', result ? result.message : reply, { animate: true });
         if (result?.recipes.length) window.NutriRecipes.render(wrapper.lastElementChild, result.recipes, requestUid);
         history.push({ role: 'user', content: trimmed });
         history.push({ role: 'assistant', content: reply });

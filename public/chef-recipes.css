@@ -49,3 +49,11 @@ html.dark .chef-recipe-save[aria-pressed="true"] { color:#6ee7b7; background:#12
 html.dark .chef-view-tabs button[aria-selected="true"] { background:#6ee7b7; color:#0f172a; }
 html.dark #saved-recipes-error { background:#451a1a; color:#fecaca; border-color:#7f1d1d; }
 @media(max-width:767px) { .saved-recipe-grid { grid-template-columns:minmax(0,1fr); }.chef-view-tabs { width:100%; }.chef-view-tabs button { flex:1; padding-inline:10px; font-size:12px; } }
+
+/* Reserve the full reply's height so typing never moves recipe controls. */
+.chef-reply-text{display:block}
+.chef-reply-revealing{position:relative}
+.chef-reply-layout{visibility:hidden;pointer-events:none;user-select:none}
+.chef-reply-visual{position:absolute;inset:0;white-space:inherit;overflow-wrap:inherit}
+.chef-reply-accessible{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+@media print{.chef-reply-layout{visibility:visible}.chef-reply-visual{display:none}}
