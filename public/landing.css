@@ -198,3 +198,11 @@ html.dark .landing-pro{background:#1e293b;border-color:#475569}
 }
 @media(max-width:380px){.landing-hero-actions{align-items:stretch;flex-direction:column}.landing-hero-actions .lp-button{justify-content:space-between}.landing-pro-features{grid-template-columns:1fr}.preview-summary{align-items:flex-start;flex-direction:column;gap:6px}}
 @media(prefers-reduced-motion:reduce){html:has(.landing-page){scroll-behavior:auto}.landing-page *,.landing-page *::before,.landing-page *::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* Added only by the observer: content stays visible without JavaScript. */
+@media (prefers-reduced-motion:no-preference) {
+  .landing-reveal{opacity:0;filter:blur(8px);transform:translateY(24px);transition:opacity .65s ease,filter .65s ease,transform .65s cubic-bezier(.22,1,.36,1)}
+  .landing-reveal.is-revealed{opacity:1;filter:none;transform:none}
+  .landing-reveal:focus-within{opacity:1;filter:none;transform:none}
+}
+@media print{.landing-reveal{opacity:1!important;filter:none!important;transform:none!important}}

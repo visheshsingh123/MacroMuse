@@ -35,3 +35,27 @@
   ];
   document.getElementById('daily-tip').textContent = tips[Math.floor(Date.now() / 86400000) % tips.length];
 })();
+
+// Reveal each below-the-fold section once, with no scroll handler or layout changes.
+(() => {
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (motion.matches || !('IntersectionObserver' in window)) return;
+  const targets = [...document.querySelectorAll('#landing-main > *')]
+    .filter(element => element.getBoundingClientRect().top >= window.innerHeight);
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('is-revealed');
+      observer.unobserve(entry.target);
+    }
+  }, { threshold: 0, rootMargin: '0px 0px -32px 0px' });
+  for (const target of targets) {
+    target.classList.add('landing-reveal');
+    observer.observe(target);
+  }
+  motion.addEventListener('change', event => {
+    if (!event.matches) return;
+    observer.disconnect();
+    targets.forEach(target => target.classList.add('is-revealed'));
+  });
+})();

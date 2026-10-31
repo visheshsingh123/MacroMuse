@@ -1,5 +1,5 @@
 // Public app files only. Account data remains in owner-scoped app storage.
-const CACHE_NAME = 'nutriglance-v77';
+const CACHE_NAME = 'nutriglance-v78';
 const LIBRARY_CACHE = 'nutriglance-public-libraries-v1';
 const PAGES = [
   "/",
