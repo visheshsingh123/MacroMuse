@@ -203,3 +203,44 @@ html body #settings-page #settings-account { border-color:#f8717166!important; }
     --app-card-fill:#1e293b;--app-card-mint:#12382e;--app-card-warning:#302719;
   }
 }
+
+/* Action buttons use the navbar's glass finish without changing their layout. */
+body {
+  --glass-button-fill:#fff;--glass-button-primary:#10b981;--glass-button-primary-ink:#0f172a;
+  --glass-button-danger:#fff1f2;--glass-button-danger-ink:#b91c1c;
+  --glass-button-edge:#64748b40;--glass-button-shine:#ffffff40;--glass-button-blur:none;
+}
+html.dark body,body.dark {
+  --glass-button-fill:#1e293b;--glass-button-primary:#6ee7b7;
+  --glass-button-danger:#451a1a;--glass-button-danger-ink:#fecaca;
+  --glass-button-edge:#cbd5e140;--glass-button-shine:#ffffff24;
+}
+html:root body :is(.ng-button,.lp-button,.site-nav-cta,.site-nav a.bg-charcoal,.btn-primary,.google-btn,.download-primary,.download-secondary,
+button.bg-brand,button.bg-charcoal,button[type=submit],.quick-action,.empty-action,.chef-recipe-log,.chef-recipe-save,.meal-delete,.suggestion-chip,.danger-btn,.daily-usage a,
+.range-btn,.chef-view-tabs button,.premium-currency button,[id$="-cancel-btn"],[id$="-retry-btn"],#export-pdf-btn,#clear-btn,#clear-all-btn,#signout-btn,#reset-meal-filters,#clear-chat-btn) {
+  background:linear-gradient(120deg,var(--glass-button-shine),transparent 55%,#ffffff08),var(--glass-button-tint,var(--glass-button-fill))!important;
+  color:var(--glass-button-ink,var(--ng-ink))!important;
+  border:1px solid var(--glass-button-edge)!important;
+  box-shadow:inset 0 1px 0 var(--glass-button-shine),0 3px 12px #0f172a0d!important;
+  -webkit-backdrop-filter:var(--glass-button-blur);backdrop-filter:var(--glass-button-blur);
+}
+:is(.ng-button-primary,.lp-button-primary,.site-nav-cta,.site-nav a.bg-charcoal,.btn-primary,.download-primary,
+button.bg-brand,button.bg-charcoal,button[type=submit],.quick-action-primary,.empty-action-primary,.chef-recipe-log,
+.chef-view-tabs button[aria-selected=true],.premium-currency button[aria-pressed=true]) {
+  --glass-button-tint:var(--glass-button-primary);--glass-button-ink:var(--glass-button-primary-ink);
+}
+:is(.danger-btn,.meal-delete,.app-dialog-danger,#clear-btn,#clear-all-btn,#signout-btn) {
+  --glass-button-tint:var(--glass-button-danger);--glass-button-ink:var(--glass-button-danger-ink);
+}
+html body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta) { color:var(--glass-button-primary-ink)!important; }
+html.dark body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta),body.dark .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta) { color:var(--glass-button-primary-ink)!important; }
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  body { --glass-button-fill:#ffffffb3;--glass-button-primary:#10b981b3;--glass-button-danger:#fff1f2d9;--glass-button-blur:blur(20px) saturate(150%); }
+  html.dark body,body.dark { --glass-button-fill:#1e293bf2;--glass-button-primary:#6ee7b7f2;--glass-button-danger:#451a1af2; }
+}
+@media(prefers-reduced-transparency:reduce),(forced-colors:active) {
+  body { --glass-button-fill:#fff;--glass-button-primary:#10b981;--glass-button-danger:#fff1f2;--glass-button-blur:none;--glass-button-shine:transparent; }
+  html.dark body,body.dark { --glass-button-fill:#1e293b;--glass-button-primary:#6ee7b7;--glass-button-danger:#451a1a; }
+}
+html body :is(button,a):hover:not(:disabled) { --glass-button-shine:#ffffff60;--glass-button-edge:#05966966; }
+html.dark body :is(button,a):hover:not(:disabled),body.dark :is(button,a):hover:not(:disabled) { --glass-button-shine:#ffffff30;--glass-button-edge:#6ee7b766; }
