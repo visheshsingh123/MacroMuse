@@ -188,9 +188,14 @@ html.dark body.landing-page :is(button,a):hover:not(:disabled),body.landing-page
 :root{--ng-action-fill:#55cba7;--ng-action-hover:#43bd99;--ng-action-ink:#0f172a;--ng-action-line:#0f172a26}
 html.dark,body.dark{--ng-action-fill:#185d4f;--ng-action-hover:#216e5d;--ng-action-ink:#e2e8f0;--ng-action-line:#6ee7b74d}
 html body:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page))
-:is(button.bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary):not(.app-dialog-danger){
+:is(:is(button,a).bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary):not(.app-dialog-danger){
   background:var(--ng-action-fill)!important;color:var(--ng-action-ink)!important;
   border:1px solid var(--ng-action-line);
 }
 html body:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page))
-:is(button.bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary):not(.app-dialog-danger):hover:not(:disabled){background:var(--ng-action-hover)!important}
+:is(:is(button,a).bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary):not(.app-dialog-danger):hover:not(:disabled){background:var(--ng-action-hover)!important}
+
+/* Selected Chef tabs and user replies use the same solid action palette. */
+html body #chef-page :is(.chef-view-tabs button[aria-selected="true"],#chat-log .chat-msg.justify-end > .bg-brand){
+  background:var(--ng-action-fill)!important;color:var(--ng-action-ink)!important;
+}
