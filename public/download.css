@@ -19,7 +19,7 @@
 .download-showcase { position:relative; margin:0; border:1px solid #a7f3d0; border-radius:36px; background:#d1fae5; min-height:570px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px 20px 22px; overflow:hidden; }
 .download-phone { position:relative; width:248px; border:8px solid #172e27; background:#eff7f4; border-radius:38px; box-shadow:16px 20px 0 #0478571c; color:#0f172a; overflow:hidden; transform:rotate(4deg); }
 .phone-status { display:flex; justify-content:space-between; padding:10px 18px; font-size:9px; font-weight:700; }
-.phone-brand { display:flex; align-items:center; padding:10px 14px; font-size:14px; font-weight:800; letter-spacing:-.04em; background:#10b981; }
+.phone-brand { display:flex; align-items:center; padding:10px 14px; font-size:14px; font-weight:800; letter-spacing:-.04em; background:#59cbaa; }
 .phone-brand > span:first-child { color:#fff; }
 .phone-avatar { display:flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:auto; border-radius:50%; background:#059669; font-size:10px; }
 .phone-content { padding:18px 12px 16px; }

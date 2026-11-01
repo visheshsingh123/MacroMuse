@@ -96,14 +96,14 @@ html.dark body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta),body.dark
 
 /* Glass chrome shared by public pages, the app, and mobile navigation. */
 html body nav.site-nav .nav-link { color:var(--ng-nav-ink)!important; }
-html body nav.site-nav:is(.bg-brand,.site-nav) {
+html body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar) {
   --ng-nav-glass:#10b981b3;
   --ng-nav-solid:#10b981;
   background:var(--ng-nav-solid)!important;
   border-bottom:1px solid #ffffff40;
   box-shadow:inset 0 1px 0 #ffffff40,0 6px 24px #064e3b12;
 }
-html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav) {
+html.dark body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html body.dark :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar) {
   --ng-nav-glass:#59cbaa;
   --ng-nav-solid:#59cbaa;
   --ng-nav-overlay:none;
@@ -126,7 +126,7 @@ html.dark body :is(#bottom-nav,.mobile-quick-actions),html body.dark :is(#bottom
   box-shadow:inset 0 1px 0 #ffffff14,0 -6px 24px #02061730;
 }
 @supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
-  html body nav.site-nav:is(.bg-brand,.site-nav),html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav),
+  html body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html.dark body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html body.dark :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),
   html body :is(#bottom-nav,.mobile-quick-actions),html.dark body :is(#bottom-nav,.mobile-quick-actions),html body.dark :is(#bottom-nav,.mobile-quick-actions) {
     background:var(--ng-nav-overlay,linear-gradient(120deg,#ffffff24,transparent 55%,#ffffff08)),var(--ng-nav-glass)!important;
     -webkit-backdrop-filter:blur(20px) saturate(150%);
@@ -134,14 +134,14 @@ html.dark body :is(#bottom-nav,.mobile-quick-actions),html body.dark :is(#bottom
   }
 }
 @media (prefers-reduced-transparency:reduce) {
-  html body nav.site-nav:is(.bg-brand,.site-nav),html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav),
+  html body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html.dark body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html body.dark :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),
   html body :is(#bottom-nav,.mobile-quick-actions),html.dark body :is(#bottom-nav,.mobile-quick-actions),html body.dark :is(#bottom-nav,.mobile-quick-actions) {
     background:var(--ng-nav-solid)!important;
     -webkit-backdrop-filter:none;backdrop-filter:none;
   }
 }
 @media (forced-colors:active) {
-  html body nav.site-nav:is(.bg-brand,.site-nav),html.dark body nav.site-nav:is(.bg-brand,.site-nav),html body.dark nav.site-nav:is(.bg-brand,.site-nav),
+  html body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html.dark body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html body.dark :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),
   html body :is(#bottom-nav,.mobile-quick-actions),html.dark body :is(#bottom-nav,.mobile-quick-actions),html body.dark :is(#bottom-nav,.mobile-quick-actions) {
     background:Canvas!important;border-color:CanvasText!important;
     -webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
@@ -185,16 +185,16 @@ html.dark body.landing-page .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-c
 html body.landing-page :is(button,a):hover:not(:disabled) { --glass-button-shine:#ffffff60;--glass-button-edge:#05966966; }
 html.dark body.landing-page :is(button,a):hover:not(:disabled),body.landing-page.dark :is(button,a):hover:not(:disabled) { --glass-button-shine:#ffffff30;--glass-button-edge:#6ee7b766; }
 
-/* Solid app actions echo the emerald navbar rather than a separate dark green. */
+/* Shared solid actions use mint with dark text on app and public pages. */
 :root{--ng-action-fill:#55cba7;--ng-action-hover:#43bd99;--ng-action-ink:#0f172a;--ng-action-line:#0f172a26}
 html.dark,body.dark{--ng-action-fill:#59cbaa;--ng-action-hover:#0fa875;--ng-action-ink:#0f172a;--ng-action-line:#0f172a26}
-html body:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page))
-:is(:is(button,a).bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary):not(.app-dialog-danger):not([role=switch]){
+html body:not(.landing-page)
+:is(:is(button,a).bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary,.download-primary,#login-page .btn-primary,.site-nav-cta,.site-nav a.bg-charcoal):not(.app-dialog-danger):not([role=switch]){
   background:var(--ng-action-fill)!important;color:var(--ng-action-ink)!important;
   border:1px solid var(--ng-action-line);
 }
-html body:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page))
-:is(:is(button,a).bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary):not(.app-dialog-danger):not([role=switch]):hover:not(:disabled){background:var(--ng-action-hover)!important}
+html body:not(.landing-page)
+:is(:is(button,a).bg-brand,button.bg-charcoal,.ng-button-primary,.chef-recipe-log,.empty-action-primary,.quick-action-primary,.download-primary,#login-page .btn-primary,.site-nav-cta,.site-nav a.bg-charcoal):not(.app-dialog-danger):not([role=switch]):hover:not(:disabled){background:var(--ng-action-hover)!important}
 
 /* Selected Chef tabs and user replies use the same solid action palette. */
 html body #chef-page :is(.chef-view-tabs button[aria-selected="true"],#chat-log .chat-msg.justify-end > .bg-brand){
@@ -210,3 +210,19 @@ html.dark body nav.site-nav .nav-link::after,html body.dark nav.site-nav .nav-li
 html.dark body nav.site-nav :is(#ham-top,#ham-mid,#ham-bot,.ham-bar),html body.dark nav.site-nav :is(#ham-top,#ham-mid,#ham-bot,.ham-bar){background:var(--ng-nav-ink)}
 html.dark body .site-nav #mobile-menu a[aria-current=page],html.dark body .site-nav #mobile-menu a:not(.site-nav-cta):hover,
 body.dark .site-nav #mobile-menu a[aria-current=page],body.dark .site-nav #mobile-menu a:not(.site-nav-cta):hover{background:#ffffff33;color:var(--ng-nav-ink)}
+
+/* Public text links carry the mint accent without pale text on white surfaces. */
+html body:not(.landing-page):not(:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page))) main
+:is(a.text-brand,button.text-brand,.auth-home-link,.download-guide-link,.download-qr-card a,.blog-back-link,.blog-further-reading a,.blog-read-link){
+  color:var(--ng-ink)!important;text-decoration:underline;text-decoration-color:var(--ng-action-fill);
+  text-decoration-thickness:2px;text-underline-offset:4px;
+}
+html body:not(.landing-page):not(:has(:is(#dashboard-page,#meals-page,#progress-page,#chef-page,#settings-page))) main
+:is(a.text-brand,button.text-brand,.auth-home-link,.download-guide-link,.download-qr-card a,.blog-back-link,.blog-further-reading a,.blog-read-link):hover{
+  text-decoration-thickness:3px;text-decoration-color:var(--ng-action-hover);
+}
+html body:not(.landing-page) .site-footer :is(a,button)[class~="hover:bg-brand"]:hover{
+  background:var(--ng-action-fill)!important;color:var(--ng-action-ink)!important;
+}
+html body:not(.landing-page) .site-footer a[class~="hover:text-brand"]:hover{color:#59cbaa!important}
+html body:not(.landing-page) .site-footer .footer-link:hover{color:#59cbaa!important}

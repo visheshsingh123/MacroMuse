@@ -53,8 +53,8 @@ body { font-family: 'Inter', sans-serif; }
 .premium-features li.premium-unavailable::before { content: '−'; color: var(--ng-muted); }
 .premium-card-pro { --ng-ink: #f2f7f3; --ng-muted: #bdcfc6; --ng-accent: #d9f5b6; --ng-line: #466355; --ng-surface: #173c2a; background: #173c2a; color: var(--ng-ink); border-color: #173c2a; }
 .premium-card-pro .premium-plan-icon { color: #d9f5b6; background: #ffffff0c; border: 1px solid #ffffff26; }
-html body .premium-card-pro .premium-cta.ng-button-primary { background: #d9f5b6 !important; color: #173c2a !important; }
-html body .premium-card-pro .premium-cta.ng-button-primary:hover { background: #c6eca0 !important; }
+html body .premium-card-pro .premium-cta.ng-button-primary { background: var(--ng-action-fill) !important; color: var(--ng-action-ink) !important; }
+html body .premium-card-pro .premium-cta.ng-button-primary:hover { background: var(--ng-action-hover) !important; }
 .premium-comparison { margin-top: 72px; scroll-margin-top: 100px; }
 .premium-section-heading { margin-bottom: 28px; }
 .premium-section-heading p { color: var(--ng-muted); font-size: 13px; margin-top: 12px; }

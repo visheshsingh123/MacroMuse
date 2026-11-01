@@ -5,8 +5,8 @@ html.session-pending::after { content:""; position:fixed; z-index:9999; top:50%;
 html.session-loader-mounted::after { display:none; }
 html.dark.session-pending::before { background:#0f172a; }
 #session-loader { display:none; }
-html.session-pending #session-loader { display:block; visibility:visible; position:fixed; inset:0; z-index:10000; overflow:auto; background:var(--loading-bg); --loading-bg:#eff7f4; --loading-card:#fff; --loading-line:#e2e8f0; --loading-fill:#e2e8f0; --loading-highlight:#f8fafc; --loading-nav:#10b981; }
-html.dark #session-loader { --loading-bg:#0f172a; --loading-card:#1e293b; --loading-line:#334155; --loading-fill:#334155; --loading-highlight:#475569; --loading-nav:#059669; }
+html.session-pending #session-loader { display:block; visibility:visible; position:fixed; inset:0; z-index:10000; overflow:auto; background:var(--loading-bg); --loading-bg:#eff7f4; --loading-card:#fff; --loading-line:#e2e8f0; --loading-fill:#e2e8f0; --loading-highlight:#f8fafc; --loading-nav:#59cbaa; }
+html.dark #session-loader { --loading-bg:#0f172a; --loading-card:#1e293b; --loading-line:#334155; --loading-fill:#334155; --loading-highlight:#475569; --loading-nav:#59cbaa; }
 .session-loading-center { min-height:100%; display:grid; place-items:center; }
 .circular-loader { display:inline-block; flex-shrink:0; width:28px; height:28px; border:3px solid #a7f3d0; border-top-color:#059669; border-radius:50%; animation:loader-spin .8s linear infinite; vertical-align:middle; }
 html.dark .circular-loader { border-color:#245b49; border-top-color:#6ee7b7; }
@@ -17,7 +17,7 @@ html.dark .circular-loader { border-color:#245b49; border-top-color:#6ee7b7; }
 .loading-navbar { background:var(--loading-nav); border-bottom:1px solid #0f172a1a; }
 .loading-navbar > div { max-width:1200px; height:76px; padding:0 24px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:24px; }
 .loading-brand { font:800 20px 'Space Grotesk',sans-serif; letter-spacing:-.025em; color:#0f172a; }
-html.dark .loading-brand { color:#e2e8f0; }
+html.dark .loading-brand { color:#0f172a; }
 .loading-nav-links { display:flex; align-items:center; gap:32px; }
 .loading-nav-links .loading-line { width:56px; height:14px; margin:0; opacity:.35; }
 .loading-nav-links .loading-line:first-child { width:74px; }
