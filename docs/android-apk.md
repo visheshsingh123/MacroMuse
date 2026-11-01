@@ -1,6 +1,14 @@
 # MacroMuse → Android APK Guide
 Using **Trusted Web Activity (TWA)** — the official Google-recommended method.
 
+## Mint browser and app header
+
+The website's theme-color metadata and PWA manifest use `#59CBAA`. Browser tabs and browser-installed PWAs can receive this web update without uninstalling; reopening the app may be needed, and Android WebAPK manifest updates can take time.
+
+A PWABuilder/TWA APK may retain the status-bar colors compiled into its package. For the published MacroMuse package (`app.vercel.macromuse.twa`), regenerate the Android package in PWABuilder with `#59CBAA` as the theme/status-bar color in both light and dark modes. Use the existing package name and signing key and a higher Android version code. Install the resulting APK as an update over the installed app; do not uninstall it or generate a new signing key. This website change does not rebuild or replace the existing APK.
+
+The checked-in `android/` project still targets the legacy `app.vercel.nutriglance.twa` package and old domain. Use the current MacroMuse PWABuilder project for this update rather than publishing a build from that legacy source.
+
 ---
 
 ## What You Need (one-time setup)
