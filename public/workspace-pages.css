@@ -87,6 +87,7 @@ html.dark #chef-page #chat-log .chat-msg:not(.justify-end) > div:last-child,body
   #settings-page .section-card > div:first-child:not(:only-child),#settings-profile > div:nth-child(2),#settings-page #settings-support > div:nth-child(2),#settings-account > div { padding:20px; }
   #settings-page #profile-edit-form label { font-size:10px; }
   #settings-page #prof-activity-help,#settings-page #prof-goal-help { display:none; }
+  #settings-profile .settings-section-description,#settings-page #avatar-picker-description { display:none; }
   #settings-page #profile-edit-form > button { width:100%; }
   .chef-sidebar-icon,.chef-sidebar > .workspace-eyebrow,.chef-sidebar > h2,.chef-sidebar > p,.chef-sidebar-tip { display:none; }
   .chef-sidebar h3 { margin-top:0; margin-bottom:12px; }
