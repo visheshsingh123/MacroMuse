@@ -1,3 +1,5 @@
+#dashboard-page #water-add-btn { display:none; }
+
 /* Refine the original three-column dashboard without changing its arrangement. */
 #dashboard-page { --dash-ink:#0f172a; --dash-muted:#64748b; --dash-line:#e2e8f0; --dash-card:#fff; --dash-soft:#f8fafc; max-width:1200px; padding:32px 24px 96px; }
 .dashboard-greeting { margin-bottom:24px; }
@@ -56,7 +58,7 @@ html.dark #dashboard-page #water-drops button.bg-white,body.dark #dashboard-page
 @media(min-width:768px) and (max-width:1049px) {
   #dashboard-page .dashboard-grid { grid-template-columns:240px minmax(0,1fr); }
   .dashboard-quick-actions { grid-column:1/-1; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
-  #dashboard-page .dashboard-quick-actions > * { padding:16px; }
+  #dashboard-page .dashboard-quick-actions > * { padding:20px; }
   #dashboard-page #scan-btn > div,#dashboard-page #ai-chef-btn > div { font-size:15px; }
 }
 @media(max-width:767px) {
@@ -70,7 +72,15 @@ html.dark #dashboard-page #water-drops button.bg-white,body.dark #dashboard-page
   #dashboard-page .dashboard-nutrition > div:last-child { grid-column:1/-1; }
   #dashboard-page .dashboard-nutrition > div:nth-child(3) { gap:12px; }
   #dashboard-page .dashboard-recent { padding:20px; }
-  #dashboard-page .dashboard-quick-actions { display:none; }
+  #dashboard-page .dashboard-meal-column,#dashboard-page .dashboard-quick-actions { display:contents; }
+  #dashboard-page .dashboard-quick-actions > :not(.dashboard-hydration) { display:none; }
+  #dashboard-page .dashboard-hydration { order:1; padding:20px; }
+  #dashboard-page #upload-outer { order:2; }
+  #dashboard-page #upload-outer:has(#upload-zone:not(.hidden)) { display:none; }
+  #dashboard-page .dashboard-recent { order:3; }
+  #dashboard-page .dashboard-hydration .dashboard-water-actions { display:flex; align-items:center; gap:16px; margin-top:16px; }
+  #dashboard-page #water-add-btn { display:inline-flex; font-size:12px; }
+  #dashboard-page #water-reset { margin-top:0; }
   #dashboard-page .dashboard-quick-actions > * { padding:16px; }
   #dashboard-page #scan-btn > div,#dashboard-page #ai-chef-btn > div { flex-wrap:wrap; font-size:16px; }
 }

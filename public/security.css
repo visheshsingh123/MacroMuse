@@ -140,8 +140,12 @@ html[data-usage-plan="free"] .loading-allowance { display:flex; }
   .loading-meal-copy { grid-column:2; }
   .loading-meal-time { grid-column:2; height:8px; margin-top:-9px; }
   .loading-meal-delete { grid-column:3; grid-row:1/3; }
-  .loading-actions { display:none; }
-  .loading-actions .loading-card { padding:16px; }
+  .loading-meal-column,.loading-actions { display:contents; }
+  .loading-upload,.loading-actions > :not(.loading-water) { display:none; }
+  .loading-water { order:1; }
+  .loading-recent { order:3; }
+  .loading-water-reset { width:132px; height:44px; margin:16px 0 0; }
+  .loading-actions .loading-card { padding:20px; }
   .loading-action { min-height:110px; }
   .loading-action-heading { flex-wrap:wrap; gap:8px; }
   .loading-action-heading .loading-line { width:85px; max-width:100%; height:16px; }
