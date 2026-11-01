@@ -9,6 +9,27 @@ A PWABuilder/TWA APK may retain the status-bar colors compiled into its package.
 
 The checked-in `android/` project still targets the legacy `app.vercel.nutriglance.twa` package and old domain. Use the current MacroMuse PWABuilder project for this update rather than publishing a build from that legacy source.
 
+### Settings for the next MacroMuse APK
+
+Open `https://macromuse.vercel.app` in PWABuilder and choose **Package for stores → Android**. Set:
+
+| Setting | Value |
+| --- | --- |
+| Package ID | `app.vercel.macromuse.twa` |
+| Launch URL | `https://macromuse.vercel.app/dashboard` |
+| Version code | `2` (or higher than any version already distributed) |
+| Version name | `1.0.1` |
+| Theme/status-bar color, light and dark | `#59CBAA` |
+| Navigation-bar color, light and dark | `#59CBAA` |
+| Navigation-divider color, light and dark | `#59CBAA` |
+| Splash background | `#EFF7F4` |
+| Signing | Reuse the existing MacroMuse signing key |
+
+Keep signing files and passwords private; do not commit them or place the package ZIP in `public/`. Download the generated package and retain the Android source project for future builds.
+
+Before replacing `public/MacroMuse.apk`, verify the new APK has the same package ID and signing-certificate SHA-256 fingerprint as the currently published APK, and a higher version code. The expected current certificate is `4E:61:85:05:A8:1D:1D:93:D1:45:B5:99:C0:4B:41:5C:96:D9:E1:30:02:0B:C1:0D:A6:E2:DC:34:C4:B9:4D:17`. Install it over the current app on a phone, check the header in light and dark modes, and confirm that sign-in and stored data survive the update.
+
+
 ---
 
 ## What You Need (one-time setup)
@@ -88,7 +109,7 @@ It will ask you a few questions — answer like this:
 | Application name | MacroMuse |
 | Package ID | app.vercel.macromuse.twa |
 | Start URL | https://your-site.com/dashboard |
-| Theme colour | #10B981 |
+| Theme colour | #59CBAA |
 | Background colour | #EFF7F4 |
 | Icon URL | https://your-site.com/icons/icon-512.png |
 
