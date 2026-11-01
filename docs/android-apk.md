@@ -28,7 +28,7 @@ Open `https://macromuse.vercel.app` in PWABuilder and choose **Package for store
 
 Keep signing files and passwords private; do not commit them or place the package ZIP in `public/`. Download the generated package and retain the Android source project for future builds.
 
-Before replacing `public/MacroMuse.apk`, verify the new APK has the same package ID and signing-certificate SHA-256 fingerprint as the currently published APK, and a higher version code. The expected current certificate is `4E:61:85:05:A8:1D:1D:93:D1:45:B5:99:C0:4B:41:5C:96:D9:E1:30:02:0B:C1:0D:A6:E2:DC:34:C4:B9:4D:17`. Install it over the current app on a phone, check the header in light and dark modes, and confirm that sign-in and stored data survive the update.
+Before replacing `public/MacroMuse.apk`, verify the new APK has the same package ID and signing-certificate SHA-256 fingerprint as the currently published APK, and a higher version code. The currently published certificate is `21:99:4D:13:80:A3:0D:54:4F:DD:24:89:D0:A9:C1:57:02:6E:03:CD:54:67:60:E6:8A:1B:16:2C:85:BF:72:47`. Install it over the current app on a phone, check the header in light and dark modes, and confirm that sign-in and stored data survive the update.
 
 
 ---
@@ -193,3 +193,9 @@ Publish    →  Upload .aab to Google Play Console
 4. Download the ready-made APK/AAB
 
 This is the fastest route — takes about 5 minutes.
+
+## Current published APK
+
+The user-supplied mint/dark-header APK is published as `public/MacroMuse.apk`, package `app.vercel.macromuse.twa`, version code `1`, version name `1.0.0.0`. Its signing key differs from the previous download, so Android cannot install it over that earlier build. Both certificates remain in Digital Asset Links. Future updates to this download must reuse its signing key and increase its version code.
+
+SHA-256: `df50feeac2c7c458e968175617d75aab055443d0d2b8c9e75fa8b5436a438893`.
