@@ -3,9 +3,9 @@ Using **Trusted Web Activity (TWA)** — the official Google-recommended method.
 
 ## Mint browser and app header
 
-The website's theme-color metadata, PWA manifest, and solid top navbar (including the dashboard skeleton) use `#59CBAA` in both themes. The navbar has no transparent tint or gradient that would change its visible color. Browser tabs and browser-installed PWAs can receive this web update without uninstalling; reopening the app may be needed, and Android WebAPK manifest updates can take time.
+The website uses a solid `#59CBAA` navbar in light mode and deep green liquid glass (`#064E3B` with translucency, a subtle highlight, and blur) in dark mode, including the dashboard skeleton. Browser theme-color metadata follows the selected app theme. The PWA manifest uses `#59CBAA` as its default. Dark glass can change appearance over scrolled content; native Android bars use a solid color. Browser tabs and browser-installed PWAs can receive this web update without uninstalling; reopening the app may be needed, and Android WebAPK manifest updates can take time.
 
-A PWABuilder/TWA APK may retain the status-bar colors compiled into its package. For the published MacroMuse package (`app.vercel.macromuse.twa`), regenerate the Android package in PWABuilder with `#59CBAA` as the theme/status-bar color in both light and dark modes. Use the existing package name and signing key and a higher Android version code. Install the resulting APK as an update over the installed app; do not uninstall it or generate a new signing key. This website change does not rebuild or replace the existing APK.
+A PWABuilder/TWA APK may retain the status-bar colors compiled into its package. For the published MacroMuse package (`app.vercel.macromuse.twa`), regenerate the Android package in PWABuilder with `#59CBAA` as the light theme/status-bar color and `#064E3B` as the dark theme/status-bar color. Use the existing package name and signing key and a higher Android version code. Install the resulting APK as an update over the installed app; do not uninstall it or generate a new signing key. This website change does not rebuild or replace the existing APK.
 
 The checked-in `android/` project still targets the legacy `app.vercel.nutriglance.twa` package and old domain. Use the current MacroMuse PWABuilder project for this update rather than publishing a build from that legacy source.
 
@@ -19,9 +19,10 @@ Open `https://macromuse.vercel.app` in PWABuilder and choose **Package for store
 | Launch URL | `https://macromuse.vercel.app/dashboard` |
 | Version code | `2` (or higher than any version already distributed) |
 | Version name | `1.0.1` |
-| Theme/status-bar color, light and dark | `#59CBAA` |
-| Navigation-bar color, light and dark | `#59CBAA` |
-| Navigation-divider color, light and dark | `#59CBAA` |
+| Theme/status-bar color, light | `#59CBAA` |
+| Theme/status-bar color, dark | `#064E3B` |
+| Navigation-bar and divider color, light | `#EFF7F4` |
+| Navigation-bar and divider color, dark | `#0F172A` |
 | Splash background | `#EFF7F4` |
 | Signing | Reuse the existing MacroMuse signing key |
 

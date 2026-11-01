@@ -1,3 +1,17 @@
+// Browser chrome follows the selected app theme, including manual theme changes.
+(() => {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) return;
+  const syncThemeColor = () => {
+    const dark = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
+    meta.content = dark ? '#064E3B' : '#59CBAA';
+  };
+  const observer = new MutationObserver(syncThemeColor);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  syncThemeColor();
+})();
+
 // Existing application menus retain their handlers and profile bindings.
 // Information pages use the same menu behavior through this shared helper.
 (() => {
