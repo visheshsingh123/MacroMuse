@@ -41,20 +41,26 @@
 
 // Settings section shortcuts scroll the page below the sticky navbar.
 (() => {
-  const nav = document.querySelector('.settings-sidebar nav');
-  if (!nav) return;
-  const links = nav.querySelectorAll('a[href^="#"]');
+  const navs = document.querySelectorAll('.settings-sidebar nav, .settings-mobile-menu nav');
+  if (!navs.length) return;
+  const links = document.querySelectorAll('.settings-sidebar nav a[href^="#"], .settings-mobile-menu nav a[href^="#"]');
+  const menu = document.querySelector('.settings-mobile-menu');
+  document.addEventListener('click', event => { if (menu?.open && !menu.contains(event.target)) menu.open = false; });
+  menu?.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menu.open) { menu.open = false;menu.querySelector('summary').focus(); }
+  });
   const markCurrent = () => links.forEach(link => {
     if (link.hash === location.hash) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
   });
 
-  nav.addEventListener('click', event => {
+  navs.forEach(nav => nav.addEventListener('click', event => {
     const link = event.target.closest('a[href^="#"]');
     if (!link || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     const section = document.getElementById(link.hash.slice(1));
     if (!section) return;
     event.preventDefault();
+    if (menu) menu.open = false;
     if (location.hash !== link.hash) history.pushState(null, '', link.hash);
     markCurrent();
 
@@ -68,7 +74,7 @@
       top: window.scrollY + section.getBoundingClientRect().top - Math.max(0, headerBottom) - 24,
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
     });
-  });
+  }));
   window.addEventListener('hashchange', markCurrent);
   markCurrent();
 })();
