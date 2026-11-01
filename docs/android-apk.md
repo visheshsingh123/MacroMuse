@@ -28,7 +28,7 @@ Open `https://macromuse.vercel.app` in PWABuilder and choose **Package for store
 
 Keep signing files and passwords private; do not commit them or place the package ZIP in `public/`. Download the generated package and retain the Android source project for future builds.
 
-Before replacing `public/MacroMuse.apk`, verify the new APK has the same package ID and signing-certificate SHA-256 fingerprint as the currently published APK, and a higher version code. The currently published certificate is `21:99:4D:13:80:A3:0D:54:4F:DD:24:89:D0:A9:C1:57:02:6E:03:CD:54:67:60:E6:8A:1B:16:2C:85:BF:72:47`. Install it over the current app on a phone, check the header in light and dark modes, and confirm that sign-in and stored data survive the update.
+Before replacing `public/MacroMuse.apk`, verify the new APK has the same package ID and signing-certificate SHA-256 fingerprint as the currently published APK, and a higher version code. The currently published certificate is `79:59:6D:35:14:2E:A5:F2:3A:FF:63:A7:B2:84:49:4D:BE:1E:7C:8D:3A:CA:8A:DF:E0:B3:62:C7:91:B0:94:67`. Install it over the current app on a phone, check the header in light and dark modes, and confirm that sign-in and stored data survive the update.
 
 
 ---
@@ -196,6 +196,6 @@ This is the fastest route — takes about 5 minutes.
 
 ## Current published APK
 
-The user-supplied mint/dark-header APK is published as `public/MacroMuse.apk`, package `app.vercel.macromuse.twa`, version code `1`, version name `1.0.0.0`. Its signing key differs from the previous download, so Android cannot install it over that earlier build. Both certificates remain in Digital Asset Links. Future updates to this download must reuse its signing key and increase its version code.
+The latest user-supplied APK is published as `public/MacroMuse.apk`, package `app.vercel.macromuse.twa`, version code `1`, version name `1.0.0.0`. Its signing certificate is `79:59:6D:35:14:2E:A5:F2:3A:FF:63:A7:B2:84:49:4D:BE:1E:7C:8D:3A:CA:8A:DF:E0:B3:62:C7:91:B0:94:67`. Digital Asset Links retains previously published certificates as well. Future updates must reuse this signing key and increase the version code.
 
-SHA-256: `df50feeac2c7c458e968175617d75aab055443d0d2b8c9e75fa8b5436a438893`.
+SHA-256: `d7c7a7e565d3d97d7e5c04b299cc2d7ef0a3854e3e27a8c50bbacaf9f71ee6bf`.
