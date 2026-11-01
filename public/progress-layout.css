@@ -97,11 +97,20 @@ html.dark .progress-empty-icon,body.dark .progress-empty-icon { background:#1238
   #progress-page .progress-calories { order:2; }
   #progress-page .progress-macros { order:3; }
   #progress-page .progress-calendar { order:4; }
-  #progress-page .progress-tip { order:5; }
+  #progress-page .progress-tip { display:none; }
   #progress-page .progress-history { order:6; }
   .progress-calendar-legend { grid-template-columns:repeat(2,minmax(0,1fr)); }
   #progress-page .progress-calendar #calendar-grid { gap:6px; }
   #progress-page .cal-day { max-height:38px; }
   #progress-page .progress-card h2 { font-size:18px; }
   #progress-page .progress-calories > .relative { height:230px; }
+}
+@media(max-width:639px) {
+  #progress-page .progress-header { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:12px; }
+  #progress-page .progress-header > div:first-child { min-width:0; grid-column:1; grid-row:1; }
+  #progress-page .progress-header h1 { font-size:clamp(26px,7.4vw,32px); white-space:nowrap; }
+  #progress-page .progress-header .progress-actions { display:contents; }
+  #progress-page .progress-header #open-log-btn { grid-column:2; grid-row:1; align-self:end; gap:6px; padding:10px; font-size:12px; white-space:nowrap; }
+  #progress-page .progress-header .progress-export-action { grid-column:1/-1; grid-row:2; justify-self:end; }
+  #progress-page .progress-header #export-pdf-btn { padding:10px 12px; font-size:12px; }
 }

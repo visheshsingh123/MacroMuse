@@ -63,6 +63,10 @@ html.dark #reset-meal-filters,body.dark #reset-meal-filters { color:#6ee7b7; }
 @media(max-width:767px) {
   #meals-page { padding:28px 16px 90px; }
   #meals-page h1 { font-size:32px; }
+  #meals-page .meals-header { flex-direction:row; align-items:flex-end; justify-content:space-between; gap:12px; }
+  .meals-header > div { min-width:0; }
+  .meals-header h1 { white-space:nowrap; }
+  #meals-page .meals-header > a { align-self:flex-end; flex-shrink:0; gap:6px; padding:10px; min-height:44px; font-size:12px; white-space:nowrap; }
   .meals-layout { grid-template-columns:minmax(0,1fr); gap:20px; }
   #meals-page .meals-summary { position:static; padding:20px; }
   .meals-summary > div:first-child { flex-direction:row; align-items:center; gap:8px; margin-bottom:20px; }
