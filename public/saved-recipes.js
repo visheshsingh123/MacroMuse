@@ -18,13 +18,20 @@
   function syncButtons() {
     const free = window.NutriPlan.read(uid)?.plan === 'free';
     for (const binding of bindings) {
-      const { button, key, owner } = binding;
+      const { button, key, owner, name } = binding;
       if (!button.isConnected) { bindings.delete(binding);continue; }
       const on = saved.has(key) && current(owner);
-      button.textContent = on ? 'Remove saved' : free ? 'Save recipe · Pro' : 'Save recipe';
+      if (on) window.NutriRecipes.actionIcon(button, pending.has(key) ? 'loading' : 'remove', `${pending.has(key) ? 'Removing' : 'Remove'} ${name} from saved recipes`);
+      else {
+        button.classList.remove('chef-action-icon');
+        button.textContent = free ? 'Save recipe · Pro' : 'Save recipe';
+        button.setAttribute('aria-label', `Save ${name}${free ? ' (Pro required)' : ''}`);
+        button.title = button.getAttribute('aria-label');
+      }
       button.setAttribute('aria-pressed', String(on));
       button.disabled = !current(owner) || loading || pending.has(key);
       button.classList.toggle('inline-loading', pending.has(key));
+      button.setAttribute('aria-busy', String(pending.has(key)));
     }
     if (byId('saved-recipe-count')) byId('saved-recipe-count').textContent = String(saved.size);
     if (byId('saved-recipes-refresh')) byId('saved-recipes-refresh').disabled = loading || pending.size > 0;
@@ -72,7 +79,7 @@
     button.type = 'button';button.className = 'chef-recipe-save';button.textContent = 'Save recipe';
     button.setAttribute('aria-pressed', 'false');
     card.querySelector('.chef-recipe-controls').appendChild(button);
-    bindings.add({ button, key, owner });queueMicrotask(syncButtons);
+    bindings.add({ button, key, owner, name: recipe.name });queueMicrotask(syncButtons);
     button.addEventListener('click', async () => {
       if (!current(owner) || loading || pending.has(key)) return;
       const status = card.querySelector('.chef-recipe-save-status');

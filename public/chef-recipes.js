@@ -33,6 +33,16 @@
     if (content !== undefined) node.textContent = content;
     return node;
   }
+  function actionIcon(button, icon, label) {
+    const paths = { plus: 'M12 5v14M5 12h14', check: 'm5 12 4 4L19 6', remove: 'M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6' };
+    button.classList.add('chef-action-icon');
+    button.setAttribute('aria-label', label);button.title = label;
+    button.replaceChildren();
+    if (icon === 'loading') return;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    for (const [name, value] of Object.entries({ width: '20', height: '20', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.8', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false' })) svg.setAttribute(name, value);
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');path.setAttribute('d', paths[icon]);svg.append(path);button.append(svg);
+  }
   function render(container, recipes, ownerUid, { library = false } = {}) {
     if (!library) container.classList.add('chef-recipe-bubble');
     for (const recipe of recipes) {
@@ -53,7 +63,7 @@
       select.setAttribute('aria-label', `Servings eaten for ${recipe.name}`);
       for (const servings of [.5, 1, 1.5, 2, 2.5, 3]) { const option = element('option', '', String(servings));option.value = String(servings);option.selected = servings === 1;select.appendChild(option); }
       label.appendChild(select);controls.appendChild(label);
-      const button = element('button', 'chef-recipe-log', 'Log meal');button.type = 'button';controls.appendChild(button);card.appendChild(controls);
+      const button = element('button', 'chef-recipe-log');button.type = 'button';actionIcon(button, 'plus', `Log ${recipe.name} as a meal`);controls.appendChild(button);card.appendChild(controls);
       const status = element('p', 'chef-recipe-status');status.setAttribute('role', 'status');card.appendChild(status);
       function update() {
         nutrition.replaceChildren();
@@ -73,7 +83,7 @@
         if (!logger || logger.uid !== ownerUid || !window.NutriSecurity.isCurrent(ownerUid)) { status.textContent = 'Please sign in to log this recipe.';return; }
         if (navigator.onLine === false) { status.textContent = 'You’re offline. Reconnect to log this recipe.';return; }
         const connection = logger;
-        saving = true;button.disabled = true;select.disabled = true;button.setAttribute('aria-busy', 'true');button.classList.add('inline-loading');button.textContent = 'Logging…';
+        saving = true;button.disabled = true;select.disabled = true;button.setAttribute('aria-busy', 'true');button.classList.add('inline-loading');actionIcon(button, 'loading', `Logging ${recipe.name}`);
         try {
           const meal = { ...mealFromRecipe(recipe, Number(select.value)), _id: id };
           const savedMeal = await connection.save(id, meal) || meal;
@@ -82,11 +92,11 @@
           try { meals = window.NutriSecurity.readMeals(JSON.parse(localStorage.getItem('nutriglance_meals') || '[]')); } catch { meals = []; }
           if (!meals.some(item => item._id === id)) meals.push(savedMeal);
           localStorage.setItem('nutriglance_meals', JSON.stringify(meals));
-          logged = true;button.textContent = 'Logged ✓';
+          logged = true;actionIcon(button, 'check', `${recipe.name} logged`);
           status.textContent = `${meal.portionSize} added to today’s meals.`;
           const link = element('a', 'chef-recipe-view', 'View in Meals →');link.href = '/meals';status.appendChild(link);
         } catch (error) {
-          if (window.NutriSecurity.isCurrent(ownerUid)) { button.textContent = 'Try logging again';status.textContent = error.message || 'Couldn’t confirm this meal was saved. Retry safely with the same meal.'; }
+          if (window.NutriSecurity.isCurrent(ownerUid)) { actionIcon(button, 'plus', `Retry logging ${recipe.name}`);status.textContent = error.message || 'Couldn’t confirm this meal was saved. Retry safely with the same meal.'; }
         } finally {
           saving = false;button.removeAttribute('aria-busy');button.classList.remove('inline-loading');button.disabled = logged;select.disabled = logged;
         }
@@ -95,5 +105,5 @@
       container.appendChild(card);
     }
   }
-  window.NutriRecipes = { parse, mealFromRecipe, render, setLogger: value => { logger = value;window.NutriSavedRecipes?.connect(value?.uid || null); } };
+  window.NutriRecipes = { parse, mealFromRecipe, render, actionIcon, setLogger: value => { logger = value;window.NutriSavedRecipes?.connect(value?.uid || null); } };
 })();
