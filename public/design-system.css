@@ -94,14 +94,15 @@ html.dark body .site-nav #mobile-menu :is(a.bg-charcoal,.site-nav-cta),body.dark
 #bottom-nav .bottom-nav-link{min-width:0;gap:4px;line-height:1.2;padding:9px 2px 8px;text-align:center;white-space:nowrap}
 #bottom-nav .bottom-nav-link>svg{display:block;width:22px;height:22px;flex:0 0 22px;stroke-width:2;overflow:visible}
 
-/* Glass chrome shared by public pages, the app, and mobile navigation. */
+/* The top navbar matches browser chrome; bottom navigation retains its glass finish. */
 html body nav.site-nav .nav-link { color:var(--ng-nav-ink)!important; }
 html body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar) {
-  --ng-nav-glass:#10b981b3;
-  --ng-nav-solid:#10b981;
+  --ng-nav-glass:#59cbaa;
+  --ng-nav-solid:#59cbaa;
+  --ng-nav-overlay:none;
   background:var(--ng-nav-solid)!important;
   border-bottom:1px solid #ffffff40;
-  box-shadow:inset 0 1px 0 #ffffff40,0 6px 24px #064e3b12;
+  box-shadow:0 6px 24px #064e3b12;
 }
 html.dark body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html body.dark :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar) {
   --ng-nav-glass:#59cbaa;
@@ -109,7 +110,7 @@ html.dark body :is(nav.site-nav:is(.bg-brand,.site-nav),.loading-navbar),html bo
   --ng-nav-overlay:none;
   background:var(--ng-nav-solid)!important;
   border-bottom-color:#6ee7b733;
-  box-shadow:inset 0 1px 0 #ffffff1a,0 6px 24px #02061730;
+  box-shadow:0 6px 24px #02061730;
 }
 html body :is(#bottom-nav,.mobile-quick-actions) {
   --ng-nav-glass:#ffffffb3;

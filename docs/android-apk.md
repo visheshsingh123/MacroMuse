@@ -3,7 +3,7 @@ Using **Trusted Web Activity (TWA)** — the official Google-recommended method.
 
 ## Mint browser and app header
 
-The website's theme-color metadata and PWA manifest use `#59CBAA`. Browser tabs and browser-installed PWAs can receive this web update without uninstalling; reopening the app may be needed, and Android WebAPK manifest updates can take time.
+The website's theme-color metadata, PWA manifest, and solid top navbar (including the dashboard skeleton) use `#59CBAA` in both themes. The navbar has no transparent tint or gradient that would change its visible color. Browser tabs and browser-installed PWAs can receive this web update without uninstalling; reopening the app may be needed, and Android WebAPK manifest updates can take time.
 
 A PWABuilder/TWA APK may retain the status-bar colors compiled into its package. For the published MacroMuse package (`app.vercel.macromuse.twa`), regenerate the Android package in PWABuilder with `#59CBAA` as the theme/status-bar color in both light and dark modes. Use the existing package name and signing key and a higher Android version code. Install the resulting APK as an update over the installed app; do not uninstall it or generate a new signing key. This website change does not rebuild or replace the existing APK.
 
