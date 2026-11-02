@@ -276,3 +276,24 @@ html.dark body.landing-page{--ambient-emerald:#10b98138;--ambient-mint:#6ee7b738
  #how-it-works.story-scroll-ready .story-phone { height:clamp(100px,calc(100svh - 390px),350px); margin-top:16px; }
 }
 @media print { #how-it-works { height:auto!important; } .story-stage { position:static!important; height:auto!important; } #how-it-works .landing-steps>article { position:static!important; transform:none!important; opacity:1!important; visibility:visible!important; } }
+/* Keep numbered text together while phone previews travel independently. */
+@media(prefers-reduced-motion:no-preference) {
+ #how-it-works.story-scroll-ready .landing-steps>article { transform:none; opacity:1; visibility:visible; pointer-events:none; will-change:auto; }
+ #how-it-works.story-scroll-ready article>.story-copy { transform:translateY(calc(var(--step-offset,0) * 190px)); opacity:var(--step-clarity,1); transition:none; }
+ #how-it-works.story-scroll-ready article .step-number { border-left-color:transparent; }
+ #how-it-works.story-scroll-ready article .story-phone { transform:translateY(calc(var(--step-offset,0) * 125%)); opacity:var(--phone-clarity,1); will-change:transform,opacity; }
+ #how-it-works.story-scroll-ready .landing-steps h3 { font-size:clamp(23px,2.5vw,30px); padding-bottom:10px; }
+ #how-it-works.story-scroll-ready .landing-steps article>p { font-size:13px; max-width:360px; }
+}
+@media(max-width:767px) and (prefers-reduced-motion:no-preference) {
+ #how-it-works.story-scroll-ready article:not(.story-active)>.story-copy { visibility:hidden; }
+ #how-it-works.story-scroll-ready article>.story-copy { transform:translateY(calc(var(--step-offset,0) * 70px)); }
+}
+
+#how-it-works .story-copy { grid-column:1; grid-row:1 / 4; align-self:center; border-left:2px solid var(--lp-line); padding:12px 0 12px 24px; }
+#how-it-works .story-copy>.step-number { display:block; width:auto; height:auto; background:none; border:0; border-radius:0; padding:0; margin:0 0 8px; }
+#how-it-works .story-copy>h3 { border:0; padding:0; margin:0 0 10px; }
+#how-it-works .story-copy>p { border:0; padding:0; max-width:360px; font-size:13px; line-height:1.8; color:var(--lp-muted); }
+#how-it-works .story-active>.story-copy { border-left-color:#59cbaa; }
+@media(max-width:767px) { #how-it-works .story-copy { grid-row:1 / 4; } }
+@media(prefers-reduced-motion:reduce),print { #how-it-works .story-copy { transform:none!important; opacity:1!important; visibility:visible!important; } }

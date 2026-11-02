@@ -130,6 +130,10 @@
   if (!intro || !section || !('IntersectionObserver' in window)) return;
   const original = intro.textContent;
   const steps = [...section.querySelectorAll('.landing-steps>article')];
+  for (const step of section.querySelectorAll('.landing-steps>article')) {
+    const copy = document.createElement('div');copy.className = 'story-copy';
+    copy.append(...step.querySelectorAll(':scope>.step-number,:scope>h3,:scope>p'));step.prepend(copy);
+  }
   const stage = document.createElement('div');stage.className = 'story-stage';
   stage.append(...section.children);section.append(stage);
   let frame = 0, words = [];
@@ -147,9 +151,9 @@
     steps.forEach((step, i) => {
       const offset = i - position, active = i === Math.round(position);
       step.classList.toggle('story-active', active);
-      step.style.transform = `translateY(${offset * 110}%)`;
-      step.style.opacity = String(Math.max(0, 1 - Math.abs(offset) * 1.5));
-      step.style.visibility = Math.abs(offset) < 1 ? 'visible' : 'hidden';
+      step.style.setProperty('--step-offset', String(offset));
+      step.style.setProperty('--step-clarity', String(Math.max(.18, 1 - Math.abs(offset) * .82)));
+      step.style.setProperty('--phone-clarity', String(Math.max(0, 1 - Math.max(0, Math.abs(offset) - .5) * 1.5)));
       step.inert = !active;
     });
   }
@@ -160,7 +164,7 @@
     section.classList.toggle('story-scroll-ready', !motion.matches);
     if (motion.matches) {
       intro.textContent = original;
-      steps.forEach(step => { step.style.removeProperty('transform');step.style.removeProperty('opacity');step.style.removeProperty('visibility');step.inert = false; });
+      steps.forEach(step => { step.style.removeProperty('transform');step.style.removeProperty('opacity');step.style.removeProperty('visibility');step.style.removeProperty('--step-offset');step.style.removeProperty('--step-clarity');step.style.removeProperty('--phone-clarity');step.inert = false; });
       return;
     }
     // The full sentence is exposed once; animated words are decorative duplicates.
