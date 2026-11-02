@@ -41,7 +41,7 @@
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches || !('IntersectionObserver' in window)) return;
   const targets = [...document.querySelectorAll('#landing-main > *')]
-    .filter(element => element.id !== 'how-it-works' && element.getBoundingClientRect().top >= window.innerHeight);
+    .filter(element => element.getBoundingClientRect().top >= window.innerHeight);
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
@@ -120,62 +120,4 @@
     observer.disconnect();
     restore();
   });
-})();
-
-// Highlight the step in view and read the introduction progressively as it scrolls.
-(() => {
-  const intro = document.querySelector('.story-reading');
-  const section = document.getElementById('how-it-works');
-  const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  if (!intro || !section || !('IntersectionObserver' in window)) return;
-  const original = intro.textContent;
-  const steps = [...section.querySelectorAll('.landing-steps>article')];
-  for (const step of section.querySelectorAll('.landing-steps>article')) {
-    const copy = document.createElement('div');copy.className = 'story-copy';
-    copy.append(...step.querySelectorAll(':scope>.step-number,:scope>h3,:scope>p'));step.prepend(copy);
-  }
-  const stage = document.createElement('div');stage.className = 'story-stage';
-  stage.append(...section.children);section.append(stage);
-  let frame = 0, words = [];
-  function update() {
-    frame = 0;
-    if (motion.matches) return;
-    const rect = intro.getBoundingClientRect();
-    const progress = Math.max(0, Math.min(1, (innerHeight * .85 - rect.top) / (rect.height + innerHeight * .3)));
-    words.forEach((word, i) => word.classList.toggle('is-read', i < Math.ceil(progress * words.length)));
-    const navHeight = document.querySelector('.site-nav')?.getBoundingClientRect().height || 64;
-    section.style.setProperty('--story-nav-height', `${navHeight}px`);
-    const sectionRect = section.getBoundingClientRect();
-    const travel = Math.max(1, section.offsetHeight - stage.offsetHeight);
-    const position = Math.max(0, Math.min(1, (navHeight - sectionRect.top) / travel)) * (steps.length - 1);
-    steps.forEach((step, i) => {
-      const offset = i - position, active = i === Math.round(position);
-      step.classList.toggle('story-active', active);
-      step.style.setProperty('--step-offset', String(offset));
-      step.style.setProperty('--step-clarity', String(Math.max(.18, 1 - Math.abs(offset) * .82)));
-      step.style.setProperty('--phone-clarity', String(Math.max(0, 1 - Math.max(0, Math.abs(offset) - .5) * 1.5)));
-      step.inert = !active;
-    });
-  }
-  function queue() { if (!frame && !motion.matches) frame = requestAnimationFrame(update); }
-  function setup() {
-    intro.replaceChildren();words = [];
-    intro.classList.toggle('is-scroll-reading', !motion.matches);
-    section.classList.toggle('story-scroll-ready', !motion.matches);
-    if (motion.matches) {
-      intro.textContent = original;
-      steps.forEach(step => { step.style.removeProperty('transform');step.style.removeProperty('opacity');step.style.removeProperty('visibility');step.style.removeProperty('--step-offset');step.style.removeProperty('--step-clarity');step.style.removeProperty('--phone-clarity');step.inert = false; });
-      return;
-    }
-    // The full sentence is exposed once; animated words are decorative duplicates.
-    const accessible = document.createElement('span');accessible.className = 'sr-only';accessible.textContent = original;intro.append(accessible);
-    for (const text of original.split(/(\s+)/)) {
-      const span = document.createElement('span');span.textContent = text;span.setAttribute('aria-hidden','true');
-      if (text.trim()) { span.className = 'story-word';words.push(span); }
-      intro.append(span);
-    }
-    update();
-  }
-  addEventListener('scroll', queue, { passive:true });addEventListener('resize', queue);
-  motion.addEventListener('change', setup);setup();
 })();
