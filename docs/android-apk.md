@@ -199,7 +199,3 @@ This is the fastest route — takes about 5 minutes.
 The latest user-supplied APK is published as `public/MacroMuse.apk`, package `app.vercel.macromuse.twa`, version code `1`, version name `1.0.0.0`. Its signing certificate is `79:59:6D:35:14:2E:A5:F2:3A:FF:63:A7:B2:84:49:4D:BE:1E:7C:8D:3A:CA:8A:DF:E0:B3:62:C7:91:B0:94:67`. Digital Asset Links retains previously published certificates as well. Future updates must reuse this signing key and increase the version code.
 
 SHA-256: `d7c7a7e565d3d97d7e5c04b299cc2d7ef0a3854e3e27a8c50bbacaf9f71ee6bf`.
-
-## Updated leaf branding
-
-Web/PWA icons, the streak banner, and Android source launcher, splash, and monochrome notification assets use the new single-leaf mark on mint. The published APK binary has not been rebuilt with these assets. Use `public/icons/icon-800.png` as the source icon when generating the next MacroMuse package; keep its current signing key and increment the version code. The checked-in Android project still has the legacy package identity described above.

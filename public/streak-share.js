@@ -24,9 +24,9 @@
     path('M0 0H650C430 170 170 80 0 290Z', mint);
     path('M0 0H240C110 80 65 135 0 190Z', '#94f2cf');ctx.restore();
     ctx.textAlign = 'center';ctx.fillStyle = '#fff9e8';ctx.font = 'bold 64px sans-serif';ctx.fillText('MacroMuse', 580, 290);
-    ctx.save();ctx.translate(245,215);ctx.scale(.12,.12);
-    path('M0 0h800v800H0z','#59cbaa');
-    path('M131 668H263C487 668 668 487 668 263V131H537C313 131 131 313 131 537Z','#0b2922');ctx.restore();
+    ctx.save();ctx.translate(278,260);ctx.rotate(-.35);
+    path('M0 30C-50 10-47-34-42-48C5-35 17-3 0 30Z', mint);
+    path('M12 28C5-17 33-52 72-48C69-4 45 25 12 28Z', mint);ctx.restore();
     const glow = ctx.createRadialGradient(540, 680, 20, 540, 680, 300);
     glow.addColorStop(0, '#ffca4b70');glow.addColorStop(1, '#ffca4b00');ctx.fillStyle = glow;ctx.fillRect(220,340,640,640);
     const fire = ctx.createLinearGradient(380, 400, 650, 850);
