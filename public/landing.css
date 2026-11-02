@@ -234,7 +234,7 @@ html.dark body.landing-page{--ambient-emerald:#10b98138;--ambient-mint:#6ee7b738
 @property --nav-shine-offset { syntax:'<angle>'; initial-value:0deg; inherits:false; }
 @property --nav-shine-width { syntax:'<percentage>'; initial-value:5%; inherits:false; }
 html:root body.landing-page nav.site-nav .landing-nav-cta {
- --nav-shine-base:#064e3b; --nav-shine-label:#eff7f4; --nav-shine-accent:#59cbaa; --nav-shine-soft:#b6ffe4;
+ --nav-shine-base:#59cbaa; --nav-shine-label:#0f172a; --nav-shine-accent:#064e3b; --nav-shine-soft:#eff7f4;
  position:relative; isolation:isolate; overflow:hidden; border:2px solid transparent!important; border-radius:32px;
  color:var(--nav-shine-label)!important;
  background:linear-gradient(var(--nav-shine-base),var(--nav-shine-base)) padding-box,conic-gradient(from calc(var(--nav-shine-angle) - var(--nav-shine-offset)),transparent,var(--nav-shine-accent) var(--nav-shine-width),var(--nav-shine-soft) calc(var(--nav-shine-width)*2),var(--nav-shine-accent) calc(var(--nav-shine-width)*3),transparent calc(var(--nav-shine-width)*4)) border-box!important;
@@ -242,7 +242,7 @@ html:root body.landing-page nav.site-nav .landing-nav-cta {
  animation:nav-shine-orbit 3s linear infinite;
  transition:--nav-shine-offset .8s cubic-bezier(.25,1,.5,1),--nav-shine-width .8s cubic-bezier(.25,1,.5,1),box-shadow .4s ease!important;
 }
-html.dark body.landing-page .landing-nav-cta,html body.landing-page.dark .landing-nav-cta { --nav-shine-base:#0b2922; }
+html.dark body.landing-page .landing-nav-cta,html body.landing-page.dark .landing-nav-cta { --nav-shine-base:#0b2922; --nav-shine-label:#eff7f4; --nav-shine-accent:#59cbaa; --nav-shine-soft:#b6ffe4; }
 .landing-nav-cta::before,.landing-nav-cta::after { content:''; position:absolute; pointer-events:none; z-index:-1; }
 .landing-nav-cta::before {
  inset:3px; border-radius:inherit; opacity:.35;
