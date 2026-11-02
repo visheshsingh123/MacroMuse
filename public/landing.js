@@ -24,16 +24,7 @@
     }
   });
 
-  const tips = [
-    'Make room for one more color on your plate.',
-    'Keep a few easy ingredients ready for your busiest days.',
-    'A familiar meal is a good place to start a new habit.',
-    'Add a little detail to your meal log. Portions and ingredients matter.',
-    'Put your water bottle somewhere you’ll see it.',
-    'Try one small change you would happily repeat tomorrow.',
-    'Save yourself a decision: plan one meal you already enjoy.',
-  ];
-  document.getElementById('daily-tip').textContent = tips[Math.floor(Date.now() / 86400000) % tips.length];
+
 })();
 
 // Reveal each below-the-fold section once, with no scroll handler or layout changes.
