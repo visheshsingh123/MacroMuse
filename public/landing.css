@@ -254,3 +254,25 @@ html.dark body.landing-page{--ambient-emerald:#10b98138;--ambient-mint:#6ee7b738
  #how-it-works .story-phone { grid-column:1; grid-row:4; width:230px; margin-top:28px; }
 }
 @media(prefers-reduced-motion:reduce),print { .story-reading .story-word { opacity:1!important; transition:none; } #how-it-works article>:is(.step-number,h3,p) { opacity:1!important; } }
+
+/* The stage stays in view while scroll distance advances its layered steps. */
+@media(prefers-reduced-motion:no-preference) {
+ #how-it-works.story-scroll-ready { height:320svh; position:relative; }
+ .story-scroll-ready .story-stage { position:sticky; top:var(--story-nav-height,76px); height:calc(100svh - var(--story-nav-height,76px)); display:flex; flex-direction:column; padding-block:24px; }
+ .story-scroll-ready .landing-section-heading { flex-shrink:0; margin-bottom:12px; }
+ #how-it-works.story-scroll-ready .landing-steps { position:relative; flex:1; min-height:0; overflow:clip; }
+ #how-it-works.story-scroll-ready .landing-steps>article { position:absolute; inset:0; min-height:0; padding:12px 0; will-change:transform,opacity; }
+ #how-it-works.story-scroll-ready article>:is(.step-number,h3,p) { opacity:1; }
+ #how-it-works.story-scroll-ready .story-phone { height:min(540px,calc(100svh - 280px)); width:auto; aspect-ratio:1084 / 2412; max-width:100%; }
+ #how-it-works.story-scroll-ready .story-phone img { height:100%; object-fit:cover; }
+}
+@media(max-width:767px) and (prefers-reduced-motion:no-preference) {
+ .story-scroll-ready .story-stage { padding-block:16px; }
+ .story-scroll-ready .landing-section-heading>p { display:none; }
+ #how-it-works.story-scroll-ready .landing-steps>article { align-content:center; }
+ #how-it-works.story-scroll-ready .step-number { padding-block:6px; }
+ #how-it-works.story-scroll-ready .landing-steps h3 { font-size:23px; padding-bottom:8px; }
+ #how-it-works.story-scroll-ready .landing-steps article>p { font-size:12px; line-height:1.6; padding-bottom:6px; }
+ #how-it-works.story-scroll-ready .story-phone { height:clamp(100px,calc(100svh - 390px),350px); margin-top:16px; }
+}
+@media print { #how-it-works { height:auto!important; } .story-stage { position:static!important; height:auto!important; } #how-it-works .landing-steps>article { position:static!important; transform:none!important; opacity:1!important; visibility:visible!important; } }

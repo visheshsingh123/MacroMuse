@@ -41,7 +41,7 @@
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches || !('IntersectionObserver' in window)) return;
   const targets = [...document.querySelectorAll('#landing-main > *')]
-    .filter(element => element.getBoundingClientRect().top >= window.innerHeight);
+    .filter(element => element.id !== 'how-it-works' && element.getBoundingClientRect().top >= window.innerHeight);
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
@@ -130,6 +130,8 @@
   if (!intro || !section || !('IntersectionObserver' in window)) return;
   const original = intro.textContent;
   const steps = [...section.querySelectorAll('.landing-steps>article')];
+  const stage = document.createElement('div');stage.className = 'story-stage';
+  stage.append(...section.children);section.append(stage);
   let frame = 0, words = [];
   function update() {
     frame = 0;
@@ -137,19 +139,30 @@
     const rect = intro.getBoundingClientRect();
     const progress = Math.max(0, Math.min(1, (innerHeight * .85 - rect.top) / (rect.height + innerHeight * .3)));
     words.forEach((word, i) => word.classList.toggle('is-read', i < Math.ceil(progress * words.length)));
-    let active = steps[0], distance = Infinity;
-    for (const step of steps) {
-      const r = step.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - innerHeight / 2);
-      if (d < distance) { distance = d;active = step; }
-    }
-    steps.forEach(step => step.classList.toggle('story-active', step === active));
+    const navHeight = document.querySelector('.site-nav')?.getBoundingClientRect().height || 64;
+    section.style.setProperty('--story-nav-height', `${navHeight}px`);
+    const sectionRect = section.getBoundingClientRect();
+    const travel = Math.max(1, section.offsetHeight - stage.offsetHeight);
+    const position = Math.max(0, Math.min(1, (navHeight - sectionRect.top) / travel)) * (steps.length - 1);
+    steps.forEach((step, i) => {
+      const offset = i - position, active = i === Math.round(position);
+      step.classList.toggle('story-active', active);
+      step.style.transform = `translateY(${offset * 110}%)`;
+      step.style.opacity = String(Math.max(0, 1 - Math.abs(offset) * 1.5));
+      step.style.visibility = Math.abs(offset) < 1 ? 'visible' : 'hidden';
+      step.inert = !active;
+    });
   }
   function queue() { if (!frame && !motion.matches) frame = requestAnimationFrame(update); }
   function setup() {
     intro.replaceChildren();words = [];
     intro.classList.toggle('is-scroll-reading', !motion.matches);
     section.classList.toggle('story-scroll-ready', !motion.matches);
-    if (motion.matches) { intro.textContent = original;return; }
+    if (motion.matches) {
+      intro.textContent = original;
+      steps.forEach(step => { step.style.removeProperty('transform');step.style.removeProperty('opacity');step.style.removeProperty('visibility');step.inert = false; });
+      return;
+    }
     // The full sentence is exposed once; animated words are decorative duplicates.
     const accessible = document.createElement('span');accessible.className = 'sr-only';accessible.textContent = original;intro.append(accessible);
     for (const text of original.split(/(\s+)/)) {
