@@ -117,3 +117,10 @@ html.dark .progress-empty-icon,body.dark .progress-empty-icon { background:#1238
   #progress-page .progress-header #open-log-btn { align-self:end; }
 }
 @media(max-width:359px) { #progress-page .progress-header #open-log-btn > svg { display:none; } }
+
+#share-streak-btn,#streak-share-status { display:none; }
+@media(max-width:767px) {
+  #progress-page #share-streak-btn { display:inline-flex; align-self:flex-start; margin-top:10px; padding:8px 10px; font-size:11px; min-height:44px; }
+  #streak-share-status:not(:empty) { display:block; color:var(--pg-muted); font-size:11px; line-height:1.5; margin-top:6px; }
+}
+@media print { #share-streak-btn,#streak-share-status { display:none!important; } }

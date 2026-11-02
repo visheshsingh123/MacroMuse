@@ -244,6 +244,7 @@
   <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/progress-print.css" />
   <script src="/progress-export.js" defer></script>
+  <script src="/streak-share.js" defer></script>
   <link rel="stylesheet" href="/progress-layout.css" />
   <link rel="stylesheet" href="/onboarding.css" />
   <script src="/onboarding.js" defer></script>
@@ -366,6 +367,8 @@
       <p class="text-xs font-semibold text-muted uppercase tracking-wider">Streak</p>
       <p class="font-display text-3xl font-extrabold text-charcoal" id="stat-streak">0</p>
       <p class="text-xs text-muted">days <span class="flame">🔥</span></p>
+      <button id="share-streak-btn" type="button" class="ng-button ng-button-primary" disabled aria-label="Share your streak as a story">Share streak <span aria-hidden="true">↗</span></button>
+      <p id="streak-share-status" role="status"></p>
     </div>
 
     <!-- Avg Calories -->
