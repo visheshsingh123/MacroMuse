@@ -17,3 +17,9 @@
 html.dark .avatar-option input:checked+.avatar-option-face{background:#12382e}
 html.dark #avatar-picker-status[role=alert]{color:#fca5a5}
 #avatar-picker [hidden]{display:none!important}
+
+#avatar-options { display:flex; flex-direction:column; gap:8px; }
+.avatar-select-label { color:var(--ws-ink); font-size:12px; font-weight:600; }
+#avatar-choice-select { width:100%; max-width:420px; min-height:48px; padding:10px 14px; border:1px solid var(--ws-line); border-radius:12px; background:var(--ws-soft); color:var(--ws-ink); font-size:16px; cursor:pointer; }
+#avatar-choice-select:disabled { opacity:.65; cursor:default; }
+#avatar-choice-select:focus-visible { outline:3px solid var(--ng-accent); outline-offset:3px; }

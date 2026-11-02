@@ -17,7 +17,7 @@ function render(){
  const option=avatarOption(visibleChoice());
  for(const id of ids){const node=document.getElementById(id);if(!node)continue;node.textContent=option.emoji||initial();node.classList.toggle('emoji-avatar',Boolean(option.emoji));node.setAttribute('role','img');node.setAttribute('aria-label',option.emoji?`${option.label} profile picture`:'Profile picture: your initial');}
  if(!picker)return;
- picker.querySelectorAll('input[name=avatar-choice]').forEach(input=>{input.checked=input.value===draft;input.disabled=!current(uid)||busy||loading;});
+ const dropdown=document.getElementById('avatar-choice-select');if(dropdown){dropdown.value=draft;dropdown.disabled=!current(uid)||busy||loading;}
  const save=document.getElementById('avatar-save');save.disabled=!current(uid)||busy||loading||draft===choice;save.textContent=busy?'Saving…':'Save picture';save.classList.toggle('inline-loading',busy);save.setAttribute('aria-busy',String(busy));
  document.getElementById('avatar-retry').hidden=!loadFailed;
  picker.setAttribute('aria-busy',String(loading||busy));
@@ -44,14 +44,17 @@ function connect(owner){
 }
 if(picker){
  const grid=document.getElementById('avatar-options');
- for(const option of AVATAR_OPTIONS.filter(option=>option.selectable!==false)){
-  const label=document.createElement('label');label.className='avatar-option';
-  const input=document.createElement('input');input.type='radio';input.name='avatar-choice';input.value=option.id;input.className='sr-only';input.setAttribute('aria-label',option.label);input.disabled=true;
-  const face=document.createElement('span');face.className='avatar-option-face';face.textContent=option.emoji||'Aa';face.setAttribute('aria-hidden','true');
-  const name=document.createElement('span');name.className='avatar-option-label';name.textContent=option.label;
-  label.append(input,face,name);grid.append(label);
-  input.addEventListener('change',()=>{draft=option.id;status(draft===choice?'This is your current profile picture.':`${option.label} selected. Save to update your picture.`);render();});
+ const label=document.createElement('label');label.htmlFor='avatar-choice-select';label.className='avatar-select-label';label.textContent='Choose your emoji';
+ const dropdown=document.createElement('select');dropdown.id='avatar-choice-select';dropdown.name='avatar-choice';dropdown.disabled=true;
+ for(const option of AVATAR_OPTIONS){
+  const item=document.createElement('option');item.value=option.id;item.textContent=`${option.emoji||'Aa'} ${option.label}`;item.disabled=option.selectable===false;dropdown.append(item);
  }
+ grid.append(label,dropdown);
+ dropdown.addEventListener('change',()=>{
+  const option=avatarOption(dropdown.value);
+  if(!current(uid)||busy||loading||!option||option.selectable===false)return;
+  draft=option.id;status(draft===choice?'This is your current profile picture.':`${option.label} selected. Save to update your picture.`);render();
+ });
  document.getElementById('avatar-retry').addEventListener('click',load);
  document.getElementById('avatar-save').addEventListener('click',async()=>{
   const owner=uid;if(!current(owner)||busy||loading||draft===choice)return;
