@@ -112,3 +112,26 @@
     restore();
   });
 })();
+
+// The navbar fill grows from pointer entry, or its center for keyboard focus.
+(() => {
+  const link = document.querySelector('.landing-nav-cta');
+  if (!link) return;
+  let origin = null;
+  function measure(point) {
+    const rect = link.getBoundingClientRect();
+    const x = point ? Math.max(0,Math.min(rect.width,point.clientX-rect.left)) : rect.width/2;
+    const y = point ? Math.max(0,Math.min(rect.height,point.clientY-rect.top)) : rect.height/2;
+    origin = { x,y };
+    const diameter = Math.ceil(2*Math.max(Math.hypot(x,y),Math.hypot(rect.width-x,y),Math.hypot(x,rect.height-y),Math.hypot(rect.width-x,rect.height-y)));
+    link.style.setProperty('--origin-x',`${x}px`);link.style.setProperty('--origin-y',`${y}px`);link.style.setProperty('--origin-size',`${diameter}px`);
+  }
+  link.addEventListener('pointerenter',event=>measure(event));
+  link.addEventListener('pointerdown',event=>{if(event.button!==0)return;measure(event);link.classList.add('origin-active');});
+  for (const name of ['pointerleave','pointercancel','pointerup','blur']) link.addEventListener(name,()=>link.classList.remove('origin-active'));
+  link.addEventListener('focus',()=>{if(link.matches(':focus-visible'))measure();});
+  if ('ResizeObserver' in window) new ResizeObserver(()=>{
+    if(link.matches(':hover,:focus-visible')||origin) measure();
+  }).observe(link);
+  document.fonts?.ready.then(()=>measure()).catch(()=>{});
+})();
