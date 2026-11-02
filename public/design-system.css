@@ -230,3 +230,6 @@ html body:not(.landing-page) .site-footer .footer-link:hover{color:#59cbaa!impor
 
 /* Keep the same compact Clear all action on both meal lists. */
 #dashboard-page #clear-btn,#meals-page #clear-all-btn { min-height:28px; padding:4px 8px; font-size:11px; line-height:18px; border-radius:8px; white-space:nowrap; }
+
+.brand-icon { display:inline-block; flex-shrink:0; vertical-align:middle; border-radius:7px; object-fit:contain; }
+.brand-icon-footer { margin-right:6px; }

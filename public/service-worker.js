@@ -1,5 +1,5 @@
 // Public app files only. Account data remains in owner-scoped app storage.
-const CACHE_NAME = 'nutriglance-v120';
+const CACHE_NAME = 'nutriglance-v121';
 const LIBRARY_CACHE = 'nutriglance-public-libraries-v1';
 const PAGES = [
   "/",
@@ -47,6 +47,8 @@ const PRECACHE = [...PAGES,
   '/free-usage.js',
   '/hero-nutrition-small.webp',
   '/hero-nutrition.webp',
+  '/icons/brand.svg',
+  '/icons/badge-96.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/landing-navigation.js',
@@ -157,7 +159,7 @@ self.addEventListener('push', event => {
     const title = typeof payload.title === 'string' && payload.title.trim() ? payload.title.slice(0, 80) : 'A little check-in from MacroMuse';
     await self.registration.showNotification(title, {
       body: payload.body.slice(0, 300), tag: String(payload.tag || 'nutriglance-reminder').slice(0, 100),
-      icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: '/dashboard' },
+      icon: '/icons/icon-192.png', badge: '/icons/badge-96.png', data: { url: '/dashboard' },
     });
   })());
 });
