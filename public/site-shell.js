@@ -118,3 +118,22 @@
   document.addEventListener('submit', preventOfflineUpdate, true);
   document.addEventListener('click', preventOfflineUpdate, true);
 })();
+
+// Acknowledge essential storage; no optional tracking or consent-gated scripts exist.
+(() => {
+  const key = 'macromuse_storage_notice_v1';
+  try { if (localStorage.getItem(key) === 'acknowledged') return; } catch {}
+  const notice = document.createElement('section');notice.className = 'storage-notice';notice.setAttribute('aria-labelledby', 'storage-notice-title');
+  const copy = document.createElement('div');
+  const title = document.createElement('h2');title.id = 'storage-notice-title';title.textContent = 'Cookies & browser storage';
+  const text = document.createElement('p');text.textContent = 'MacroMuse uses essential browser storage to keep you signed in, remember preferences, and cache your app data. We don’t use optional analytics or advertising cookies.';
+  const actions = document.createElement('div');actions.className = 'storage-notice-actions';
+  const privacy = document.createElement('a');privacy.href = '/privacy#privacy-storage-heading';privacy.textContent = 'Privacy policy';
+  const acknowledge = document.createElement('button');acknowledge.type = 'button';acknowledge.textContent = 'Got it';
+  acknowledge.addEventListener('click', () => {
+    try { localStorage.setItem(key, 'acknowledged'); } catch {}
+    notice.remove();
+  });
+  copy.append(title, text);actions.append(privacy, acknowledge);notice.append(copy, actions);document.body.append(notice);
+  window.addEventListener('storage', event => { if (event.key === key && event.newValue === 'acknowledged') notice.remove(); });
+})();
