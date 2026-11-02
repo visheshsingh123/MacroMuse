@@ -365,9 +365,11 @@
     <!-- Streak -->
     <div id="streak-card" class="bg-card rounded-2xl p-5 shadow-sm flex flex-col gap-1 fade-in">
       <p class="text-xs font-semibold text-muted uppercase tracking-wider">Streak</p>
+      <div class="streak-count-row">
       <p class="font-display text-3xl font-extrabold text-charcoal" id="stat-streak">0</p>
-      <p class="text-xs text-muted">days <span class="flame">🔥</span></p>
       <button id="share-streak-btn" type="button" class="ng-button ng-button-primary" disabled aria-label="Share your streak banner" title="Share streak"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M5 13v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></svg></button>
+      </div>
+      <p class="text-xs text-muted">days <span class="flame">🔥</span></p>
       <p id="streak-share-status" role="status"></p>
     </div>
 

@@ -120,12 +120,12 @@ html.dark .progress-empty-icon,body.dark .progress-empty-icon { background:#1238
 
 #share-streak-btn,#streak-share-status { display:none; }
 @media(max-width:767px) {
-  #progress-page #streak-card { display:grid; grid-template-columns:minmax(0,1fr) 44px; align-content:start; column-gap:8px; row-gap:4px; }
-  #streak-card > p:first-child { grid-column:1 / -1; }
-  #streak-card #stat-streak { grid-column:1; grid-row:2; align-self:center; }
-  #streak-card > p:nth-child(3) { grid-column:1 / -1; grid-row:3; }
-  #progress-page #share-streak-btn { display:inline-flex; grid-column:2; grid-row:2; align-self:center; margin:0; padding:0; width:44px; height:44px; min-height:44px; }
-  #streak-share-status { grid-column:1 / -1; }
+  #progress-page #share-streak-btn { display:inline-flex; flex:0 0 44px; margin:0; padding:0; width:44px; height:44px; min-height:44px; }
   #streak-share-status:not(:empty) { display:block; color:var(--pg-muted); font-size:11px; line-height:1.5; margin-top:6px; }
 }
 @media print { #share-streak-btn,#streak-share-status { display:none!important; } }
+
+#progress-page .streak-count-row { display:flex; align-items:center; min-height:44px; gap:12px; margin-block:6px; }
+#progress-page #stat-streak { font-size:34px; line-height:1.2; letter-spacing:-.04em; margin:0; }
+#streak-card > p:nth-child(3) { font-size:11px; line-height:1.6; }
+@media(max-width:767px) { #progress-page #stat-streak { font-size:30px; } }
