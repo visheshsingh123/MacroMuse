@@ -28,7 +28,7 @@ Open `https://macromuse.vercel.app` in PWABuilder and choose **Package for store
 
 Keep signing files and passwords private; do not commit them or place the package ZIP in `public/`. Download the generated package and retain the Android source project for future builds.
 
-Before replacing `public/MacroMuse.apk`, verify the new APK has the same package ID and signing-certificate SHA-256 fingerprint as the currently published APK, and a higher version code. The currently published certificate is `79:59:6D:35:14:2E:A5:F2:3A:FF:63:A7:B2:84:49:4D:BE:1E:7C:8D:3A:CA:8A:DF:E0:B3:62:C7:91:B0:94:67`. Install it over the current app on a phone, check the header in light and dark modes, and confirm that sign-in and stored data survive the update.
+Before replacing `public/MacroMuse.apk`, verify the new APK has the same package ID and signing-certificate SHA-256 fingerprint as the currently published APK, and a higher version code. The currently published certificate is `44:F2:06:CA:BD:2A:13:EB:94:0E:45:6D:94:93:BD:E0:A7:8D:6E:1F:99:7A:20:67:9C:50:45:CF:E6:AC:93:B9`. Install it over the current app on a phone, check the header in light and dark modes, and confirm that sign-in and stored data survive the update.
 
 
 ---
@@ -196,6 +196,8 @@ This is the fastest route — takes about 5 minutes.
 
 ## Current published APK
 
-The latest user-supplied APK is published as `public/MacroMuse.apk`, package `app.vercel.macromuse.twa`, version code `1`, version name `1.0.0.0`. Its signing certificate is `79:59:6D:35:14:2E:A5:F2:3A:FF:63:A7:B2:84:49:4D:BE:1E:7C:8D:3A:CA:8A:DF:E0:B3:62:C7:91:B0:94:67`. Digital Asset Links retains previously published certificates as well. Future updates must reuse this signing key and increase the version code.
+The latest user-supplied APK is published as `public/MacroMuse.apk`, package `app.vercel.macromuse.twa`, version code `1`, version name `1.0.0.0`. Its signing certificate is `44:F2:06:CA:BD:2A:13:EB:94:0E:45:6D:94:93:BD:E0:A7:8D:6E:1F:99:7A:20:67:9C:50:45:CF:E6:AC:93:B9`. Digital Asset Links retains previous certificates. Future updates must reuse this signing key and increase the version code.
 
-SHA-256: `d7c7a7e565d3d97d7e5c04b299cc2d7ef0a3854e3e27a8c50bbacaf9f71ee6bf`.
+This package intentionally uses a light Android frame in both system themes: mint `#59CBAA` status bars and white `#FFFFFF` navigation bars/dividers, with splash background `#EFF7F4`. These native colors do not follow the website theme toggle.
+
+SHA-256: `257fadc6956a23ee5d709a728920837e840283b814a699c7d7dd5bb5e38fce8c`.
