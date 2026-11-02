@@ -39,12 +39,16 @@
     const file = prepared;
     busy = true;button.disabled = true;status.textContent = '';
     try {
-      const url = URL.createObjectURL(file), link = document.createElement('a');
-      link.href = url;link.download = file.name;document.body.append(link);link.click();link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
-      status.textContent = 'Banner saved. Instagram: + → Story → choose the saved image. WhatsApp: Updates → Add status → choose the saved image.';
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file] });
+      } else {
+        const url = URL.createObjectURL(file), link = document.createElement('a');
+        link.href = url;link.download = file.name;document.body.append(link);link.click();link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        status.textContent = 'Banner downloaded. Share it in your favorite app.';
+      }
     } catch (error) {
-      if (error.name !== 'AbortError') status.textContent = 'Couldn’t save this banner. Please try again.';
+      if (error.name !== 'AbortError') status.textContent = 'Couldn’t share this banner. Please try again.';
     } finally { busy = false;button.disabled = !prepared; }
   });
   new MutationObserver(prepare).observe(stat, { childList: true, characterData: true, subtree: true });
