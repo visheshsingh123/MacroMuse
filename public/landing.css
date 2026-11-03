@@ -358,6 +358,7 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-details { position:relative; z-index:1; }
 @media(prefers-reduced-motion:reduce),print { .laptop-device { translate:none; } }
 
-/* Dashboard enters with the opening stage; Settings leaves with the closing stage. */
-.laptop-caption[data-laptop-caption] { opacity:var(--laptop-caption-opacity,1); }
-@media(prefers-reduced-motion:reduce),print { .laptop-caption[data-laptop-caption] { opacity:1; } }
+/* Captions, screen controls and hint enter and leave together. */
+.laptop-details { opacity:var(--laptop-caption-opacity,1); }
+.laptop-details:has(:focus-visible) { opacity:1; }
+@media(prefers-reduced-motion:reduce),print { .laptop-details { opacity:1; } }
