@@ -148,10 +148,11 @@
  function update(){frame=0;const nav=document.querySelector('.site-nav').getBoundingClientRect().height;tour.style.setProperty('--laptop-nav',`${nav}px`);
   if(!tour.classList.contains('is-pinned'))return;
   const distance=Math.max(1,tour.offsetHeight-hero.offsetHeight),progress=Math.max(0,Math.min(1,(nav-tour.getBoundingClientRect().top)/distance));
-  show(Math.min(3,Math.floor(progress*4)));hero.style.setProperty('--laptop-tilt',`${8*(1-progress)}deg`);
+  show(Math.min(3,Math.floor(progress*4)));hero.style.setProperty('--laptop-tilt',`${10-6*progress}deg`);hero.style.setProperty('--laptop-yaw',`${-22+Math.sin(progress*Math.PI)*36}deg`);hero.style.setProperty('--laptop-roll',`${-3+progress*5}deg`);hero.style.setProperty('--laptop-lid',`${Math.sin(progress*Math.PI*4)**2*22}deg`);
  }
  function queue(){if(!frame)frame=requestAnimationFrame(update);}
  function setup(){tour.classList.toggle('is-pinned',!motion.matches&&height.matches);update();}
+ const back=document.createElement('div');back.className='laptop-lid-back';back.setAttribute('aria-hidden','true');back.textContent='MacroMuse';hero.querySelector('.laptop-display').append(back);
  buttons.forEach((button,i)=>button.addEventListener('click',()=>{screens[i].loading='eager';if(tour.classList.contains('is-pinned')){const nav=document.querySelector('.site-nav').getBoundingClientRect().height;window.scrollTo({top:scrollY+tour.getBoundingClientRect().top-nav+(tour.offsetHeight-hero.offsetHeight)*(i+.35)/4,behavior:'instant'});}show(i);}));
  addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);motion.addEventListener('change',setup);height.addEventListener('change',setup);show(active);setup();
 })();
