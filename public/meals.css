@@ -90,6 +90,7 @@ html.dark #reset-meal-filters,body.dark #reset-meal-filters { color:#6ee7b7; }
 html.dark #meals-page #today-meal-count,body.dark #meals-page #today-meal-count { color:#a7f3d0!important; }
 html.dark #meals-page .day-divider,body.dark #meals-page .day-divider { background:transparent!important; }
 
-.meal-date-actions { display:flex; align-items:center; gap:10px; min-width:0; }
-#meals-page .meal-date-add { flex-shrink:0; width:44px; height:44px; padding:0; }
+.meal-date-actions { display:flex; align-items:center; gap:8px; min-width:0; }
+#meals-page .meal-date-add { flex-shrink:0; width:30px; height:30px; min-height:30px; padding:0; border-radius:8px; }
+#meals-page .meal-date-add svg { width:14px; height:14px; }
 .day-divider { gap:12px; flex-wrap:wrap; }
