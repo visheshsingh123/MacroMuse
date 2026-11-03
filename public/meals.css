@@ -89,3 +89,7 @@ html.dark #reset-meal-filters,body.dark #reset-meal-filters { color:#6ee7b7; }
 #meals-page #today-meal-count { color:#047857; }
 html.dark #meals-page #today-meal-count,body.dark #meals-page #today-meal-count { color:#a7f3d0!important; }
 html.dark #meals-page .day-divider,body.dark #meals-page .day-divider { background:transparent!important; }
+
+.meal-date-actions { display:flex; align-items:center; gap:10px; min-width:0; }
+#meals-page .meal-date-add { flex-shrink:0; width:44px; height:44px; padding:0; }
+.day-divider { gap:12px; flex-wrap:wrap; }

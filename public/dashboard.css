@@ -132,3 +132,6 @@ html.dark .dashboard-guidance-metrics > a { color:#6ee7b7; }
 
 /* Keep daily usage below the main dashboard cards. */
 #dashboard-page > .daily-usage { margin:24px 0 0; }
+
+.meal-entry-date-notice { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:14px 18px; margin-bottom:24px; border:1px solid #59cbaa; border-radius:14px; background:var(--ng-surface,#fff); color:var(--ng-ink,#0f172a); font-size:13px; }
+.meal-entry-date-notice a { display:inline-flex; align-items:center; min-height:44px; text-decoration:underline; }

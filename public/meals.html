@@ -700,7 +700,7 @@ function renderHistory() {
     const header = document.createElement('div');
     header.className = 'day-divider flex items-center justify-between px-3 sm:px-3 py-2 mt-2 first:mt-0';
     header.innerHTML = `
-      <span class="text-xs font-bold text-charcoal uppercase tracking-wider">${escapeHtml(formatDayLabel(dateKey))}</span>
+      <div class="meal-date-actions"><span class="text-xs font-bold text-charcoal uppercase tracking-wider">${escapeHtml(formatDayLabel(dateKey))}</span><a class="meal-date-add ng-button ng-button-primary" href="/dashboard?mealDate=${encodeURIComponent(dateKey)}#text-meal-input" aria-label="Add a meal for ${escapeHtml(formatDayLabel(dateKey))}" title="Add a meal for ${escapeHtml(formatDayLabel(dateKey))}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
       <span class="text-xs font-semibold text-muted">${dayMeals.length} meal${dayMeals.length !== 1 ? 's' : ''} · ${escapeHtml(dayTotalKcal)} kcal</span>
     `;
     groupWrap.appendChild(header);

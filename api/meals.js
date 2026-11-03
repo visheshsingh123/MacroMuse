@@ -19,7 +19,12 @@ export function validateMeal(body) {
     if (typeof meal[key] !== 'string' || meal[key].length > limit) throw new HttpError(400, 'Invalid meal details.');
     data[key] = meal[key];
   }
-  return { id: meal._id, data };
+  let entryDate;
+  if ('entryDate' in meal) {
+    if (typeof meal.entryDate !== 'string' || !Number.isFinite(Date.parse(meal.entryDate)) || new Date(meal.entryDate).toISOString() !== meal.entryDate || Date.parse(meal.entryDate) < Date.UTC(2000,0,1)) throw new HttpError(400, 'Invalid meal date.');
+    entryDate = meal.entryDate;
+  }
+  return { id: meal._id, data, entryDate };
 }
 export function createMealsHandler({ getServices, quota, clock = Date.now } = {}) {
   return async (req, res) => {
@@ -27,8 +32,9 @@ export function createMealsHandler({ getServices, quota, clock = Date.now } = {}
     if (req.method !== 'POST') { res.setHeader('Allow', 'POST');return res.status(405).json({ error: { message: 'Method not allowed.' } }); }
     try {
       const { db, uid } = await authenticated(req, getServices);
-      const { id, data } = validateMeal(req.body);
+      const { id, data, entryDate } = validateMeal(req.body);
       const now = clock();
+      if (entryDate && Date.parse(entryDate) > now + 5 * 60_000) throw new HttpError(400, 'Choose today or an earlier meal date.');
       // Custom quota providers retain their standalone contract. The production
       // limiter participates in the save, avoiding two extra database transactions.
       if (quota) {
@@ -59,7 +65,7 @@ export function createMealsHandler({ getServices, quota, clock = Date.now } = {}
           transaction.set(ref, state);
           return { meal: { ...record, createdAt: undefined, _id: id }, usage: usageSummary(state, now, plan) };
         }
-        const record = { ...data, loggedAt: new Date(now).toISOString(), createdAt: new Date(now) };
+        const record = { ...data, loggedAt: entryDate || new Date(now).toISOString(), createdAt: new Date(now) };
         state.meals += 1;
         transaction.set(mealRef, record);
         transaction.set(receiptRef, { meal: record });

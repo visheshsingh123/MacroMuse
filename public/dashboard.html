@@ -286,6 +286,7 @@
   </script>
   <link rel="stylesheet" href="/site-shell.css" />
   <script src="/site-shell.js" defer></script>
+  <script src="/meal-entry-date.js" defer></script>
   <script src="/meal-photo.js" defer></script>
   <script src="/reminders.js" defer></script>
   <link rel="stylesheet" href="/dashboard.css" />
@@ -1985,7 +1986,7 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
     window._logMealToFirestore = function(meal) {
       const uid = window._currentUID;
       if (!window.NutriSecurity.isCurrent(uid)) return Promise.reject(new Error('Please sign in to log a meal.'));
-      const pending = window._addMealToFirestore(uid, meal);
+      const pending = window._addMealToFirestore(uid, window.NutriMealDate?.apply(meal) || meal);
       return window.NutriMeals.trackWrite(meal._id, pending);
     };
   </script>
