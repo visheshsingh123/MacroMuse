@@ -135,3 +135,23 @@
   }).observe(link);
   document.fonts?.ready.then(()=>measure()).catch(()=>{});
 })();
+
+// Four real desktop views in a laptop frame; no external frame sequence is needed.
+(() => {
+ const hero=document.getElementById('landing-hero');if(!hero)return;
+ const screens=[...hero.querySelectorAll('.laptop-screen')],captions=[...hero.querySelectorAll('.laptop-caption')],buttons=[...hero.querySelectorAll('[data-laptop-step]')];
+ if(!screens.length)return;
+ const tour=document.createElement('div');tour.className='laptop-tour';hero.before(tour);tour.append(hero);
+ const motion=matchMedia('(prefers-reduced-motion: reduce)'),height=matchMedia('(min-height:651px)');
+ let frame=0,active=0;
+ function show(index){active=index;screens.forEach((screen,i)=>{screen.classList.toggle('is-active',i===index);screen.setAttribute('aria-hidden',String(i!==index));});captions.forEach((caption,i)=>caption.hidden=i!==index);buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));}
+ function update(){frame=0;const nav=document.querySelector('.site-nav').getBoundingClientRect().height;tour.style.setProperty('--laptop-nav',`${nav}px`);
+  if(!tour.classList.contains('is-pinned'))return;
+  const distance=Math.max(1,tour.offsetHeight-hero.offsetHeight),progress=Math.max(0,Math.min(1,(nav-tour.getBoundingClientRect().top)/distance));
+  show(Math.min(3,Math.floor(progress*4)));hero.style.setProperty('--laptop-tilt',`${8*(1-progress)}deg`);
+ }
+ function queue(){if(!frame)frame=requestAnimationFrame(update);}
+ function setup(){tour.classList.toggle('is-pinned',!motion.matches&&height.matches);update();}
+ buttons.forEach((button,i)=>button.addEventListener('click',()=>{screens[i].loading='eager';if(tour.classList.contains('is-pinned')){const nav=document.querySelector('.site-nav').getBoundingClientRect().height;window.scrollTo({top:scrollY+tour.getBoundingClientRect().top-nav+(tour.offsetHeight-hero.offsetHeight)*(i+.35)/4,behavior:'instant'});}show(i);}));
+ addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);motion.addEventListener('change',setup);height.addEventListener('change',setup);show(active);setup();
+})();
