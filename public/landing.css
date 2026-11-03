@@ -353,7 +353,11 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-screen-viewport { top:var(--laptop-bar-height); border-radius:0 0 7px 7px; background:#59cbaa; }
 .laptop-screen-track .laptop-screen { background:#59cbaa; }
 
-/* Move the laptop into and out of the scene without fading it or the copy. */
+/* Move the laptop into and out of the scene without fading the device. */
 .laptop-device { translate:var(--laptop-slide-x,0vw) 0; }
 .laptop-details { position:relative; z-index:1; }
 @media(prefers-reduced-motion:reduce),print { .laptop-device { translate:none; } }
+
+/* Dashboard enters with the opening stage; Settings leaves with the closing stage. */
+.laptop-caption[data-laptop-caption] { opacity:var(--laptop-caption-opacity,1); }
+@media(prefers-reduced-motion:reduce),print { .laptop-caption[data-laptop-caption] { opacity:1; } }
