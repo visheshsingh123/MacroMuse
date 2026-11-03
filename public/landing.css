@@ -330,3 +330,12 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
  #laptop-section .laptop-device { max-width:460px; }
  .is-pinned #laptop-section { gap:16px; }
 }
+
+/* Slide screenshots inside a clipped viewport, preserving the hinged 3D lid. */
+.laptop-screen-viewport { position:absolute; inset:0; border-radius:7px; overflow:hidden; transform:translateZ(1px); backface-visibility:hidden; }
+.laptop-screen-track { position:relative; width:100%; height:100%; transition:transform .6s cubic-bezier(.22,1,.36,1); }
+.laptop-screen-track .laptop-screen { opacity:1; transition:none; transform:none; border-radius:0; }
+.laptop-screen-track .laptop-screen:nth-child(2) { top:100%; }
+.laptop-screen-track .laptop-screen:nth-child(3) { top:200%; }
+.laptop-screen-track .laptop-screen:nth-child(4) { top:300%; }
+@media(prefers-reduced-motion:reduce),print { .laptop-screen-track { transition:none; } }

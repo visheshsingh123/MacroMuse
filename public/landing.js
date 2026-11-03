@@ -144,7 +144,7 @@
  const tour=document.createElement('div');tour.className='laptop-tour';stage.before(tour);tour.append(stage);
  const motion=matchMedia('(prefers-reduced-motion: reduce)'),height=matchMedia('(min-height:651px)');
  let frame=0,active=0;
- function show(index){active=index;screens.forEach((screen,i)=>{screen.classList.toggle('is-active',i===index);screen.setAttribute('aria-hidden',String(i!==index));});captions.forEach((caption,i)=>caption.hidden=i!==index);buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));}
+ function show(index){active=index;stage.querySelector('.laptop-screen-track').style.transform=`translateY(${-index*100}%)`;screens[index].loading='eager';screens.forEach((screen,i)=>{screen.classList.toggle('is-active',i===index);screen.setAttribute('aria-hidden',String(i!==index));});captions.forEach((caption,i)=>caption.hidden=i!==index);buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));}
  function update(){frame=0;const nav=document.querySelector('.site-nav').getBoundingClientRect().height;tour.style.setProperty('--laptop-nav',`${nav}px`);
   if(!tour.classList.contains('is-pinned'))return;
   const distance=Math.max(1,tour.offsetHeight-stage.offsetHeight),progress=Math.max(0,Math.min(1,(nav-tour.getBoundingClientRect().top)/distance));
