@@ -32,7 +32,9 @@
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches || !('IntersectionObserver' in window)) return;
   const targets = [...document.querySelectorAll('#landing-main > *')]
-    .filter(element => element.id !== 'laptop-section' && element.getBoundingClientRect().top >= window.innerHeight);
+    .filter(element => element.id !== 'laptop-section'
+      && !(document.getElementById('laptop-section')?.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)
+      && element.getBoundingClientRect().top >= window.innerHeight);
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;

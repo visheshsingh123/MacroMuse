@@ -280,7 +280,7 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-controls button[aria-pressed=true] { background:#59cbaa; color:#0f172a; border-color:#59cbaa; }
 .laptop-hint { font-size:10px; color:var(--lp-muted); margin-top:12px!important; }
 @media(prefers-reduced-motion:no-preference) and (min-height:651px) {
- .laptop-tour.is-pinned { height:2400px; }
+ .laptop-tour.is-pinned { height:1200px; }
  .is-pinned #laptop-section { position:sticky; top:var(--laptop-nav,76px); height:600px; min-height:0; max-height:calc(100svh - var(--laptop-nav,76px)); padding-block:24px; }
 }
 @media(max-width:767px) {
