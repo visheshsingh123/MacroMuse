@@ -143,6 +143,7 @@
  const stage=document.getElementById('laptop-section');if(!stage)return;
  const screens=[...stage.querySelectorAll('.laptop-screen')];
  const captions=[...stage.querySelectorAll('[data-laptop-caption]')];
+ const bookends=[...stage.querySelectorAll('[data-laptop-bookend]')];
  const buttons=[...stage.querySelectorAll('[data-laptop-step]')];
  if(!screens.length)return;
  const tour=document.createElement('div');tour.className='laptop-tour';stage.before(tour);tour.append(stage);
@@ -155,7 +156,7 @@
   screens[index].loading='eager';
   screens.forEach((screen,i)=>{screen.classList.toggle('is-active',i===index);screen.setAttribute('aria-hidden',String(!isScreen||i!==index));});
   captions.forEach((caption,i)=>caption.hidden=!isScreen||i!==index);
-  stage.querySelector('.laptop-details').inert=!isScreen;
+  bookends.forEach(caption=>caption.hidden=caption.dataset.laptopBookend!==(phase===0?'intro':phase===5?'outro':''));
   buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(isScreen&&i===index)));
  }
  function update(){
@@ -167,7 +168,7 @@
   const opening=Math.min(1,progress*6),closing=Math.max(0,Math.min(1,progress*6-5));
   const ease=value=>value*value*(3-2*value);
   const lid=phase===0?112*(1-ease(opening)):phase===5?112*ease(closing):0;
-  stage.style.setProperty('--laptop-opacity',String(phase===0?ease(opening):phase===5?1-ease(closing):1));
+  stage.style.setProperty('--laptop-text-opacity',String(phase===0?Math.sin(Math.PI*opening):phase===5?Math.sin(Math.PI*closing):1));
   stage.style.setProperty('--laptop-tilt',`${10-6*progress}deg`);
   stage.style.setProperty('--laptop-yaw',`${-22+44*progress}deg`);
   stage.style.setProperty('--laptop-roll',`${-3+progress*5}deg`);
@@ -176,7 +177,7 @@
  function queue(){if(!frame)frame=requestAnimationFrame(update);}
  function setup(){
   tour.classList.toggle('is-pinned',!motion.matches&&height.matches);
-  if(!tour.classList.contains('is-pinned')){show(active+1);stage.style.setProperty('--laptop-lid','0deg');stage.style.setProperty('--laptop-opacity','1');}
+  if(!tour.classList.contains('is-pinned')){show(active+1);stage.style.setProperty('--laptop-lid','0deg');stage.style.setProperty('--laptop-text-opacity','1');}
   update();
  }
  const back=document.createElement('div');back.className='laptop-lid-back';back.setAttribute('aria-hidden','true');back.textContent='MacroMuse';stage.querySelector('.laptop-display').append(back);
@@ -185,7 +186,7 @@
    const nav=document.querySelector('.site-nav').getBoundingClientRect().height;
    window.scrollTo({top:scrollY+tour.getBoundingClientRect().top-nav+(tour.offsetHeight-stage.offsetHeight)*(i+1.35)/6,behavior:'instant'});
   }
-  show(i+1);stage.style.setProperty('--laptop-lid','0deg');stage.style.setProperty('--laptop-opacity','1');
+  show(i+1);stage.style.setProperty('--laptop-lid','0deg');stage.style.setProperty('--laptop-text-opacity','1');
  }));
  addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);
  motion.addEventListener('change',setup);height.addEventListener('change',setup);setup();
