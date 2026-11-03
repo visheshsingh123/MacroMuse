@@ -353,6 +353,7 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-screen-viewport { top:var(--laptop-bar-height); border-radius:0 0 7px 7px; background:#59cbaa; }
 .laptop-screen-track .laptop-screen { background:#59cbaa; }
 
-/* Fade the opening and closing messages while the laptop stays visible. */
-.laptop-bookend { opacity:var(--laptop-text-opacity,1); }
-@media(prefers-reduced-motion:reduce),print { .laptop-bookend { opacity:1; } }
+/* Move the laptop into and out of the scene without fading it or the copy. */
+.laptop-device { translate:var(--laptop-slide-x,0vw) 0; }
+.laptop-details { position:relative; z-index:1; }
+@media(prefers-reduced-motion:reduce),print { .laptop-device { translate:none; } }
