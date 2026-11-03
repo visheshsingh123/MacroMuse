@@ -280,8 +280,8 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-controls button[aria-pressed=true] { background:#59cbaa; color:#0f172a; border-color:#59cbaa; }
 .laptop-hint { font-size:10px; color:var(--lp-muted); margin-top:12px!important; }
 @media(prefers-reduced-motion:no-preference) and (min-height:651px) {
- .laptop-tour.is-pinned { height:360svh; }
- .is-pinned #laptop-section { position:sticky; top:var(--laptop-nav,76px); min-height:calc(100svh - var(--laptop-nav,76px)); padding-block:24px; }
+ .laptop-tour.is-pinned { height:2400px; }
+ .is-pinned #laptop-section { position:sticky; top:var(--laptop-nav,76px); height:600px; min-height:0; max-height:calc(100svh - var(--laptop-nav,76px)); padding-block:24px; }
 }
 @media(max-width:767px) {
  #laptop-section { grid-template-columns:1fr; gap:28px; }
@@ -319,15 +319,15 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-device { margin-bottom:28px; }
 @media(max-width:767px) { .is-pinned .laptop-device { margin-bottom:22px; } }
 
-#laptop-section { display:flex; flex-direction:column; justify-content:center; gap:32px; scroll-margin-top:100px; }
+#laptop-section { display:flex; flex-direction:column; justify-content:center; width:min(1100px,calc(100% - 48px)); gap:32px; scroll-margin-top:100px; }
 .laptop-section-heading { max-width:700px; }
-#laptop-section .laptop-showcase { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); align-items:center; gap:48px; width:100%; max-width:none; }
-#laptop-section .laptop-device { width:90%; }
+#laptop-section .laptop-showcase { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); align-items:center; gap:48px; width:100%; max-width:1040px; margin-inline:auto; }
+#laptop-section .laptop-device { width:90%; max-width:560px; }
 @media(max-width:767px) {
- #laptop-section { gap:22px; }
+ #laptop-section { width:calc(100% - 32px); gap:22px; }
  #laptop-section .laptop-showcase { grid-template-columns:minmax(0,1fr); gap:16px; }
  #laptop-section .laptop-section-heading h2 { font-size:25px; }
- #laptop-section .laptop-device { max-width:460px; }
+ #laptop-section .laptop-device { max-width:400px; }
  .is-pinned #laptop-section { gap:16px; }
 }
 
