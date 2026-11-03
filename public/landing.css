@@ -260,8 +260,8 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
  .landing-nav-cta::before { display:none; }
 }
 
-/* Scroll-driven laptop hero, using the four supplied desktop screenshots. */
-#landing-hero { grid-template-columns:minmax(0,.85fr) minmax(0,1.3fr); gap:40px; }
+/* Scroll-driven laptop showcase, using the four supplied desktop screenshots. */
+
 .laptop-showcase { min-width:0; perspective:1200px; }
 .laptop-device { width:94%; margin:0 auto 28px; transform:rotateX(var(--laptop-tilt,6deg)); transform-origin:center bottom; }
 .laptop-display { position:relative; aspect-ratio:16/9; background:#0f172a; border:9px solid #172231; border-top-width:14px; border-radius:18px 18px 3px 3px; overflow:hidden; box-shadow:0 16px 44px #0f172a26; }
@@ -281,22 +281,22 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-hint { font-size:10px; color:var(--lp-muted); margin-top:12px!important; }
 @media(prefers-reduced-motion:no-preference) and (min-height:651px) {
  .laptop-tour.is-pinned { height:360svh; }
- .is-pinned #landing-hero { position:sticky; top:var(--laptop-nav,76px); min-height:calc(100svh - var(--laptop-nav,76px)); padding-block:24px; }
+ .is-pinned #laptop-section { position:sticky; top:var(--laptop-nav,76px); min-height:calc(100svh - var(--laptop-nav,76px)); padding-block:24px; }
 }
 @media(max-width:767px) {
- #landing-hero { grid-template-columns:1fr; gap:28px; }
+ #laptop-section { grid-template-columns:1fr; gap:28px; }
  .laptop-showcase { width:100%; max-width:620px; margin:auto; }
  .laptop-caption { min-height:112px; }
  .landing-page .laptop-caption h2 { font-size:20px; }
  .laptop-controls { gap:4px; }
  .laptop-controls button { padding-inline:8px; }
- .is-pinned #landing-hero { gap:16px; align-content:center; }
- .is-pinned .landing-hero-lead,.is-pinned .landing-hero-note { display:none; }
- .is-pinned .landing-hero h1 { font-size:32px; }
- .is-pinned .landing-hero-actions { margin-top:16px; }
+ .is-pinned #laptop-section { gap:16px; align-content:center; }
+
+
+
  .is-pinned .laptop-device { max-width:460px; margin-bottom:18px; }
 }
-@media(prefers-reduced-motion:reduce),print { .laptop-screen { transition:none; } .laptop-device { transform:none; } .laptop-tour { height:auto!important; } #landing-hero { position:static!important; } }
+@media(prefers-reduced-motion:reduce),print { .laptop-screen { transition:none; } .laptop-device { transform:none; } .laptop-tour { height:auto!important; } #laptop-section { position:static!important; } }
 
 /* A hinged 3D laptop: screen lid, rear shell and foreshortened keyboard deck. */
 .laptop-showcase { perspective:1400px; }
@@ -318,3 +318,15 @@ html:root body.landing-page nav.site-nav .landing-nav-cta:is(:hover,:focus-visib
 .laptop-base { transform-style:flat; margin-bottom:-14%; }
 .laptop-device { margin-bottom:28px; }
 @media(max-width:767px) { .is-pinned .laptop-device { margin-bottom:22px; } }
+
+#laptop-section { display:flex; flex-direction:column; justify-content:center; gap:32px; scroll-margin-top:100px; }
+.laptop-section-heading { max-width:700px; }
+#laptop-section .laptop-showcase { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); align-items:center; gap:48px; width:100%; max-width:none; }
+#laptop-section .laptop-device { width:90%; }
+@media(max-width:767px) {
+ #laptop-section { gap:22px; }
+ #laptop-section .laptop-showcase { grid-template-columns:minmax(0,1fr); gap:16px; }
+ #laptop-section .laptop-section-heading h2 { font-size:25px; }
+ #laptop-section .laptop-device { max-width:460px; }
+ .is-pinned #laptop-section { gap:16px; }
+}

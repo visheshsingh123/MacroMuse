@@ -32,7 +32,7 @@
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches || !('IntersectionObserver' in window)) return;
   const targets = [...document.querySelectorAll('#landing-main > *')]
-    .filter(element => element.getBoundingClientRect().top >= window.innerHeight);
+    .filter(element => element.id !== 'laptop-section' && element.getBoundingClientRect().top >= window.innerHeight);
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
@@ -138,26 +138,26 @@
 
 // Four real desktop views in a laptop frame; no external frame sequence is needed.
 (() => {
- const hero=document.getElementById('landing-hero');if(!hero)return;
- const screens=[...hero.querySelectorAll('.laptop-screen')],captions=[...hero.querySelectorAll('.laptop-caption')],buttons=[...hero.querySelectorAll('[data-laptop-step]')];
+ const stage=document.getElementById('laptop-section');if(!stage)return;
+ const screens=[...stage.querySelectorAll('.laptop-screen')],captions=[...stage.querySelectorAll('.laptop-caption')],buttons=[...stage.querySelectorAll('[data-laptop-step]')];
  if(!screens.length)return;
- const tour=document.createElement('div');tour.className='laptop-tour';hero.before(tour);tour.append(hero);
+ const tour=document.createElement('div');tour.className='laptop-tour';stage.before(tour);tour.append(stage);
  const motion=matchMedia('(prefers-reduced-motion: reduce)'),height=matchMedia('(min-height:651px)');
  let frame=0,active=0;
  function show(index){active=index;screens.forEach((screen,i)=>{screen.classList.toggle('is-active',i===index);screen.setAttribute('aria-hidden',String(i!==index));});captions.forEach((caption,i)=>caption.hidden=i!==index);buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));}
  function update(){frame=0;const nav=document.querySelector('.site-nav').getBoundingClientRect().height;tour.style.setProperty('--laptop-nav',`${nav}px`);
   if(!tour.classList.contains('is-pinned'))return;
-  const distance=Math.max(1,tour.offsetHeight-hero.offsetHeight),progress=Math.max(0,Math.min(1,(nav-tour.getBoundingClientRect().top)/distance));
+  const distance=Math.max(1,tour.offsetHeight-stage.offsetHeight),progress=Math.max(0,Math.min(1,(nav-tour.getBoundingClientRect().top)/distance));
   show(Math.min(3,Math.floor(progress*4)));
   const opening = Math.min(1,progress/.75);
-  hero.style.setProperty('--laptop-tilt',`${10-6*progress}deg`);
-  hero.style.setProperty('--laptop-yaw',`${-22+44*progress}deg`);
-  hero.style.setProperty('--laptop-roll',`${-3+progress*5}deg`);
-  hero.style.setProperty('--laptop-lid',`${45*(1-opening)}deg`);
+  stage.style.setProperty('--laptop-tilt',`${10-6*progress}deg`);
+  stage.style.setProperty('--laptop-yaw',`${-22+44*progress}deg`);
+  stage.style.setProperty('--laptop-roll',`${-3+progress*5}deg`);
+  stage.style.setProperty('--laptop-lid',`${45*(1-opening)}deg`);
  }
  function queue(){if(!frame)frame=requestAnimationFrame(update);}
  function setup(){tour.classList.toggle('is-pinned',!motion.matches&&height.matches);update();}
- const back=document.createElement('div');back.className='laptop-lid-back';back.setAttribute('aria-hidden','true');back.textContent='MacroMuse';hero.querySelector('.laptop-display').append(back);
- buttons.forEach((button,i)=>button.addEventListener('click',()=>{screens[i].loading='eager';if(tour.classList.contains('is-pinned')){const nav=document.querySelector('.site-nav').getBoundingClientRect().height;window.scrollTo({top:scrollY+tour.getBoundingClientRect().top-nav+(tour.offsetHeight-hero.offsetHeight)*(i+.35)/4,behavior:'instant'});}show(i);}));
+ const back=document.createElement('div');back.className='laptop-lid-back';back.setAttribute('aria-hidden','true');back.textContent='MacroMuse';stage.querySelector('.laptop-display').append(back);
+ buttons.forEach((button,i)=>button.addEventListener('click',()=>{screens[i].loading='eager';if(tour.classList.contains('is-pinned')){const nav=document.querySelector('.site-nav').getBoundingClientRect().height;window.scrollTo({top:scrollY+tour.getBoundingClientRect().top-nav+(tour.offsetHeight-stage.offsetHeight)*(i+.35)/4,behavior:'instant'});}show(i);}));
  addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);motion.addEventListener('change',setup);height.addEventListener('change',setup);show(active);setup();
 })();
