@@ -146,7 +146,7 @@
  const buttons=[...stage.querySelectorAll('[data-laptop-step]')];
  if(!screens.length)return;
  const tour=document.createElement('div');tour.className='laptop-tour';stage.before(tour);tour.append(stage);
- const motion=matchMedia('(prefers-reduced-motion: reduce)'),height=matchMedia('(min-height:651px)');
+ const motion=matchMedia('(prefers-reduced-motion: reduce)');
  let frame=0,active=0;
  function show(phase){
   const index=Math.max(0,Math.min(3,phase-1)),isScreen=phase>0&&phase<5;
@@ -176,7 +176,7 @@
  }
  function queue(){if(!frame)frame=requestAnimationFrame(update);}
  function setup(){
-  tour.classList.toggle('is-pinned',!motion.matches&&height.matches);
+  tour.classList.toggle('is-pinned',!motion.matches);
   if(!tour.classList.contains('is-pinned')){show(active+1);stage.style.setProperty('--laptop-lid','0deg');stage.style.setProperty('--laptop-slide-x','0vw');stage.style.setProperty('--laptop-caption-opacity','1');}
   update();
  }
@@ -189,5 +189,5 @@
   show(i+1);stage.style.setProperty('--laptop-lid','0deg');stage.style.setProperty('--laptop-slide-x','0vw');stage.style.setProperty('--laptop-caption-opacity','1');
  }));
  addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);
- motion.addEventListener('change',setup);height.addEventListener('change',setup);setup();
+ motion.addEventListener('change',setup);setup();
 })();
