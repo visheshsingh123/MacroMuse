@@ -55,7 +55,7 @@ test('meal photos accept the exact 10 MB boundary and reject larger originals be
 test('already-small JPEG, PNG and WebP files retain their original bytes and MIME type', async () => {
   const { photo, state } = fixture();
   for (const type of ['image/jpeg', 'image/png', 'image/webp']) {
-    const prepared = await photo.prepare({ type, size: 500000, base64: 'original-image-bytes' });
+    const prepared = await photo.prepare({ type, size: 200000, base64: 'original-image-bytes' });
     assert.equal(prepared.base64, 'original-image-bytes');
     assert.equal(prepared.mimeType, type);
   }
@@ -67,7 +67,7 @@ test('large images retain their aspect ratio and fit the existing inline-image b
   await photo.prepare({ type: 'image/png', size: 9000000 });
   assert.equal(state.encodes.length, 2);
   for (const { width, height } of state.encodes) {
-    assert(Math.max(width, height) <= 2048);
+    assert(Math.max(width, height) <= 1280);
     assert(Math.abs(width / height - 1.5) < .005);
   }
   assert(state.reads[0].size <= 1800000);
@@ -95,3 +95,10 @@ test('unreadable or unencodable photos fail cleanly and release image resources'
   const reader = fixture({ brokenReader: true });
   await assert.rejects(reader.photo.prepare({ type: 'image/jpeg', size: 1000 }), /Couldn’t read/);
 });
+
+ test('medium camera photos are optimized rather than uploaded unchanged', async () => {
+ const {photo,state}=fixture();
+ await photo.prepare({type:'image/jpeg',size:1500000});
+ assert.equal(state.decoded,1);
+ assert.equal(state.encodes[0].width,1280);
+ });

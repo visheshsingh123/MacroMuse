@@ -42,7 +42,7 @@
       const width = image.naturalWidth || image.width;
       const height = image.naturalHeight || image.height;
       if (!(width > 0 && height > 0)) throw new Error('Couldn’t open this photo. Please choose another image.');
-      let scale = Math.min(1, 2048 / Math.max(width, height));
+      let scale = Math.min(1, 1280 / Math.max(width, height));
       canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
       if (!context) throw new Error('Couldn’t prepare this photo. Please try another image.');
@@ -55,7 +55,7 @@
         context.imageSmoothingEnabled = true;
         context.imageSmoothingQuality = 'high';
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        const encoded = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .88));
+        const encoded = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .82));
         if (!encoded?.size) throw new Error('Couldn’t prepare this photo. Please try another image.');
         if (encoded.size <= MAX_UPLOAD_BYTES) return encoded;
         scale *= Math.min(.8, Math.sqrt(MAX_UPLOAD_BYTES / encoded.size) * .9);
@@ -69,7 +69,7 @@
 
   async function prepare(file) {
     validate(file);
-    const photo = file.size <= MAX_UPLOAD_BYTES ? file : await optimize(file);
+    const photo = file.size <= 256000 ? file : await optimize(file);
     const dataUrl = await readDataUrl(photo);
     return { dataUrl, base64: dataUrl.slice(dataUrl.indexOf(',') + 1), mimeType: photo.type };
   }

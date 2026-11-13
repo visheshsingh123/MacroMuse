@@ -585,7 +585,7 @@
           reasoning_effort: 'low',
           max_tokens: 1024,
           messages: [
-            ...history.slice(-10).map(message => ({ ...message, content: message.content.slice(0, 1500) })),
+            ...history.slice(-6).map(message => ({ ...message, content: message.content.slice(0, 1500) })),
             { role: 'user', content: userText },
           ],
         }),

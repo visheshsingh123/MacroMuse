@@ -16,7 +16,7 @@
     const visibleText = document.createTextNode('');visual.append(visibleText);
     container.classList.add('chef-reply-revealing');
     container.replaceChildren(accessible, layout, visual);
-    const duration = Math.min(2200, Math.max(300, characters.length * 14));
+    const duration = Math.min(450, Math.max(120, characters.length * 3));
     const began = performance.now();
     let frame, shown = 0, finished = false;
     function finish() {
