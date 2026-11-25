@@ -91,6 +91,18 @@ export function createGroqHandler({ getServices, quota, request = fetch, mode = 
           }
           return res.status(200).json(data);
         }
+        // Keep provider diagnostics in function logs without recording the
+        // image, prompt, API key, or provider-supplied free-form error message.
+        const providerError = await response.json?.().catch(() => null) ?? null;
+        const safeField = value => typeof value === 'string' && /^[A-Za-z0-9_.:-]{1,80}$/.test(value) ? value : undefined;
+        console.warn('Groq request failed', {
+          mode,
+          model: providerPayload.model,
+          status: response.status,
+          errorCode: safeField(providerError?.error?.code),
+          errorType: safeField(providerError?.error?.type),
+          requestId: safeField(response.headers?.get?.('x-request-id') || response.headers?.get?.('request-id')),
+        });
         // Avoid trying an unavailable model on every key before falling back.
         if (mode === 'chef' && !usedFallback && [400, 404, 422].includes(response.status)) {
           providerPayload = { ...payload, model: 'openai/gpt-oss-120b', reasoning_effort: 'low' };
