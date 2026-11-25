@@ -1164,7 +1164,9 @@
     const textMealStatus = document.getElementById('text-meal-status');
 
     const TEXT_MODELS = ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b'];
-    const VISION_MODELS = ['meta-llama/llama-4-scout-17b-16e-instruct', 'meta-llama/llama-4-maverick-17b-128e-instruct'];
+    // Qwen 3.8 is the currently supported Groq vision model. The former
+    // Llama 4 vision models have been deprecated/decommissioned by Groq.
+    const VISION_MODELS = ['qwen/qwen3.8-27b'];
 
     async function analyseTextMeal(description) {
       const prompt = `You are a professional nutritionist. The user has described a meal in text. Estimate the nutritional content.
