@@ -1341,8 +1341,8 @@ Scale kcal, protein, carbs and fat to match the piece count or volume you identi
             messages: [{
               role: 'user',
               content: [
-                { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } },
                 { type: 'text', text: prompt },
+                { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } },
               ],
             }],
           };
